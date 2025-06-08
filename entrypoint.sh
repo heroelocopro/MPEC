@@ -2,10 +2,10 @@
 set -e
 
 # Esperar a que la base de datos esté disponible (opcional, mejora la estabilidad)
-until php artisan migrate:status > /dev/null 2>&1; do
-  echo "Esperando a que la base de datos esté disponible..."
-  sleep 5
-done
+# until php artisan migrate:status > /dev/null 2>&1; do
+#   echo "Esperando a que la base de datos esté disponible..."
+#   sleep 5
+# done
 
 # Ejecutar migraciones con --force para no pedir confirmación
 php artisan migrate --force
