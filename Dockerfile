@@ -21,8 +21,17 @@ RUN composer install --no-interaction --optimize-autoloader --no-dev
 # Ajusta permisos para storage y cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Configura Apache para que use la carpeta public de Laravel como DocumentRoot
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/apache2.conf
+
+# Habilita mod_rewrite para Laravel
+RUN a2enmod rewrite
+
+
 # Expone el puerto 80 para Apache
 EXPOSE 80
 
 # Comando para iniciar Apache en primer plano
 CMD ["apache2-foreground"]
+
