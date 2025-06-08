@@ -8,7 +8,7 @@ set -e
 # done
 
 # Ejecutar migraciones con --force para no pedir confirmación
-php artisan migrate --force
+php artisan migrate --seed --force
 
 # Luego iniciar Apache en primer plano (como antes)
 apache2-foreground
