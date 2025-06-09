@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 
-cd /var/www/html
 
 # 1. Configurar permisos
 chown -R www-data:www-data storage bootstrap/cache
