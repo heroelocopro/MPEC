@@ -5,10 +5,11 @@ ENV APP_ENV=production
 ENV APP_DEBUG=false
 WORKDIR /var/www/html
 
-# 2. Instalar dependencias del sistema
+# 2. Instalar dependencias del sistema (añade postgresql-client)
 RUN apt-get update && apt-get install -y \
-    libzip-dev zip unzip git curl libpng-dev libonig-dev libxml2-dev libpq-dev \
-    && docker-php-ext-install pdo pdo_mysql zip mbstring exif pcntl bcmath gd
+    libzip-dev zip unzip git curl libpng-dev libonig-dev libxml2-dev \
+    libpq-dev postgresql-client \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql pgsql zip mbstring exif pcntl bcmath gd
 
 # 3. Instalar Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \

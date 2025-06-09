@@ -13,15 +13,22 @@ if [ ! -f ".env" ]; then
     php artisan key:generate
 fi
 
-# 3. Limpieza inicial
+# 3. Esperar a que PostgreSQL esté disponible
+# echo "Esperando a PostgreSQL..."
+# while ! pg_isready -h $DB_HOST -p $DB_PORT -U $DB_USERNAME -d $DB_DATABASE -t 1 >/dev/null 2>&1; do
+#     sleep 2
+# done
+
+# 4. Limpieza inicial
 php artisan config:clear
 php artisan view:clear
 php artisan event:clear
 
-# 4. Optimización
+# 5. Optimización
 php artisan optimize
 
+# 6. Migraciones (solo si DB está disponible)
 php artisan migrate:fresh --seed --force
 
-# 6. Iniciar servidor
+# 7. Iniciar servidor
 exec apache2-foreground
