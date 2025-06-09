@@ -20,11 +20,17 @@ COPY . .
 # Instalar dependencias PHP
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
+RUN php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan view:clear
+
 # Instalar dependencias JS y compilar Vite
 RUN npm install && npm run build
 
 # Asignar permisos
 RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Configurar Apache para servir desde public/
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \

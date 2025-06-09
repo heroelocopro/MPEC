@@ -1,14 +1,22 @@
 #!/bin/bash
 set -e
 
-# Esperar a que la base de datos esté disponible (opcional, mejora la estabilidad)
-# until php artisan migrate:status > /dev/null 2>&1; do
-#   echo "Esperando a que la base de datos esté disponible..."
-#   sleep 5
-# done
+# Limpiar cachés
+php artisan config:clear
+php artisan cache:clear
+php artisan view:clear
 
-# Ejecutar migraciones con --force para no pedir confirmación
+# Generar clave de aplicación si no existe
+if [ ! -f ".env" ]; then
+  cp .env.example .env
+  php artisan key:generate
+fi
+
+# Ejecutar migraciones
 php artisan migrate:fresh --seed --force
 
-# Luego iniciar Apache en primer plano (como antes)
-apache2-foreground
+# Optimizar para producción
+php artisan optimize
+
+# Iniciar Apache
+exec apache2-foreground
