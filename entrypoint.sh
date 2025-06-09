@@ -10,9 +10,9 @@ chmod -R 775 storage bootstrap/cache
 
 
 
-
-
-
+php artisan queue:table
+php artisan cache:table
+php artisan session:table
 # 6. Migraciones (solo si DB está disponible)
 php artisan migrate:fresh --seed --force
 
