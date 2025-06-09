@@ -12,9 +12,6 @@ chmod -R 775 storage bootstrap/cache
 
 
 
-# 5. Optimización
-php artisan optimize
-
 
 
 # 6. Migraciones (solo si DB está disponible)
