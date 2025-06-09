@@ -14,10 +14,10 @@ if [ ! -f ".env" ]; then
 fi
 
 # 3. Esperar a que PostgreSQL esté disponible
-# echo "Esperando a PostgreSQL..."
-# while ! pg_isready -h $DB_HOST -p $DB_PORT -U $DB_USERNAME -d $DB_DATABASE -t 1 >/dev/null 2>&1; do
-#     sleep 2
-# done
+echo "Esperando a PostgreSQL..."
+while ! pg_isready -h $DB_HOST -p $DB_PORT -U $DB_USERNAME -d $DB_DATABASE -t 1 >/dev/null 2>&1; do
+    sleep 2
+done
 
 # 4. Limpieza inicial
 php artisan config:clear
@@ -26,6 +26,10 @@ php artisan event:clear
 
 # 5. Optimización
 php artisan optimize
+
+echo "Últimos errores laravel.log:"
+tail -n 50 storage/logs/laravel.log
+
 
 # 6. Migraciones (solo si DB está disponible)
 php artisan migrate:fresh --seed --force

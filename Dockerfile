@@ -53,6 +53,9 @@ RUN chown -R www-data:www-data /var/www/html && \
 
 # 14. Entrypoint
 COPY entrypoint.sh /usr/local/bin/
+
+# Después de COPY . .
+RUN chown -R www-data:www-data /var/www/html && chmod -R 775 storage bootstrap/cache
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 80
