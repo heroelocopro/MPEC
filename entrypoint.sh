@@ -27,8 +27,6 @@ php artisan event:clear
 # 5. Optimización
 php artisan optimize
 
-echo "Últimos errores laravel.log:"
-tail -n 50 storage/logs/laravel.log
 
 
 # 6. Migraciones (solo si DB está disponible)
