@@ -1,0 +1,15 @@
+services:
+  - name: MPEC
+    type: web
+    runtime: docker
+    buildCommand: docker build -t MPEC .
+    startCommand: bash entrypoint.sh
+    env: docker
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        value: https://mpec.onrender.com
+    port: 80
