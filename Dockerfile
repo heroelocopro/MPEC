@@ -20,7 +20,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # Copiar solo los archivos de configuración primero (optimización de caché Docker)
-COPY composer.json composer.lock package.json vite.config.js tailwind.config.js postcss.config.js /var/www/html/
+COPY composer.json composer.lock package.json vite.config.js  /var/www/html/
 
 # Instalar dependencias de Composer PRIMERO
 RUN composer install --no-interaction --optimize-autoloader --no-dev
