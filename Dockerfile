@@ -28,9 +28,9 @@ RUN composer install --no-interaction --optimize-autoloader --no-dev --no-script
 COPY . .
 
 # 8. Configuración temporal para el build
-RUN touch database/database.sqlite && \
-    chown www-data:www-data database/database.sqlite && \
-    chmod 644 database/database.sqlite
+# RUN touch database/database.sqlite && \
+#     chown www-data:www-data database/database.sqlite && \
+#     chmod 644 database/database.sqlite
 
 # 9. Ejecutar scripts de Composer (requiere artisan)
 RUN composer run-script post-autoload-dump
