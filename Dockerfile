@@ -4,6 +4,14 @@ FROM php:8.2-apache
 ENV APP_ENV=production
 ENV APP_DEBUG=false
 
+# Configurar variables de base de datos por defecto
+ENV DB_CONNECTION=mysql
+ENV DB_HOST=mysql
+ENV DB_PORT=3306
+ENV DB_DATABASE=laravel
+ENV DB_USERNAME=root
+ENV DB_PASSWORD=
+
 # Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
     libzip-dev zip unzip git curl libpng-dev libonig-dev libxml2-dev libpq-dev \
@@ -22,25 +30,36 @@ WORKDIR /var/www/html
 # 1. Copiar SOLO los archivos necesarios para composer
 COPY composer.json composer.lock /var/www/html/
 
-# 2. Instalar dependencias de Composer sin scripts (evitamos artisan)
+# 2. Instalar dependencias de Composer sin scripts
 RUN composer install --no-interaction --optimize-autoloader --no-dev --no-scripts
 
-# 3. Ahora copiar el resto de los archivos (incluyendo artisan)
+# 3. Ahora copiar el resto de los archivos
 COPY . .
 
-# 4. Ejecutar los scripts de composer que requieren artisan
+# 4. Crear archivo SQLite si es necesario (para evitar errores)
+RUN touch database/database.sqlite && \
+    chown www-data:www-data database/database.sqlite && \
+    chmod 644 database/database.sqlite
+
+# 5. Ejecutar los scripts de composer que requieren artisan
 RUN composer run-script post-autoload-dump
 
-# 5. Instalar dependencias de Node y construir assets
-RUN npm install && npm run build
+# 6. Configurar caché para usar array en lugar de base de datos durante el build
+RUN sed -i "s/'default' => env('CACHE_DRIVER', 'file')/'default' => 'array'/" config/cache.php
 
-# Limpiar cachés
+# 7. Limpiar cachés (ahora con CACHE_DRIVER=array)
 RUN php artisan config:clear && \
     php artisan cache:clear && \
     php artisan view:clear && \
     php artisan optimize
 
-# Configurar permisos (sin ejecutar como root)
+# 8. Restaurar configuración original de caché
+RUN sed -i "s/'default' => 'array'/'default' => env('CACHE_DRIVER', 'file')/" config/cache.php
+
+# 9. Instalar dependencias de Node y construir assets
+RUN npm install && npm run build
+
+# Configurar permisos
 RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
@@ -64,6 +83,6 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 # Exponer puerto
 EXPOSE 80
 
-# Comando de inicio (ejecutar como usuario no-root)
+# Comando de inicio
 USER www-data
 CMD ["entrypoint.sh"]
