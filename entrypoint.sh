@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+# Instalar Livewire Flux si no está presente
+if [ ! -d "vendor/livewire/flux" ]; then
+    composer require livewire/flux --update-with-dependencies
+fi
+
 # Esperar a que la base de datos esté disponible (opcional pero recomendado)
 while ! php artisan db:query "SELECT 1" >/dev/null 2>&1; do
   echo "Esperando a que la base de datos esté disponible..."

@@ -1,4 +1,3 @@
-# Establecer imagen base
 FROM php:8.2-apache
 
 # Variables de entorno para producción
@@ -20,18 +19,17 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Establecer directorio de trabajo
 WORKDIR /var/www/html
 
-# Copiar archivos necesarios para instalar dependencias (optimización de caché Docker)
-COPY composer.json composer.lock package.json vite.config.js /var/www/html/
-COPY resources/ /var/www/html/resources/
+# Copiar solo los archivos de configuración primero (optimización de caché Docker)
+COPY composer.json composer.lock package.json vite.config.js tailwind.config.js postcss.config.js /var/www/html/
+
+# Instalar dependencias de Composer PRIMERO
+RUN composer install --no-interaction --optimize-autoloader --no-dev
+
+# Ahora copiar el resto de los archivos
+COPY . .
 
 # Instalar dependencias de Node y construir assets
 RUN npm install && npm run build
-
-# Copiar el resto de la aplicación
-COPY . .
-
-# Instalar dependencias de Composer
-RUN composer install --no-interaction --optimize-autoloader --no-dev
 
 # Limpiar cachés
 RUN php artisan config:clear && \

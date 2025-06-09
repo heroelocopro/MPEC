@@ -31,4 +31,10 @@ export default defineConfig({
     optimizeDeps: {
         include: ["laravel-vite-plugin"],
     },
+    resolve: {
+        alias: {
+            // Asegúrate de que las rutas a los paquetes de vendor sean correctas
+            "../../vendor": "/var/www/html/vendor",
+        },
+    },
 });
