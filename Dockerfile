@@ -19,16 +19,19 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Establecer directorio de trabajo
 WORKDIR /var/www/html
 
-# Copiar solo los archivos de configuración primero (optimización de caché Docker)
-COPY composer.json composer.lock package.json vite.config.js  /var/www/html/
+# 1. Copiar SOLO los archivos necesarios para composer
+COPY composer.json composer.lock /var/www/html/
 
-# Instalar dependencias de Composer PRIMERO
-RUN composer install --no-interaction --optimize-autoloader --no-dev
+# 2. Instalar dependencias de Composer sin scripts (evitamos artisan)
+RUN composer install --no-interaction --optimize-autoloader --no-dev --no-scripts
 
-# Ahora copiar el resto de los archivos
+# 3. Ahora copiar el resto de los archivos (incluyendo artisan)
 COPY . .
 
-# Instalar dependencias de Node y construir assets
+# 4. Ejecutar los scripts de composer que requieren artisan
+RUN composer run-script post-autoload-dump
+
+# 5. Instalar dependencias de Node y construir assets
 RUN npm install && npm run build
 
 # Limpiar cachés
@@ -37,7 +40,7 @@ RUN php artisan config:clear && \
     php artisan view:clear && \
     php artisan optimize
 
-# Configurar permisos
+# Configurar permisos (sin ejecutar como root)
 RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
@@ -61,5 +64,6 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 # Exponer puerto
 EXPOSE 80
 
-# Comando de inicio
+# Comando de inicio (ejecutar como usuario no-root)
+USER www-data
 CMD ["entrypoint.sh"]
