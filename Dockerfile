@@ -40,6 +40,8 @@ RUN composer run-script post-autoload-dump
 #     php artisan view:clear && \
 #     php artisan event:clear
 
+RUN php artisan livewire:install || true
+
 # 11. Construcción de assets
 RUN npm install && npm run build
 
