@@ -41,6 +41,9 @@ RUN a2enmod rewrite && \
     Require all granted\n\
 </Directory>' >> /etc/apache2/apache2.conf
 
+RUN echo "ServerName mpec.onrender.com" >> /etc/apache2/apache2.conf
+
+
 # Copiar script de entrada
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
