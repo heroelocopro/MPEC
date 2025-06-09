@@ -21,7 +21,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # Copiar archivos necesarios para instalar dependencias (optimización de caché Docker)
-COPY composer.json composer.lock package.json vite.config.js tailwind.config.js postcss.config.js /var/www/html/
+COPY composer.json composer.lock package.json vite.config.js /var/www/html/
 COPY resources/ /var/www/html/resources/
 
 # Instalar dependencias de Node y construir assets
