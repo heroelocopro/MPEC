@@ -36,9 +36,9 @@ RUN touch database/database.sqlite && \
 RUN composer run-script post-autoload-dump
 
 # 10. Limpieza de caché SIN base de datos
-RUN php artisan config:clear && \
-    php artisan view:clear && \
-    php artisan event:clear
+# RUN php artisan config:clear && \
+#     php artisan view:clear && \
+#     php artisan event:clear
 
 # 11. Construcción de assets
 RUN npm install && npm run build
