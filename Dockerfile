@@ -52,6 +52,8 @@ RUN a2enmod rewrite && \
 # 13. Permisos
 RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 775 storage bootstrap/cache
+RUN chmod -R 755 public/build
+
 
 # 14. Entrypoint
 COPY entrypoint.sh /usr/local/bin/

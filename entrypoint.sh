@@ -17,6 +17,11 @@ fi
 # 6. Migraciones (solo si DB está disponible)
 php artisan migrate:fresh --seed --force
 
+php artisan config:clear
+php artisan view:clear
+php artisan route:clear
+php artisan optimize
+
 
 
 # 7. Iniciar servidor
