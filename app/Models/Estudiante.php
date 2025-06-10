@@ -91,7 +91,7 @@ class Estudiante extends Model
 
     public function matriculas()
     {
-        return $this->hasMany(\App\Models\Matricula::class);
+        return $this->hasMany(\App\Models\matricula::class);
     }
 
     public function respuestasActividades()
