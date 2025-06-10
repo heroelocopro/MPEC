@@ -22,8 +22,8 @@ use Livewire\Component;
 
 class DocenteNotas extends Component
 {
-    public $nota_minima;
-    public $nota_maxima;
+    public $nota_minima = null;
+    public $nota_maxima = null;
     public $colegio;
     public $profesor;
     public $asignaturas;

@@ -24,7 +24,7 @@ class Actividad extends Model
     }
     public function notas()
     {
-        return $this->morphMany(Nota::class, 'notable');
+        return $this->morphMany(nota::class, 'notable');
     }
     public function asignatura()
     {

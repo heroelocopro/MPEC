@@ -15,7 +15,7 @@ class Horario extends Model
     }
 
     public function asignatura() {
-        return $this->belongsTo(Asignatura::class);
+        return $this->belongsTo(asignatura::class);
     }
 
     public function profesor() {
