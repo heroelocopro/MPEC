@@ -8,18 +8,7 @@ export default defineConfig({
             refresh: true,
         }),
     ],
-    server: {
-        host: "0.0.0.0",
-        hmr: {
-            host: "localhost",
-            protocol: "ws",
-        },
-        cors: true,
-        https: true,
-        watch: {
-            usePolling: true,
-        },
-    },
+    base: process.env.ASSET_URL ? `${process.env.ASSET_URL}/build/` : "/build/",
     build: {
         outDir: "public/build",
         emptyOutDir: true,
@@ -30,8 +19,5 @@ export default defineConfig({
                 assetFileNames: "assets/[name].[hash].[ext]",
             },
         },
-    },
-    optimizeDeps: {
-        include: ["laravel-vite-plugin"],
     },
 });
