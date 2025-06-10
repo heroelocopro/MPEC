@@ -17,24 +17,17 @@ export default defineConfig({
         cors: true,
     },
     build: {
-        manifest: true,
         outDir: "public/build",
         emptyOutDir: true,
         rollupOptions: {
             output: {
-                entryFileNames: `[name].js`,
-                chunkFileNames: `[name].js`,
-                assetFileNames: `[name].[ext]`,
+                entryFileNames: "assets/[name].[hash].js",
+                chunkFileNames: "assets/[name].[hash].js",
+                assetFileNames: "assets/[name].[hash].[ext]",
             },
         },
     },
     optimizeDeps: {
         include: ["laravel-vite-plugin"],
-    },
-    resolve: {
-        alias: {
-            // Asegúrate de que las rutas a los paquetes de vendor sean correctas
-            "../../vendor": "/var/www/html/vendor",
-        },
     },
 });
