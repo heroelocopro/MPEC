@@ -15,6 +15,10 @@ export default defineConfig({
             protocol: "ws",
         },
         cors: true,
+        https: true,
+        watch: {
+            usePolling: true,
+        },
     },
     build: {
         outDir: "public/build",

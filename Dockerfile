@@ -42,8 +42,8 @@ RUN composer run-script post-autoload-dump
 
 # RUN php artisan livewire:install || true
 
-# 11. Construcción de assets
-RUN npm install
+# 11. Construcción de assets (hazlo ANTES de copiar todo)
+RUN npm install && npm run build
 
 # 12. Configuración de Apache
 RUN a2enmod rewrite && \

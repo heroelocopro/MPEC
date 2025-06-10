@@ -9,8 +9,10 @@ chmod -R 775 storage bootstrap/cache
 
 
 
-echo "Compilando assets en tiempo de ejecución con npm..."
-npm run build
+if [ "$APP_ENV" != "production" ]; then
+    echo "Compilando assets en tiempo de ejecución con npm..."
+    npm run build
+fi
 
 # 6. Migraciones (solo si DB está disponible)
 php artisan migrate:fresh --seed --force
