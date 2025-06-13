@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('config_notas', function (Blueprint $table) {
             $table->id();
-            $table->float('nota_minima');
-            $table->float('nota_maxima');
-            $table->float('nota_requerida');
+            $table->float('nota_minima')->default(1);
+            $table->float('nota_maxima')->default(5);
+            $table->float('nota_requerida')->default(3);
             $table->foreignId('colegio_id')->constrained('colegios')->onDelete('cascade');
             $table->timestamps();
         });

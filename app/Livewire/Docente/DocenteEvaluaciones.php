@@ -160,8 +160,8 @@ class DocenteEvaluaciones extends Component
         $this->colegio = $this->profesor->colegio;
         $this->subjects = $this->profesor->asignaturas;
         $configNota = configNota::where('colegio_id',$this->colegio->id)->first();
-        $this->nota_minima = $configNota->nota_minima;
-        $this->nota_maxima = $configNota->nota_maxima;
+        $this->nota_minima = $configNota->nota_minima ?? 0;
+        $this->nota_maxima = $configNota->nota_maxima ?? 5;
         $this->puntaje_total = $this->nota_maxima;
     }
     public function render()

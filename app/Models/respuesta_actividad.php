@@ -20,7 +20,7 @@ class respuesta_actividad extends Model
     }
     public function nota()
     {
-        return $this->hasOne(Nota::class, 'notable_id', 'actividad_id')
+        return $this->hasOne(nota::class, 'notable_id', 'actividad_id')
             ->where('estudiante_id', $this->estudiante_id);
     }
 

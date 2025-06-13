@@ -70,6 +70,13 @@ class ColegioHorarios extends Component
             'hora_inicio' => $this->hora_inicio,
             'hora_fin' => $this->hora_fin];
             Horario::create($datos);
+            $this->dispatch('alerta', [
+                'title' => 'Horario Creado',
+                'text' => 'El horario fue creado correctamente',
+                'icon' => 'success',
+                'toast' => true,
+                'position' => 'top-end',
+            ]);
             $this->limpiar();
         } catch (\Throwable $th) {
             //throw $th;
@@ -77,7 +84,8 @@ class ColegioHorarios extends Component
     }
     public function limpiar()
     {
-        $this->modalCreacion = false;
+        // $this->modalCreacion = false;
+        $this->reset(['hora_inicio','hora_fin','dia','profesor_id','asignatura_id']);
         $this->horarios = Horario::where('grupo_id',$this->grupo_id)->get();
     }
     public function updatedGrupoId($valor)

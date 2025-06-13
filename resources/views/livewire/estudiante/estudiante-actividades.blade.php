@@ -10,8 +10,13 @@
             <flux:breadcrumbs>
                 <flux:breadcrumbs.item href="#" class="hover:underline">Panel Principal</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item href="{{ route('estudiante-actividades') }}" class="hover:underline">Actividades</flux:breadcrumbs.item>
+                @if(isset($colegio))
                 <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>
+                @endif
+                @if(isset($grupo))
+
                 <flux:breadcrumbs.item>{{ $grupo->nombre }}</flux:breadcrumbs.item>
+                @endif
             </flux:breadcrumbs>
         </div>
 
@@ -37,7 +42,7 @@
                 'Religión' => '🙏',
             ];
         @endphp
-
+        @if (isset($actividadesAsignaturas) && count($actividadesAsignaturas) > 0)
         @foreach ($actividadesAsignaturas as $index => $asignatura)
             <div class="relative rounded-3xl border-2 border-blue-300 bg-white dark:bg-blue-900 p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 {{-- Icono grande difuminado atrás --}}
@@ -87,6 +92,7 @@
                 @endif
             </div>
         @endforeach
+        @endif
     </div>
 
     {{-- Modal para ver la actividad --}}

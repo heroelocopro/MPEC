@@ -19,17 +19,20 @@ class EstudianteDocentes extends Component
     public $grupo;
     public function cargarDocentes()
     {
-        $this->profesores = Profesor::with('asignaturas')->get();
+        $this->profesores = Profesor::with('asignaturas')->where('colegio_id',$this->colegio->id)->get();
     }
     public function mount()
     {
         // datos basicos del estudiante
         $this->estudiante = Estudiante::where('user_id',Auth::user()->id)->first();
-        $this->colegio = $this->estudiante->colegio;
-        $this->matricula = $this->estudiante->matricula;
-        $this->grado = $this->matricula->grado;
-        $this->grupo = EstudianteGrupo::where('estudiante_id',$this->estudiante->id)->first()->grupo;
-        $this->cargarDocentes();
+        $this->colegio = $this->estudiante->colegio ?? null;
+        $this->matricula = $this->estudiante->matricula ?? null;
+        $this->grado = $this->matricula->grado ?? null;
+        $this->grupo = EstudianteGrupo::where('estudiante_id',$this->estudiante->id)->first()->grupo ?? null;
+        if($this->colegio != null)
+        {
+            $this->cargarDocentes();
+        }
     }
     public function render()
     {

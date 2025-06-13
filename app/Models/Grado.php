@@ -25,6 +25,6 @@ class Grado extends Model
     }
     public function asignaturas()
     {
-        return $this->belongsToMany(Asignatura::class, 'asignatura_grados');
+        return $this->belongsToMany(asignatura::class, 'asignatura_grados');
     }
 }

@@ -7,7 +7,9 @@
                 <flux:breadcrumbs.item href="#">Panel Principal</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item href="">Configuracion</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item href="{{ route('colegio-notas') }}">Notas </flux:breadcrumbs.item>
-                <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>
+                @isset($colegio)
+                    <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>
+                @endisset
             </flux:breadcrumbs>
         </div>
     </div>

@@ -10,9 +10,11 @@ use App\Models\sedes_colegio;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class ColegioMatriculas extends Component
 {
+    use WithPagination;
     protected $listeners = ['eliminarMatricula' => 'eliminarMatricula'];
     // editar
     public bool $modalEdicion = false;

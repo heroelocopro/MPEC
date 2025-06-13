@@ -24,12 +24,15 @@ class EstudianteAnuncios extends Component
     public function mount()
     {
         // datos basicos del estudiante
-        $this->estudiante = Estudiante::where('user_id',Auth::user()->id)->first();
-        $this->colegio = $this->estudiante->colegio;
-        $this->matricula = $this->estudiante->matricula;
-        $this->grado = $this->matricula->grado;
-        $this->grupo = EstudianteGrupo::where('estudiante_id',$this->estudiante->id)->first()->grupo;
-        $this->cargarAnuncios();
+        $this->estudiante = Estudiante::where('user_id',Auth::user()->id)->first() ?? null;
+        $this->colegio = $this->estudiante->colegio ?? null;
+        $this->matricula = $this->estudiante->matricula ?? null;
+        $this->grado = $this->matricula->grado ?? null;
+        $this->grupo = EstudianteGrupo::where('estudiante_id',$this->estudiante->id)->first()->grupo ?? null;
+        if($this->colegio != null)
+        {
+            $this->cargarAnuncios();
+        }
     }
     public function render()
     {

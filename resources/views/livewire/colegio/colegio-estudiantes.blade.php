@@ -3,7 +3,9 @@
     <flux:breadcrumbs>
         <flux:breadcrumbs.item href="#">Panel Principal</flux:breadcrumbs.item>
         <flux:breadcrumbs.item href="{{ route('colegio-estudiantes') }}">Estudiantes</flux:breadcrumbs.item>
+        @isset($colegioId)
         <flux:breadcrumbs.item>{{ $colegioId->nombre }}</flux:breadcrumbs.item>
+        @endisset
     </flux:breadcrumbs>
     {{-- fin migajas de pan --}}
 
@@ -15,7 +17,7 @@
     {{-- filtros --}}
         <div class="flex items-center gap-2 w-full">
             <!-- Select (10%) - Versión corregida -->
-            <select wire:model="paginacion"
+            <select wire:model.live="paginacion"
                     class="w-[10%] h-12 px-3 rounded-lg border border-gray-300 bg-white text-gray-700
                         dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300
                         focus:outline-none focus:ring-2 focus:ring-blue-500">

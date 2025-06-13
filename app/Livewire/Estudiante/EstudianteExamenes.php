@@ -21,12 +21,7 @@ class EstudianteExamenes extends Component
     public $grado;
     public $grupo;
     public $asignaturas = [];
-    public $examenesAsignaturas = [
-        [
-            'nombre',
-            'examen'
-        ],
-    ];
+    public $examenesAsignaturas = [];
     public $cargandoExamen;
 
     public $examenHecho = false;
@@ -34,6 +29,12 @@ class EstudianteExamenes extends Component
     public function cargarExamenes()
     {
         $grupoFiltrado = $this->grupo->id;
+        $this->examenesAsignaturas = [
+            [
+                'nombre',
+                'examen'
+            ],
+        ];
         foreach ($this->asignaturas as $index => $asignatura) {
             // Filtrar examenes por grupo_id y ordenarlas por fecha de entrega
             $examenesFiltrados = $asignatura->examenes
@@ -98,12 +99,25 @@ class EstudianteExamenes extends Component
         // datos basicos del estudiante
         $this->estudiante = Estudiante::where('user_id',Auth::user()->id)->first();
         $this->colegio = $this->estudiante->colegio;
-        $this->matricula = $this->estudiante->matricula;
-        $this->grado = $this->matricula->grado;
-        $this->grupo = EstudianteGrupo::where('estudiante_id',$this->estudiante->id)->first()->grupo;
+        $this->matricula = $this->estudiante->matricula ?? null;
+        $this->grado = $this->matricula->grado ?? null;
+        $this->grupo = EstudianteGrupo::where('estudiante_id',$this->estudiante->id)->first()->grupo ?? null;
         // cargar metodos
-        $this->cargarAsignaturas();
-        $this->cargarExamenes();
+
+        if($this->grado != null && $this->grupo != null)
+        {
+            // cargar metodos
+            $this->cargarAsignaturas();
+            $this->cargarExamenes();
+        }else{
+            $this->dispatch('alerta', [
+                'title' => 'estudiante sin colegio o matricula',
+                'text' => 'solicita tu matricula!',
+                'icon' => 'error',
+                'toast' => true,
+                'position' => 'top-end',
+            ]);
+        }
 
     }
 

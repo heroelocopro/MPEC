@@ -125,13 +125,14 @@ class EstudianteActividades extends Component
     public $grado;
     public $grupo;
     public $asignaturas = [];
-    public $actividadesAsignaturas = [
-        ['nombre','actividades'],
-    ];
+    public $actividadesAsignaturas = [];
     // ['nombre' => 'Matemáticas', 'actividades' => [Actividad, Actividad, ...]],
     public function cargarActividades()
     {
         $grupoFiltrado = $this->grupo->id;
+        $this->actividadesAsignaturas = [
+            ['nombre','actividades'],
+        ];
 
         foreach ($this->asignaturas as $index => $asignatura) {
             // Filtrar actividades por grupo_id y fecha_entrega mayor o igual a hoy
@@ -163,13 +164,26 @@ class EstudianteActividades extends Component
     {
         // datos basicos del estudiante
         $this->estudiante = Estudiante::where('user_id',Auth::user()->id)->first();
-        $this->colegio = $this->estudiante->colegio;
+        $this->colegio = $this->estudiante->colegio ?? null;
         $this->matricula = $this->estudiante->matricula;
-        $this->grado = $this->matricula->grado;
-        $this->grupo = EstudianteGrupo::where('estudiante_id',$this->estudiante->id)->first()->grupo;
-        // cargar metodos
-        $this->cargarAsignaturas();
-        $this->cargarActividades();
+        $this->grado = $this->matricula->grado ?? null;
+        $this->grupo = EstudianteGrupo::where('estudiante_id',$this->estudiante->id)->first()->grupo ?? null;
+
+        if($this->grado != null && $this->grupo != null)
+        {
+            // cargar metodos
+            $this->cargarAsignaturas();
+            $this->cargarActividades();
+
+        }else{
+            $this->dispatch('alerta', [
+                'title' => 'estudiante sin colegio o matricula',
+                'text' => 'solicita tu matricula!',
+                'icon' => 'error',
+                'toast' => true,
+                'position' => 'top-end',
+            ]);
+        }
 
 
     }

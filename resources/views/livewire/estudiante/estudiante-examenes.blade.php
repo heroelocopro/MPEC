@@ -9,8 +9,14 @@
             <flux:breadcrumbs>
                 <flux:breadcrumbs.item href="#">Panel Principal</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item href="{{ route('estudiante-examenes') }}">Exámenes</flux:breadcrumbs.item>
+                @if (isset($colegio))
+
                 <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>
+                @endif
+                @isset($grupo)
+
                 <flux:breadcrumbs.item>{{ $grupo->nombre }}</flux:breadcrumbs.item>
+                @endisset
             </flux:breadcrumbs>
         </div>
     </div>

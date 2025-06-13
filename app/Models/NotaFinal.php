@@ -34,7 +34,7 @@ class NotaFinal extends Model
     }
     public function grupo()
     {
-        return $this->belongsTo(grupo::class);
+        return $this->belongsTo(Grupo::class);
     }
 
 }

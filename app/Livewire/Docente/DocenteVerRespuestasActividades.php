@@ -55,6 +55,8 @@ class DocenteVerRespuestasActividades extends Component
                         'asignatura_id' => $this->asignaturaId,
                         'notable_id' => $actividadId,
                         'notable_type' => $this->notableClass,
+                        'periodo_id' => PeriodoAcademico::periodoActual($this->colegio->id)->id,
+                        'ano' => now()->format('Y'),
                     ],
                     [
                         'valor' => $nota,
@@ -129,8 +131,8 @@ class DocenteVerRespuestasActividades extends Component
         $this->respuestas = $this->actividad->respuestas;
         // xd
         $configNota = configNota::where('colegio_id',$this->colegio->id)->first();
-        $this->nota_minima = $configNota->nota_minima;
-        $this->nota_maxima = $configNota->nota_maxima;
+        $this->nota_minima = $configNota->nota_minima ?? 0;
+        $this->nota_maxima = $configNota->nota_maxima ?? 5;
         $this->cargarNotas();
     }
 

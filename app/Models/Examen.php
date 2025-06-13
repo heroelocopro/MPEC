@@ -30,7 +30,7 @@ class Examen extends Model
     }
     public function notas()
     {
-        return $this->morphMany(Nota::class, 'notable');
+        return $this->morphMany(nota::class, 'notable');
     }
     public function asignatura()
     {
@@ -38,7 +38,7 @@ class Examen extends Model
     }
     public function grupo()
     {
-        return $this->belongsTo(grupo::class);
+        return $this->belongsTo(Grupo::class);
     }
     public function periodo()
     {

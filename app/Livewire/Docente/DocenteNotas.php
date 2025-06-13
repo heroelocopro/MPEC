@@ -217,8 +217,10 @@ protected function guardarNota($tipo, $estudianteId, $notableId, $valor)
         $this->asignaturas = asignaturaProfesor::where('profesor_id',$this->profesor->id)->get();
         $this->periodo = PeriodoAcademico::periodoActual($this->colegio->id);
         $configNota = configNota::where('colegio_id',$this->colegio->id)->first();
-        $this->nota_minima = $configNota->nota_minima;
-        $this->nota_maxima = $configNota->nota_maxima;
+        $this->nota_minima = $configNota->nota_minima ?? 1;
+        $this->nota_maxima = $configNota->nota_maxima ?? 5;
+
+
 
 
 

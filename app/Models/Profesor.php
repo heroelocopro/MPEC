@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Profesor extends Model
 {
+    use HasFactory;
      protected static function booted()
     {
         static::created(function ($profesor) {
@@ -94,7 +96,7 @@ class Profesor extends Model
     }
     public function asignaturas()
     {
-        return $this->belongsToMany(Asignatura::class,'asignatura_profesors');
+        return $this->belongsToMany(asignatura::class,'asignatura_profesors');
     }
 
     public function anuncios()

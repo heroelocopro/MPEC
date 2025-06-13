@@ -114,15 +114,15 @@ class EstudianteVerExamen extends Component
 
     public function mount($id)
     {
-        $this->usuario = Auth::user();
-        $this->estudiante = Estudiante::where('user_id', $this->usuario->id)->first();
-        $this->colegio = $this->estudiante->colegio;
-        $this->matricula = $this->estudiante->matricula;
-        $this->grado = $this->matricula->grado;
-        $this->grupo = EstudianteGrupo::where('estudiante_id', $this->estudiante->id)->first()->grupo;
-        $this->examen = Examen::findOrFail($id);
-        $this->asignatura = $this->examen->asignatura;
-        $this->preguntas = $this->examen->preguntas;
+        $this->usuario = Auth::user() ?? null;
+        $this->estudiante = Estudiante::where('user_id', $this->usuario->id)->first() ?? null;
+        $this->colegio = $this->estudiante->colegio ?? null;
+        $this->matricula = $this->estudiante->matricula ?? null;
+        $this->grado = $this->matricula->grado ?? null;
+        $this->grupo = EstudianteGrupo::where('estudiante_id', $this->estudiante->id)->first()->grupo ?? null;
+        $this->examen = Examen::findOrFail($id) ?? null;
+        $this->asignatura = $this->examen->asignatura ?? null;
+        $this->preguntas = $this->examen->preguntas ?? null;
 
         // Convertir tiempo límite a segundos
         $tiempoParts = explode(':', $this->examen->tiempo_limite);

@@ -26,8 +26,12 @@
             <flux:breadcrumbs>
                 <flux:breadcrumbs.item href="#">Panel Principal</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item href="{{ route('estudiante-asignaturas') }}">Asignaturas</flux:breadcrumbs.item>
+                @isset($colegio)
                 <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>
+                @endisset
+                @isset($grupo)
                 <flux:breadcrumbs.item>{{ $grupo->nombre }}</flux:breadcrumbs.item>
+                @endisset
             </flux:breadcrumbs>
         </div>
     </div>
@@ -59,26 +63,31 @@
                 <div class="text-sm text-gray-700 dark:text-gray-300 space-y-1 mb-4">
                     <p><strong>Grados:</strong>
                         @foreach ($asignatura->asignaturaGrados as $asignaturaGrado)
-                            <span>{{ $asignaturaGrado->grado->nombre ?? 'N/A' }}</span>@if (!$loop->last), @endif
+                        @if ($grupo->grado->id == $asignaturaGrado->grado->id)
+                                                    <span>{{ $asignaturaGrado->grado->nombre ?? 'N/A' }}</span>@if (!$loop->last), @endif
+                        @endif
                         @endforeach
                     </p>
                     <p><strong>Horarios:</strong></p>
                     <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 max-h-24 overflow-auto">
                         @foreach ($asignatura->horarios as $horario)
-                            <li>
-                                {{ ucfirst($horario->dia) }} {{ \Carbon\Carbon::parse($horario->hora_inicio)->format('H:i') }} - {{ \Carbon\Carbon::parse($horario->hora_fin)->format('H:i') }}
-                            </li>
+                        @if ($horario->grupo_id == $grupo->id)
+                        <li>
+                            {{ ucfirst($horario->dia) }} {{ \Carbon\Carbon::parse($horario->hora_inicio)->format('H:i') }} - {{ \Carbon\Carbon::parse($horario->hora_fin)->format('H:i') }}
+                        </li>
+                        @endif
                         @endforeach
                     </ul>
                 </div>
 
-                <div class="mt-auto">
+                {{-- boton para ver detalles futuro --}}
+                {{-- <div class="mt-auto">
                     <flux:button
                         class="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white font-semibold rounded-xl py-2 transition-colors"
                         wire:click="verDetalles({{ $asignatura->id }})">
                         Ver detalles
                     </flux:button>
-                </div>
+                </div> --}}
             </div>
         @endforeach
     </div>

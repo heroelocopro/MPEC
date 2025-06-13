@@ -27,16 +27,19 @@ class EstudianteNotas extends Component
     public function mount()
     {
         $this->estudiante = Estudiante::where('user_id', Auth::id())->first();
-        $this->colegio = $this->estudiante->colegio;
-        $this->matricula = $this->estudiante->matricula;
-        $this->grado = $this->matricula->grado;
-        $this->grupo = EstudianteGrupo::where('estudiante_id', $this->estudiante->id)->first()->grupo;
+        $this->colegio = $this->estudiante->colegio ?? null;
+        $this->matricula = $this->estudiante->matricula ?? null;
+        $this->grado = $this->matricula->grado ?? null;
+        $this->grupo = EstudianteGrupo::where('estudiante_id', $this->estudiante->id)->first()->grupo ?? null;
 
-        $this->periodos = PeriodoAcademico::where('colegio_id', $this->colegio->id)->orderBy('fecha_inicio', 'asc')->get();
-        $this->periodoSeleccionadoObj = PeriodoAcademico::periodoActual($this->colegio->id);
-        $this->periodoSeleccionado = PeriodoAcademico::periodoActual($this->colegio->id)->id;
+        $this->periodos = PeriodoAcademico::where('colegio_id', $this->colegio->id)->orderBy('fecha_inicio', 'asc')->get() ?? null;
+        $this->periodoSeleccionadoObj = PeriodoAcademico::periodoActual($this->colegio->id) ?? null;
+        $this->periodoSeleccionado = PeriodoAcademico::periodoActual($this->colegio->id)->id ?? null;
 
-        $this->actualizarNotas();
+        if($this->periodoSeleccionado != null)
+        {
+            $this->actualizarNotas();
+        }
     }
 
     public function updatedPeriodoSeleccionado()
