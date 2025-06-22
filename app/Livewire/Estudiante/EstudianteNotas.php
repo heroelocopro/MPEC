@@ -35,11 +35,24 @@ class EstudianteNotas extends Component
         $this->periodos = PeriodoAcademico::where('colegio_id', $this->colegio->id)->orderBy('fecha_inicio', 'asc')->get() ?? null;
         $this->periodoSeleccionadoObj = PeriodoAcademico::periodoActual($this->colegio->id) ?? null;
         $this->periodoSeleccionado = PeriodoAcademico::periodoActual($this->colegio->id)->id ?? null;
-
-        if($this->periodoSeleccionado != null)
+        if($this->grado != null && $this->grupo != null)
         {
-            $this->actualizarNotas();
+            // cargar metodos
+            if($this->periodoSeleccionado != null)
+            {
+                $this->actualizarNotas();
+            }
+
+        }else{
+            $this->dispatch('alerta', [
+                'title' => 'estudiante sin colegio o matricula',
+                'text' => 'solicita tu matricula!',
+                'icon' => 'error',
+                'toast' => true,
+                'position' => 'top-end',
+            ]);
         }
+
     }
 
     public function updatedPeriodoSeleccionado()
@@ -63,7 +76,24 @@ class EstudianteNotas extends Component
 
     public function descargarNotas()
     {
-        return redirect()->route('estudiante.notas.pdf', ['periodo' => $this->periodoSeleccionado]);
+        if($this->grado != null && $this->grupo != null)
+        {
+            // cargar metodos
+            if($this->periodoSeleccionado != null)
+            {
+                return redirect()->route('estudiante.notas.pdf', ['periodo' => $this->periodoSeleccionado]);
+            }
+
+        }else{
+            $this->dispatch('alerta', [
+                'title' => 'estudiante sin colegio o matricula',
+                'text' => 'solicita tu matricula!',
+                'icon' => 'error',
+                'toast' => true,
+                'position' => 'top-end',
+            ]);
+        }
+
     }
     public function render()
     {

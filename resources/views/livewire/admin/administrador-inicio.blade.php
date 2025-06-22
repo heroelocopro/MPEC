@@ -70,4 +70,5 @@
             <livewire:admin.administrador-dashboard-graficos />
         </div>
     </div>
+
 </div>

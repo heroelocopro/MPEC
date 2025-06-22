@@ -34,7 +34,7 @@
         <div
             wire:click="$set('grupo_id', {{ $grupo->id }})"
             class="cursor-pointer p-4 border rounded-xl shadow-sm transition hover:shadow-md
-                {{ $grupo_id == $grupo->id ? 'border-blue-500 bg-blue-100 dark:bg-blue-800 dark:border-blue-400 text-blue-800 dark:text-white' : 'bg-white dark:bg-neutral-800 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white dark:hover:bg-blue-700' }}"
+                {{ $grupo_id == $grupo->id ? 'border-blue-500  bg-blue-100 dark:bg-blue-800 dark:border-blue-400 text-blue-800 dark:text-white' : 'bg-white hover:text-white dark:bg-neutral-800 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white dark:hover:bg-blue-700' }}"
         >
             <div class="text-lg font-semibold">{{ $grupo->nombre }}</div>
             <div class="text-sm text-gray-600 dark:text-gray-300">Grado: {{ $grupo->grado->nombre }}</div>

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('grupo_sanguineo')->nullable();
             $table->string('eps')->nullable();
             $table->string('sisben')->nullable();
-            $table->string('poblacion_vulnerable');
+            $table->string('poblacion_vulnerable')->nullable(true);
             $table->string('discapacidad')->nullable();
             $table->string('direccion');
             $table->string('telefono')->nullable();

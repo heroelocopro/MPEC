@@ -34,6 +34,7 @@ class matricula extends Model
     {
         return $this->belongsTo(Grado::class,'grado_id');
     }
+
     public function scopeActivas($query) {
         return $query->where('estado', 'activo');
     }

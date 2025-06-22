@@ -34,15 +34,15 @@
 </div>
 
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-    @forelse ($profesores as $profesor)
+    @forelse ($profesores as $p)
         <div
-            wire:click="$set('profesor_id', {{ $profesor->id }})"
+            wire:click="$set('profesor_id', {{ $p->id }})"
             class="cursor-pointer border rounded-lg p-4 text-center shadow transition
-                {{ $profesor_id == $profesor->id
+                {{ $profesor_id == $p->id
                     ? 'bg-blue-600 text-white border-blue-700'
-                    : 'bg-white dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-green-100 dark:hover:bg-blue-700 dark:hover:text-white' }}">
-            <div class="font-medium text-md">{{ $profesor->nombre_completo }}</div>
-            <div class="text-sm text-gray-700 dark:text-gray-300">Documento: {{ $profesor->documento }}</div>
+                    : 'bg-white dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-blue-300 dark:hover:bg-blue-700 dark:hover:text-white' }}">
+            <div class="font-medium text-md">{{ $p->nombre_completo }}</div>
+            <div class="text-sm text-gray-700 dark:text-gray-300 hover:text-white">Documento: {{ $p->documento }}</div>
         </div>
     @empty
         <div class="col-span-full text-center text-gray-500 dark:text-gray-400">No hay docentes disponibles</div>

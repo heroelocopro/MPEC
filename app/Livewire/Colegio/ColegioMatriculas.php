@@ -47,6 +47,7 @@ class ColegioMatriculas extends Component
     public $paginacion = 5;
     public $buscador = '';
     public $gradoFilter = null;
+    public $estadoFilter = null;
     public $grados = [];
 
     // Reglas de validación
@@ -166,10 +167,12 @@ class ColegioMatriculas extends Component
             'grado_idEdicion' => 'required|exists:grados,id',
             'tipo_matriculaEdicion' => ['required', Rule::in(['nueva', 'renovacion', 'traslado'])],
             'fecha_matriculaEdicion' => 'required|date',
+            'estadoEdicion' =>['required', Rule::in(['activo', 'inactivo'])],
         ], [
             'grado_idEdicion.required' => 'Debe seleccionar un grado',
             'tipo_matriculaEdicion.required' => 'Seleccione un tipo de matrícula',
             'fecha_matriculaEdicion.required' => 'La fecha de matrícula es obligatoria',
+            'estadoEdicion.required' => 'El estado es requerido',
         ]);
 
         try {
@@ -177,6 +180,7 @@ class ColegioMatriculas extends Component
                 'grado_id' => $this->grado_idEdicion,
                 'tipo_matricula' => $this->tipo_matriculaEdicion,
                 'fecha_matricula' => $this->fecha_matriculaEdicion,
+                'estado' => $this->estadoEdicion,
             ]);
 
             $this->dispatch('alerta', [
@@ -240,7 +244,7 @@ class ColegioMatriculas extends Component
         $this->sortField = 'id';
         $this->grados = Grado::where('colegio_id',$this->colegio_id)->get();
 
-        $this->sortDirection = 'asc';
+        $this->sortDirection = 'desc';
     }
     public function sortBy($field)
     {
@@ -275,6 +279,9 @@ class ColegioMatriculas extends Component
 
             if (!empty($this->gradoFilter)) {
                 $query->where('grado_id', 'like', '%' . $this->gradoFilter . '%');
+            }
+            if (!empty($this->estadoFilter)) {
+                $query->where('estado', 'like', '%' . $this->estadoFilter . '%');
             }
         })
         ->orderBy($this->sortField, $this->sortDirection)

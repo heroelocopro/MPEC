@@ -23,7 +23,7 @@ class ColegioGrupos extends Component
         ]);
         try {
             Grupo::create([
-                'nombre' => $this->nombre,
+                'nombre' =>  $this->nombre,
                 'grado_id' => $this->grado_id,
                 'colegio_id' => $this->colegio_id,
             ]);

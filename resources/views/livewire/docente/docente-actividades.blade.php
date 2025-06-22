@@ -133,69 +133,67 @@
 
                 {{-- Actividades agrupadas por grupo --}}
                 @if (isset($actividades) && count($actividades) > 0)
-                @foreach ($actividades->groupBy('grupo_id') as $grupoId => $actividadesDelGrupo)
-                    @if ($grupoFiltro == '' || $grupoFiltro == $grupoId)
-                        <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-                            <h3 class="text-2xl font-semibold text-blue-700 dark:text-blue-400 mb-4">
-                                Grupo: {{ $actividadesDelGrupo->first()->grupo->nombre }}
-                            </h3>
+                    @foreach ($actividades->groupBy('grupo_id') as $grupoId => $actividadesDelGrupo)
+                        @if ($grupoFiltro == '' || $grupoFiltro == $grupoId)
+                            <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                                <h3 class="text-2xl font-semibold text-blue-700 dark:text-blue-400 mb-4">
+                                    Grupo: {{ $actividadesDelGrupo->first()->grupo->nombre }}
+                                </h3>
 
-                            <div class="grid gap-6 md:grid-cols-2">
-                                @foreach ($actividadesDelGrupo as $actividad)
-                                    <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700 relative">
-                                        <h4 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">
-                                            {{ $actividad->titulo }}
-                                        </h4>
-                                        <p class="text-gray-600 dark:text-gray-300 text-sm mb-2">
-                                            {{ $actividad->descripcion }}
-                                        </p>
-                                        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                                            <span class="font-medium">Asignatura:</span> {{ $actividad->asignatura->nombre ?? '—' }}
-                                        </div>
-                                        <div class="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                                            <span class="font-medium">Entrega:</span> {{ \Carbon\Carbon::parse($actividad->fecha_entrega)->format('d/m/Y') }}
-                                        </div>
+                                <div class="grid gap-6 md:grid-cols-2">
+                                    @foreach ($actividadesDelGrupo as $actividad)
+                                        <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700 relative">
+                                            <h4 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">
+                                                {{ $actividad->titulo }}
+                                            </h4>
+                                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-2">
+                                                {{ $actividad->descripcion }}
+                                            </p>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                                                <span class="font-medium">Asignatura:</span> {{ $actividad->asignatura->nombre ?? '—' }}
+                                            </div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                                                <span class="font-medium">Entrega:</span> {{ \Carbon\Carbon::parse($actividad->fecha_entrega)->format('d/m/Y') }}
+                                            </div>
 
-                                        @if ($actividad->archivo)
-                                            <a href="{{ asset('storage/' . $actividad->archivo) }}" target="_blank"
-                                            class="text-blue-600 dark:text-blue-300 underline text-sm hover:opacity-80 transition">
-                                                Ver archivo adjunto
-                                            </a>
-                                        @endif
+                                            @if ($actividad->archivo)
+                                                <a href="{{ asset('storage/' . $actividad->archivo) }}" target="_blank"
+                                                class="text-blue-600 dark:text-blue-300 underline text-sm hover:opacity-80 transition">
+                                                    Ver archivo adjunto
+                                                </a>
+                                            @endif
 
-                                        {{-- Botones --}}
-                                        <div class="mt-4 flex justify-between items-center">
-                                            <!-- Botón izquierdo -->
-                                            {{-- <button wire:click="verRespuestas({{ $actividad->id }})"
-                                                    class="px-3 cursor-pointer py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
-                                                Ver respuestas
-                                            </button> --}}
-                                            <a class="px-3 cursor-pointer py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg" href="{{ route('docente-ver-actividad',$actividad->id) }}">
-                                                Ver respuestas
-                                            </a>
+                                            {{-- Botones --}}
+                                            <div class="mt-4 flex justify-between items-center">
+                                                <!-- Botón izquierdo -->
+                                                {{-- <button wire:click="verRespuestas({{ $actividad->id }})"
+                                                        class="px-3 cursor-pointer py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
+                                                    Ver respuestas
+                                                </button> --}}
+                                                <a class="px-3 cursor-pointer py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg" href="{{ route('docente-ver-actividad',$actividad->id) }}">
+                                                    Ver respuestas
+                                                </a>
 
-                                            <!-- Botones derechos -->
-                                            <div class="flex gap-3">
-                                                <button wire:click="editarActividad({{ $actividad->id }})"
-                                                        class="px-3 cursor-pointer py-1 text-sm bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg">
-                                                    Editar
-                                                </button>
-                                                <button wire:click="eliminarActividad({{ $actividad->id }})"
-                                                        class="px-3 cursor-pointer py-1 text-sm bg-red-600 hover:bg-red-700 text-white rounded-lg">
-                                                    Eliminar
-                                                </button>
+                                                <!-- Botones derechos -->
+                                                <div class="flex gap-3">
+                                                    <button wire:click="editarActividad({{ $actividad->id }})"
+                                                            class="px-3 cursor-pointer py-1 text-sm bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg">
+                                                        Editar
+                                                    </button>
+                                                    <button wire:click="eliminarActividad({{ $actividad->id }})"
+                                                            class="px-3 cursor-pointer py-1 text-sm bg-red-600 hover:bg-red-700 text-white rounded-lg">
+                                                        Eliminar
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                @endforeach
+                                    @endforeach
+                                </div>
                             </div>
-                        </div>
-                    @endif
-                @endforeach
+                        @endif
+                    @endforeach
                 @else
-                @if (empty($actividades))
                 <p class="text-center text-gray-600 dark:text-gray-300">No hay actividades registradas.</p>
-                @endif
                 @endif
 
             </div>

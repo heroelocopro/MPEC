@@ -13,7 +13,7 @@ use Livewire\Component;
 
 class ColegioInicio extends Component
 {
-    public $totalEstudiantes, $totalDocentes, $totalGrupos, $totalAsignaturas, $estudiantesPorGrupo, $totalClasesProgramadas;
+    public $totalEstudiantes, $totalDocentes, $totalGrupos, $totalAsignaturas, $totalClasesProgramadas;
 
     public function mount()
     {
@@ -29,12 +29,23 @@ class ColegioInicio extends Component
         $this->totalAsignaturas = asignatura::where('colegio_id', $colegioId)->count();
         $this->totalClasesProgramadas = Horario::where('colegio_id',$colegioId)->count();
 
-        $this->estudiantesPorGrupo = Grupo::where('colegio_id', $colegioId)
+        $grupos = Grupo::where('colegio_id', $colegioId)
             ->withCount('estudiantes')
-            ->pluck('estudiantes_count', 'nombre')
-            ->toArray();
+            ->get();
 
-        $this->dispatch('chartUpdate');
+        $nombresGrupos = $grupos->pluck('nombre');
+        $cantidadesEstudiantes = $grupos->pluck('estudiantes_count');
+        $grupos = Grupo::where('colegio_id', $colegioId)
+        ->withCount('estudiantes')
+        ->pluck( 'nombre');
+        $estudiantes = Grupo::where('colegio_id', $colegioId)
+        ->withCount('estudiantes')
+        ->pluck('estudiantes_count');
+        $ids = Grupo::where('colegio_id', $colegioId)
+        ->withCount('estudiantes')
+        ->pluck( 'id');
+        $this->dispatch('chartUpdate', $grupos,$estudiantes,$ids);
+
     }
 
     public function render()

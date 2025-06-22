@@ -47,10 +47,17 @@
 
     @php
         use Carbon\Carbon;
-        $fechaFin = Carbon::parse($periodo->fecha_fin);
-        $hoy = Carbon::now();
-        $diasRestantes = $hoy->diffInDays($fechaFin, false);
+        if (isset($periodo))
+        {
+
+            $fechaFin = Carbon::parse($periodo->fecha_fin);
+            $hoy = Carbon::now();
+            $diasRestantes = $hoy->diffInDays($fechaFin, false);
+        }
+
     @endphp
+@if (isset($periodo))
+
 
     @if ($diasRestantes >= 0 && $diasRestantes <= 3)
         <div class="bg-yellow-50 dark:bg-yellow-900 border-l-4 border-yellow-400 dark:border-yellow-600 p-4 mb-6 mx-6 rounded-r-lg">
@@ -68,14 +75,18 @@
             </div>
         </div>
     @endif
-
+    @endif
     {{-- Main content --}}
     <div class="flex flex-col md:flex-row gap-6 px-6 pb-6">
         <!-- Sidebar -->
         <div class="w-full md:w-64 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 h-fit md:sticky md:top-6">
             <div class="text-center mb-4">
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Periodo Actual</h2>
+                @if (isset($periodo))
                 <p class="text-red-500 dark:text-red-400 font-medium">{{ $periodo->periodoActual($colegio->id)->nombre }}</p>
+                @else
+                <p class="text-red-500 dark:text-red-400 font-medium">Vacaciones</p>
+                @endif
             </div>
 
             <h3 class="text-md font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center">

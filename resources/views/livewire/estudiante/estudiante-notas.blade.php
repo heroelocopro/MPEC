@@ -41,7 +41,7 @@
 
             {{-- boton descargar --}}
 
-            <div>
+            <div class=" {{ $periodoSeleccionado == null ? 'invisible disabled' : ''  }}">
                 <label class="invisible sm:invisible block mb-1 text-sm font-medium">&nbsp;</label>
 
                 <button wire:click="descargarNotas"
@@ -109,5 +109,20 @@
 
         </div>
     </div>
+
+    @push('js')
+    <script>
+        Livewire.on('alerta', (data) => {
+            data = data[0];
+            Swal.fire({
+                title: data['title'],
+                text: data['text'],
+                icon: data['icon'],
+                toast: data['toast'],
+                position: data['position'],
+            });
+        });
+    </script>
+    @endpush
 
 </div>

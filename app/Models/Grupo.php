@@ -28,4 +28,25 @@ class Grupo extends Model
         return $this->belongsToMany(Estudiante::class, 'estudiante_grupos', 'grupo_id', 'estudiante_id');
     }
 
+    // Grupo.php
+    public function promedioNotas()
+    {
+        return \App\Models\NotaFinal::where('grupo_id', $this->id)->where('ano',now()->format('Y'))->avg('nota');
+    }
+
+    public function estudiantesEspeciales()
+    {
+        $estudiantes =  $this->estudiantes()->get();
+        $estudiantesEspeciales = [];
+        foreach($estudiantes as $estudiante)
+        {
+            if($estudiante->discapacidad != 'Ninguna')
+            {
+                array_push($estudiantesEspeciales,$estudiante);
+            }
+        }
+        return $estudiantesEspeciales;
+    }
+
+
 }

@@ -44,7 +44,7 @@ class ColegioDocentes extends Component
     public $paginacion;
     public $buscador;
     public $sortField = 'id'; // Campo por defecto para ordenar
-    public $sortDirection = 'asc'; // Dirección por defecto
+    public $sortDirection = 'desc'; // Dirección por defecto
 
     // valores importantes modal creacion
     public $modalCreacion;
@@ -180,7 +180,7 @@ class ColegioDocentes extends Component
             $profesor = [
                 'colegio_id' => $this->colegio_id,
                 'sede_id' => $this->sede_id,
-                'nombre_completo' => $this->nombre_completo,
+                'nombre_completo' => ucwords(strtolower($this->nombre_completo)),
                 'documento' => $this->documento,
                 'tipo_documento' => $this->tipo_documento,
                 'correo' => $this->correo,
@@ -278,7 +278,7 @@ class ColegioDocentes extends Component
 
         $this->sortField = 'id';
 
-        $this->sortDirection = 'asc';
+        $this->sortDirection = 'desc';
 
         $this->modalCreacion = false;
 

@@ -47,9 +47,14 @@
                                shadow-sm focus:border-blue-500 focus:ring-blue-500
                                dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500">
                         <option value="">-- Selecciona una asignatura --</option>
+                        @if (isset($asignaturas) && count($asignaturas) > 0)
+
                         @foreach ($asignaturas as $a)
-                            <option value="{{ $a->id }}">{{ $a->nombre }}</option>
+                        <option value="{{ $a->id }}">{{ $a->nombre }}</option>
                         @endforeach
+                        @else
+                            <option value="">sin grupos</option>
+                        @endif
                     </select>
                 </div>
 

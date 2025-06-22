@@ -31,9 +31,13 @@
                 <select wire:model.live="asignatura_id" id="asignatura"
                     class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100">
                     <option value="">-- Elegir asignatura --</option>
+                    @if (isset($asignaturas) && count($asignaturas)>0)
                     @foreach($asignaturas as $asignatura)
-                        <option value="{{ $asignatura->id }}">{{ $asignatura->nombre }}</option>
+                    <option value="{{ $asignatura->id }}">{{ $asignatura->nombre }}</option>
                     @endforeach
+                    @else
+                    <option value="">Sin asignaturas</option>
+                    @endif
                 </select>
             </div>
 
@@ -43,12 +47,15 @@
                     Selecciona un grupo
                 </label>
                 <select wire:model.live="grupo_id" id="grupo"
-                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100"
-                    @if(!$grupos || count($grupos) == 0) disabled @endif>
+                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100">
                     <option value="">-- Elegir grupo --</option>
+                    @if (isset($grupos) && count($grupos) > 0 )
                     @foreach($grupos as $grupo)
-                        <option value="{{ $grupo->id }}">{{ $grupo->nombre }}</option>
+                    <option value="{{ $grupo->id }}">{{ $grupo->nombre }}</option>
                     @endforeach
+                    @else
+                    <option value="">Sin Grupos</option>
+                    @endif
                 </select>
             </div>
         </div>

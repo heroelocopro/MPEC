@@ -8,7 +8,7 @@
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
             <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
-                <img src="{{ asset('images/logo.png') }}" alt="">
+                <img src="{{ asset('images/plateform educative.png') }}" alt="">
             </a>
 
 
@@ -16,19 +16,19 @@
                 {{-- Administrador --}}
                 @if (Auth::user()->role_id == 1)
                 <flux:navlist.group :heading="__('Administrador')" class="grid">
-                    <flux:navlist.item icon="chart-bar" :href="route('administrador-principal')" :current="request()->routeIs('administrador-principal')" wire:navigate>{{ __('Panel Principal') }}</flux:navlist.item>
+                    <flux:navlist.item  icon="chart-bar" :href="route('administrador-principal')" :current="request()->routeIs('administrador-principal')" >{{ __('Panel Principal') }}</flux:navlist.item>
                     <flux:navlist.item icon="user-group" :href="route('administrador-usuarios')" :current="request()->routeIs('administrador-usuarios')" wire:navigate>{{ __('Usuarios') }}</flux:navlist.item>
                     <flux:navlist.item icon="building-library" :href="route('administrador-colegios')" :current="request()->routeIs('administrador-colegios')" wire:navigate>{{ __('Colegios') }}</flux:navlist.item>
-                    <flux:navlist.item icon="briefcase" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Docentes') }}</flux:navlist.item>
+                    {{-- <flux:navlist.item icon="briefcase" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Docentes') }}</flux:navlist.item>
                     <flux:navlist.item icon="user-group" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Estudiantes') }}</flux:navlist.item>
-                    <flux:navlist.item icon="users" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Acudientes') }}</flux:navlist.item>
+                    <flux:navlist.item icon="users" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Acudientes') }}</flux:navlist.item> --}}
                 </flux:navlist.group>
                 @endif
                 {{-- Colegio --}}
                 @if (Auth::user()->role_id == 2)
                     {{-- Panel Principal --}}
                     <flux:navlist.group :heading="__('Panel Principal')" class="grid">
-                        <flux:navlist.item icon="home" :href="route('colegio-inicio')" :current="request()->routeIs('colegio-inicio')" wire:navigate>{{ __('Inicio') }}</flux:navlist.item>
+                        <flux:navlist.item icon="home" :href="route('colegio-inicio')" :current="request()->routeIs('colegio-inicio')" >{{ __('Inicio') }}</flux:navlist.item>
                     </flux:navlist.group>
 
                     {{-- Gestión Académica --}}
@@ -225,8 +225,7 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
         {{-- scripts de otros lados --}}
         @stack('js')
     </body>

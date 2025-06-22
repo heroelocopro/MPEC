@@ -1,63 +1,94 @@
 <div>
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
-        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Estudiantes por Colegio</h2>
-        <div class="relative h-[250px] w-full max-w-[500px] mx-auto">
-            <canvas id="graficoColegios"></canvas>
-        </div>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const ctx = document.getElementById('graficoColegios').getContext('2d');
-                const isDarkMode = document.documentElement.classList.contains('dark');
+    <div wire:ignore>
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
+          Estudiantes por Colegio
+        </h2>
+        <div id="graficoColegios" class="h-[300px] w-full"></div>
+      </div>
+    </div>
 
-                const backgroundColor = isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(59, 130, 246, 0.5)';
-                const borderColor = isDarkMode ? 'rgba(255, 255, 255, 1)' : 'rgba(59, 130, 246, 1)';
-                const textColor = isDarkMode ? '#E5E7EB' : '#1F2937';
 
-                const data = {
-                    labels: @json(array_column($colegiosData, 'nombre')),
-                    datasets: [{
-                        label: 'Cantidad de Estudiantes',
-                        data: @json(array_column($colegiosData, 'estudiantes')),
-                        backgroundColor: backgroundColor,
-                        borderColor: borderColor,
-                        borderWidth: 1,
-                        borderRadius: 6
-                    }]
-                };
+    @push('js')
+    <script>
+        let chartColegios = null;
+        function initGraficoColegios(nombres, cantidades, ids) {
+            const chartEl = document.querySelector("#graficoColegios");
+            if (!chartEl) return;
+            // Verificar datos válidos
+            console.log(cantidades);
+            if (cantidades.length === 0) {
+                console.warn("No hay datos para mostrar en el gráfico.");
+                return;
+            }
 
-                new Chart(ctx, {
+            const isDark = document.documentElement.classList.contains('dark');
+
+            const options = {
+                chart: {
                     type: 'bar',
-                    data: data,
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    color: textColor
-                                },
-                                grid: {
-                                    color: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'
-                                }
-                            },
-                            x: {
-                                ticks: {
-                                    color: textColor
-                                },
-                                grid: {
-                                    color: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'
-                                }
+                    height: 300,
+                    toolbar: { show: false },
+                    foreColor: isDark ? '#f3f4f6' : '#1f2937',
+                    events: {
+                        dataPointSelection(event, chartContext, config) {
+                            const idx = config.dataPointIndex;
+                            const colegioId = ids[idx];
+                            if (colegioId) {
+                                window.location.href = `/administrador/colegio/${colegioId}`;
                             }
                         }
                     }
-                });
-            });
-        </script>
-    </div>
+                },
+                series: [{ name: 'Estudiantes', data: cantidades }],
+                xaxis: {
+                    categories: nombres,
+                    labels: {
+                        rotate: -45,
+                        style: {
+                            colors: isDark ? '#f3f4f6' : '#1f2937'
+                        }
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        distributed: true,
+                        columnWidth: '25%',
+                        borderRadius: 4
+                    }
+                },
+                colors: nombres.map((_, i) =>
+                    isDark
+                        ? `hsl(${(i * 40) % 360}, 70%, 50%)`
+                        : `hsl(${(i * 40) % 360}, 60%, 60%)`
+                ),
+                dataLabels: { enabled: false },
+                theme: { mode: isDark ? 'dark' : 'light' }
+            };
 
-</div>
+            // Destruir gráfico anterior si existe
+            if (chartColegios) {
+                chartColegios.destroy();
+            }
+
+            chartColegios = new ApexCharts(chartEl, options);
+            chartColegios.render();
+        }
+
+        // Escuchar evento de Livewire
+        Livewire.on('initGraficoColegios', (datos) => {
+            if(datos.length === 3)
+        {
+            const n = datos[0];
+            const c = datos[1];
+            const i = datos[2];
+            requestAnimationFrame(() => {
+                initGraficoColegios(n, c, i);
+            });
+        }
+        });
+    </script>
+    @endpush
+
+  </div>

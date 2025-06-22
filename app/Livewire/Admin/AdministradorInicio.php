@@ -17,6 +17,7 @@ class AdministradorInicio extends Component
         $this->totalColegios = count(Colegio::all());
         $this->totalEstudiantes = count(Estudiante::all());
         $this->totalProfesores = count(Profesor::all());
+
     }
     public function render()
     {

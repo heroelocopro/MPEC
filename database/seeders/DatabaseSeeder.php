@@ -77,6 +77,7 @@ class DatabaseSeeder extends Seeder
             Colegio::create($data);
         }
 
+
         // crear Sedes de colegios
         $sedesColegios = [
             ['nombre' => 'SEDE EL DIAMANTE', 'codigo_dane' => '125307001192', 'direccion' => 'IND MZ 22 Y 23', 'telefono' => '8357954', 'correo' => '','departamento' => 'cundinamarca','municipio' => 'girardot','estado' => 'ANTIGUO-ACTIVO','calendario' => 'A','colegio_id' => 3],

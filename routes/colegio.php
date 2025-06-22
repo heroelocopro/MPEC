@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ColegioController;
 use App\Livewire\Colegio\ColegioAsistencias;
+use App\Livewire\Colegio\ColegioGrupo;
 use App\Livewire\Colegio\ColegioInicio;
 use App\Livewire\Colegio\ColegioNotas;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,8 @@ Route::middleware(['auth', 'role:colegio'])->prefix('colegio')->group(function (
     Route::get('/grados',[ColegioController::class,'mostrarGrados'])->name('colegio-grados');
 
     Route::get('/grupos',[ColegioController::class,'mostrarGrupos'])->name('colegio-grupos');
+
+    Route::get('/grupo/{id}',ColegioGrupo::class)->name('colegio-grupo');
 
     Route::get('/matriculas',[ColegioController::class,'mostrarMatriculas'])->name('colegio-matriculas');
 

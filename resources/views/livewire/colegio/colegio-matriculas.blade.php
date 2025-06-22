@@ -35,6 +35,16 @@
                     @endforeach
                 </select>
 
+                {{-- matricula --}}
+                <select wire:model.live="estadoFilter"
+                        class="w-[10%] h-12 px-3 rounded-lg border border-gray-300 bg-white text-gray-700
+                            dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300
+                            focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Estado</option>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                </select>
+
                 <!-- Input (80%) - Versión corregida -->
                 <input wire:model.live.debounce.250ms="buscador"
                     type="text"
@@ -114,7 +124,7 @@
                         <td class="py-3 px-6">{{ $matricula->grado->nombre }}</td>
                         <td class="py-3 px-6 capitalize">{{ $matricula->tipo_matricula }}</td>
                         <td class="py-3 px-6">
-                            @if($matricula->estado)
+                            @if($matricula->estado == 'activo')
                                 <span class="bg-green-100 text-green-700 dark:bg-green-700 dark:text-green-100 px-2 py-1 rounded-full text-xs">Activo</span>
                             @else
                                 <span class="bg-red-100 text-red-700 dark:bg-red-700 dark:text-red-100 px-2 py-1 rounded-full text-xs">Inactivo</span>
@@ -229,7 +239,7 @@
     </flux:modal>
 
 {{-- Modal de edición de matrículas --}}
-<flux:modal name="editar-matricula" wire:model="modalEdicion" class="md:w-96 lg:w-10/12 lg:h-8/12">
+<flux:modal name="editar-matricula" wire:model="modalEdicion" class="md:w-96 lg:w-10/12 lg:h-10/12">
     <div class="space-y-6">
         {{-- Título --}}
         <div>
@@ -288,6 +298,18 @@
                     <option value="traslado">Traslado</option>
                 </select>
                 @error('tipo_matriculaEdicion') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+            </div>
+
+            {{-- Estado --}}
+            <div>
+                <label for="estadoEdicion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Estado*</label>
+                <select id="estadoEdicion" wire:model.defer="estadoEdicion"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <option value="">Selecciona un estado</option>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                </select>
+                @error('estadoEdicion') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
 
             {{-- Fecha --}}

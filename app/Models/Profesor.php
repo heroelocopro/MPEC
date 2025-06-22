@@ -8,13 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class Profesor extends Model
 {
     use HasFactory;
-     protected static function booted()
+
+    protected static function booted()
     {
         static::created(function ($profesor) {
             $emailBase = self::generarEmail($profesor->nombre_completo);
             $emailFinal = self::asegurarEmailUnico($emailBase);
 
-            $user =  User::create(['name' => $profesor->nombre_completo,'email' => $emailFinal."@agora.com",'password' => bcrypt('123456789'),'role_id' => 3]);
+            $user = User::create([
+                'name' => $profesor->nombre_completo,
+                'email' => $emailFinal . '@' . self::getDominio(),
+                'password' => bcrypt('123456789'),
+                'role_id' => 3
+            ]);
+
             $profesor->user_id = $user->id;
             $profesor->save();
         });
@@ -32,9 +39,7 @@ class Profesor extends Model
             }
         }
 
-        $iniciales = self::limpiarTexto($iniciales);
-
-        return strtolower($iniciales);
+        return self::limpiarTexto($iniciales);
     }
 
     // Función para limpiar texto (quitar tildes, ñ, caracteres raros)
@@ -46,24 +51,42 @@ class Profesor extends Model
             $texto
         );
 
-        // Eliminar todo lo que no sea letra o número
-        $texto = preg_replace('/[^A-Za-z0-9]/', '', $texto);
-
-        return strtolower($texto);
+        return strtolower(preg_replace('/[^A-Za-z0-9]/', '', $texto));
     }
 
     // Función para asegurar que el email sea único
     protected static function asegurarEmailUnico($emailBase)
     {
-        $email = $emailBase . rand(100, 999); // Inicialmente agregamos random
+        $email = $emailBase . rand(100, 999);
         $contador = 1;
 
-        while (User::where('email', $email . '@agora.com')->exists()) {
+        while (User::where('email', $email . '@' . self::getDominio())->exists()) {
             $email = $emailBase . rand(100, 999 + $contador);
             $contador++;
         }
 
         return $email;
+    }
+
+    // Función que construye el dominio basado en APP_NAME
+    protected static function getDominio()
+    {
+        $appName = env('APP_NAME', 'plataforma');
+
+        // Eliminar espacios al inicio y final
+        $appName = trim($appName);
+
+        // Reemplazar espacios internos con guiones
+        $dominio = str_replace(' ', '-', $appName);
+
+        // Quitar caracteres especiales y convertir a minúsculas
+        $dominio = strtolower(preg_replace('/[^a-zA-Z0-9\-]/', '', $dominio));
+
+        // Asegurarse de que no queden guiones múltiples o al inicio/final
+        $dominio = preg_replace('/\-+/', '-', $dominio);
+        $dominio = trim($dominio, '-');
+
+        return $dominio . '.com';
     }
 
     protected $table = 'profesores';

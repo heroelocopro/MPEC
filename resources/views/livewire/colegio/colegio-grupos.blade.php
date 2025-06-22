@@ -60,6 +60,18 @@
 
                                         <!-- Botones ocultos -->
                                         <div class="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition flex space-x-1">
+                                            <!-- Ver -->
+                                            <a href="{{ route('colegio-grupo', $grupo->id) }}"
+                                                class="bg-white text-sky-600 p-1 rounded-full hover:bg-sky-100 dark:bg-gray-200 dark:hover:bg-gray-300"
+                                                title="Ver">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                                    stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                            </a>
                                             <!-- Editar -->
                                             <button wire:click="editarGrupo({{ $grupo->id }})"
                                                 class="bg-white text-sky-600 p-1 rounded-full hover:bg-sky-100 dark:bg-gray-200 dark:hover:bg-gray-300" title="Editar">

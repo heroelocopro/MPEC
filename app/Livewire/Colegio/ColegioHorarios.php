@@ -40,6 +40,28 @@ class ColegioHorarios extends Component
             $this->asignaturas = asignaturaProfesor::where('profesor_id',$value)->get();
         }
     }
+    public function eliminarHorario($id)
+    {
+        try {
+            Horario::findOrFail($id)->delete();
+            $this->dispatch('alerta', [
+                'title' => 'Horario Eliminado',
+                'text' => 'El horario fue eliminado correctamente',
+                'icon' => 'success',
+                'toast' => true,
+                'position' => 'top-end',
+            ]);
+            $this->updatedGrupoId($this->grupo_id);
+        } catch (\Throwable $th) {
+            $this->dispatch('alerta', [
+                'title' => 'Error',
+                'text' => 'El horario no se pudo eliminar',
+                'icon' => 'error',
+                'toast' => true,
+                'position' => 'top-end',
+            ]);
+        }
+    }
     public function crearHorario()
     {
         $this->validate($this->rules);
@@ -79,7 +101,13 @@ class ColegioHorarios extends Component
             ]);
             $this->limpiar();
         } catch (\Throwable $th) {
-            //throw $th;
+            $this->dispatch('alerta', [
+                'title' => 'Horario Creado',
+                'text' => $th->getMessage(),
+                'icon' => 'success',
+                'toast' => true,
+                'position' => 'top-end',
+            ]);
         }
     }
     public function limpiar()
@@ -93,6 +121,10 @@ class ColegioHorarios extends Component
         if($valor != null || $valor != ''){
             $this->horarios = Horario::where('grupo_id',$valor)->get();
         }
+    }
+    public function mount()
+    {
+        $this->grupo_id = null;
     }
     public function render()
     {

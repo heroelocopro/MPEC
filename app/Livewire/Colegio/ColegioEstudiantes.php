@@ -4,13 +4,18 @@ namespace App\Livewire\Colegio;
 
 use App\Models\Colegio;
 use App\Models\Estudiante;
+use App\Models\Grado;
+use App\Models\matricula;
 use App\Models\sedes_colegio;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Spatie\SimpleExcel\SimpleExcelReader;
 
 class ColegioEstudiantes extends Component
 {
+    use WithFileUploads;
     // valores importantes para la eliminacion
     protected $listeners = [
         'EliminarEstudiante' => 'EliminarEstudiante'
@@ -37,6 +42,223 @@ class ColegioEstudiantes extends Component
             ]);
         }
     }
+    // importacion
+    public $modalImportacion = false;
+    public $archivoExcel;
+    public $previewData = [];
+
+    // public function importarEstudiantes()
+    // {
+    //     $this->validate([
+    //         'archivoExcel' => 'required|file|mimes:xlsx,xls,csv',
+    //     ]);
+    //     // Guardar el archivo temporalmente
+    //     $path = $this->archivoExcel->getRealPath();
+
+    //     // Leer el archivo
+    //     $reader = SimpleExcelReader::create($path);
+
+    //     // Obtener la primera fila (encabezados)
+    //     $headers = $reader->getHeaders();
+
+    //     // Obtener las primeras 10 filas de datos (ajusta según necesites)
+    //     $rows = $reader->getRows()
+    //     ->take(10)
+    //     ->toArray();
+
+    //     // Cerrar el lector
+    //     $reader->close();
+
+    //     // recorremos todos los rows y creamos tanto la matricula y el estudiante
+
+    //     foreach($rows as $row) {
+    //         // Primero normalizamos las claves (eliminamos ":" y espacios)
+    //         $normalized = array_map(function($key, $value) {
+    //             $cleanKey = strtolower(str_replace([':', ' '], ['', '_'], trim($key)));
+    //             return [$cleanKey => $value];
+    //         }, array_keys($row), $row);
+
+    //         $normalized = array_merge(...$normalized);
+
+    //         // Ahora puedes acceder con claves consistentes
+    //         // echo $normalized['estado_alumno']; // "NO MATRICULADO"
+
+    //         // ahora empezamos a crear
+
+    //         $estudiante = Estudiante::create([
+    //             'colegio_id' => $this->colegio_id,
+    //             'sede_id' => $normalized['sede'] == 'NO' || $normalized['sede'] == 'no' ? null:$normalized['sede'] ,
+    //             'nombre_completo' => $normalized['primer_nombre']." ".$normalized['segundo_nombre']." ".$normalized['primer_nombre']." ".$normalized['segundo_apellido'],
+    //             'documento' => $normalized['numero'],
+    //             'tipo_documento' => $normalized['tipo_id'],
+    //             'fecha_nacimiento' => $normalized['fecha_de_nacimiento'],
+    //             'genero' => $normalized['genero'],
+    //             'grupo_sanguineo' => $normalized['grupo_sanguineo'],
+    //             'eps' => $normalized['eps'] == "NO" || $normalized['eps'] == "no" ?  null : $normalized['eps'] ,
+    //             'sisben' => $normalized['sisben'] == "NO" || $normalized['sisben'] == "no" ? null : $normalized['sisben'],
+    //             'poblacion_vulnerable' => $normalized['poblacion_vulnerable'] == "NO" || $normalized['poblacion_vulnerable'] == "no" ? null : $normalized['poblacion_vulnerable'] ,
+    //             'discapacidad' => $normalized['listado_de_categoria_discapacidad'] == "NO APLICA" ? null : $normalized['listado_de_categoria_discapacidad'],
+    //             'direccion' => $normalized['direccion_de_residencia'],
+    //             'telefono' => $normalized['telefono'],
+    //             'correo' => $normalized['correo'],
+    //         ]);
+
+    //         $grado = Grado::where('colegio_id',$this->colegio_id)->where('nombre','like','%'. $normalized['grado'] .'%');
+
+    //         $matricula = matricula::create([
+    //             'estudiante_id' => $estudiante->id,
+    //             'colegio_id' => $estudiante->colegio_id,
+    //             'sede_id' => $estudiante->sede_id,
+    //             'grado_id' => $grado->id,
+    //             'tipo_matricula' => $normalized['tipo_matricula'],
+    //             'estado' => 'activo',
+    //             'fecha_matricula' => now(),
+    //         ]);
+
+    //     }
+    //     $this->dispatch('alerta', [
+    //         'title' => 'Importacion exitosa',
+    //         'text' => '¡Se importo correctamente correctamente!',
+    //         'icon' => 'success',
+    //         'toast' => true,
+    //         'position' => 'top-end',
+    //         ]);
+
+    // }
+    public function importarEstudiantes()
+{
+    $this->validate([
+        'archivoExcel' => 'required|file|mimes:xlsx,xls,csv',
+    ]);
+
+    $path = $this->archivoExcel->getRealPath();
+    $reader = SimpleExcelReader::create($path);
+    $rows = $reader->getRows()->take(10)->toArray();
+    $reader->close();
+
+    $importados = 0;
+    $errores = [];
+
+    foreach($rows as $index => $row) {
+        try {
+            $normalized = $this->normalizarDatos($row);
+
+            // Validación básica
+            if (empty($normalized['numero'])) {
+                throw new \Exception("Falta número de documento");
+            }
+
+            $estudiante = Estudiante::create([
+                'colegio_id' => $this->colegio_id,
+                'sede_id' => $this->normalizarSede($normalized['sede']),
+                'nombre_completo' => $this->generarNombreCompleto($normalized),
+                'documento' => $normalized['numero'],
+                'tipo_documento' => $normalized['tipo_id'],
+                'fecha_nacimiento' => $this->formatearFecha($normalized['fecha_de_nacimiento']),
+                'genero' => $normalized['genero'],
+                'grupo_sanguineo' => $normalized['grupo_sanguineo'] ?? null,
+                'eps' => $this->normalizarCampo($normalized['eps']),
+                'sisben' => $this->normalizarCampo($normalized['sisben']),
+                'poblacion_vulnerable' => $this->normalizarCampo($normalized['poblacion_vulnerable']),
+                'discapacidad' => $this->normalizarDiscapacidad($normalized['listado_de_categoria_discapacidad']),
+                'direccion' => $normalized['direccion_de_residencia'] ?? null,
+                'telefono' => $normalized['telefono'] ?? null,
+                'correo' => $normalized['correo'] ?? null,
+            ]);
+
+            $grado = Grado::where('colegio_id', $this->colegio_id)
+                         ->where('nombre', 'like', '%'.$normalized['grado'].'%')
+                         ->first();
+
+            if (!$grado) {
+                throw new \Exception("No se encontró el grado: {$normalized['grado']}");
+            }
+
+            Matricula::create([
+                'estudiante_id' => $estudiante->id,
+                'colegio_id' => $estudiante->colegio_id,
+                'sede_id' => $estudiante->sede_id,
+                'grado_id' => $grado->id,
+                'tipo_matricula' => $normalized['tipo_matricula'] ?? 'ordinaria',
+                'estado' => 'activo',
+                'fecha_matricula' => now(),
+            ]);
+
+            $importados++;
+        } catch (\Exception $e) {
+            $errores[] = "Fila " . ($index + 1) . ": " . $e->getMessage();
+            continue;
+        }
+    }
+
+    $mensaje = "Se importaron {$importados} estudiantes correctamente";
+    if (!empty($errores)) {
+        $mensaje .= ". Errores: " . implode(', ', $errores);
+    }
+
+    $this->dispatch('alerta', [
+        'title' => $importados > 0 ? 'Importación exitosa' : 'Importación con errores',
+        'text' => $mensaje,
+        'icon' => $importados > 0 ? 'success' : 'warning',
+        'toast' => true,
+        'position' => 'top-end',
+    ]);
+}
+
+// Métodos auxiliares
+private function normalizarDatos(array $row): array
+{
+    $normalized = [];
+    foreach ($row as $key => $value) {
+        $cleanKey = strtolower(str_replace([':', ' '], ['', '_'], trim($key)));
+        $normalized[$cleanKey] = $value;
+    }
+    return $normalized;
+}
+
+private function formatearFecha($fecha): ?string
+{
+    if ($fecha instanceof \DateTimeInterface) {
+        return $fecha->format('Y-m-d');
+    }
+
+    if (is_string($fecha) && !empty($fecha)) {
+        try {
+            return \Carbon\Carbon::parse($fecha)->format('Y-m-d');
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    return null;
+}
+
+private function normalizarSede($valor)
+{
+    return (is_null($valor) || strtoupper($valor) === 'NO') ? null : $valor;
+}
+
+private function normalizarCampo($valor)
+{
+    return (is_null($valor) || strtoupper($valor) === 'NO') ? null : $valor;
+}
+
+private function normalizarDiscapacidad($valor)
+{
+    return (is_null($valor) || strtoupper($valor) === 'NO APLICA') ? null : $valor;
+}
+
+private function generarNombreCompleto(array $data): string
+{
+    $partes = [
+        $data['primer_nombre'] ?? '',
+        $data['segundo_nombre'] ?? '',
+        $data['primer_apellido'] ?? '',
+        $data['segundo_apellido'] ?? ''
+    ];
+
+    return trim(implode(' ', array_filter($partes)));
+}
     // valores importantes para la edicion
     public $estudianteEdicion;
     public $sede_idEdicion;
@@ -141,7 +363,7 @@ class ColegioEstudiantes extends Component
                     'epsEdicion' => 'nullable|string|in:COOMEVA,CAFESALUD,COMPENSAR,SALUDTOTAL,SANCOR,EPS SANITAS,EPS SURAMERICANA,EMSSANAR,EPS SALUD PUBLICA,CRUZ BLANCA',
                     'sisbenEdicion' => 'nullable|string|in:A1,A2,A3,A4,A5,B1,B2,B3,B4,B5,B6,B7,C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,C11,C12,C13,C14,C15,C16,C17,C18,D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21',
                     'poblacion_vulnerableEdicion' => 'nullable|string|in:Pobreza Extrema,Pobreza Moderada,Desplazados por la Violencia,Niños, Niñas y Adolescentes,Personas con Discapacidad,Comunidades Indígenas,Afrocolombianos,Víctimas del Conflicto Armado,Personas LGTBI,Víctimas de Desastres Naturales,Mujeres Víctimas de Violencia de Género,Adultos Mayores,Otros,No reporta población vulnerable',
-                    'discapacidadEdicion' => 'nullable|string|in:Visual,Auditiva,Física / Motora,Intelectual,Psicosocial,Múltiple,Sin Discapacidad',
+                    'discapacidadEdicion' => 'nullable|string|in:Visual,Auditiva,Física / Motora,Intelectual,Psicosocial,Múltiple,Sin Discapacidad,Ninguna',
 
                 ];
                 break;
@@ -221,7 +443,7 @@ class ColegioEstudiantes extends Component
             $datos = [
                 'colegio_id' => $this->colegio_id,
                 'sede_id' => $this->sede_id,
-                'nombre_completo' => $this->nombre_completo,
+                'nombre_completo' => ucwords(strtolower($this->nombre_completo)),
                 'documento' => $this->documento,
                 'tipo_documento' => $this->tipo_documento,
                 'fecha_nacimiento' => $this->fecha_nacimiento,
@@ -280,7 +502,7 @@ class ColegioEstudiantes extends Component
                 $rules = [
                     'nombre_completo' => 'required|string|max:255',
                     'tipo_documento' => 'required|string|in:RC,TI,CC,TE,CE,NIT,PP,PEP,DIE',
-                    'documento' => 'required|string|max:255|unique:estudiantes,documento',
+                    'documento' => 'required|integer|unique:estudiantes,documento',
                     'fecha_nacimiento' => 'required|date',
                     'genero' => 'nullable|string|in:masculino,femenino,otro,prefiero_no_decir',
                 ];
@@ -300,7 +522,7 @@ class ColegioEstudiantes extends Component
                     'eps' => 'nullable|string|in:COOMEVA,CAFESALUD,COMPENSAR,SALUDTOTAL,SANCOR,EPS SANITAS,EPS SURAMERICANA,EMSSANAR,EPS SALUD PUBLICA,CRUZ BLANCA',
                     'sisben' => 'nullable|string|in:A1,A2,A3,A4,A5,B1,B2,B3,B4,B5,B6,B7,C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,C11,C12,C13,C14,C15,C16,C17,C18,D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21',
                     'poblacion_vulnerable' => 'nullable|string|in:Pobreza Extrema,Pobreza Moderada,Desplazados por la Violencia,Niños, Niñas y Adolescentes,Personas con Discapacidad,Comunidades Indígenas,Afrocolombianos,Víctimas del Conflicto Armado,Personas LGTBI,Víctimas de Desastres Naturales,Mujeres Víctimas de Violencia de Género,Adultos Mayores,Otros,No reporta población vulnerable',
-                    'discapacidad' => 'nullable|string|in:Visual,Auditiva,Física / Motora,Intelectual,Psicosocial,Múltiple,Sin Discapacidad',
+                    'discapacidad' => 'nullable|string|in:Visual,Auditiva,Física / Motora,Intelectual,Psicosocial,Múltiple,Sin Discapacidad,Ninguna',
 
                 ];
                 break;
@@ -341,7 +563,7 @@ class ColegioEstudiantes extends Component
         $this->paginacion = 5;
         $this->buscador = '';
         $this->sortField = 'id';
-        $this->sortDirection = 'asc';
+        $this->sortDirection = 'desc';
         $colegio = Colegio::where('user_id', Auth::id())->first();
 
         if ($colegio) {

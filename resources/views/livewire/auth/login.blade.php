@@ -46,11 +46,11 @@ new #[Layout('components.layouts.auth')] class extends Component {
         switch ($usuario->role_id) {
             case 1:
                 // Por defecto: redirige al dashboard general
-                $this->redirectRoute('administrador-principal', navigate: true);
+                $this->redirectRoute('administrador-principal');
                 break;
             case 2:
                 // Por defecto: redirige al dashboard general
-                $this->redirectRoute('colegio-inicio', navigate: true);
+                $this->redirectRoute('colegio-inicio');
                 break;
             case 3:
                 // Por defecto: redirige al dashboard general
