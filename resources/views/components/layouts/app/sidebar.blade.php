@@ -8,10 +8,8 @@
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
             <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
-                <img src="{{ asset('images/plateform educative.png') }}" alt="">
+                <img class="img-fluid" src="{{ asset('images/GuruEducativa2.png') }}" alt="">
             </a>
-
-
             <flux:navlist variant="outline">
                 {{-- Administrador --}}
                 @if (Auth::user()->role_id == 1)
@@ -40,6 +38,7 @@
                         <flux:navlist.item icon="document-text" :href="route('colegio-asignaturas')" :current="request()->routeIs('colegio-asignaturas')" wire:navigate>{{ __('Asignaturas') }}</flux:navlist.item>
                         <flux:navlist.item icon="book-open" :href="route('colegio-matriculas')" :current="request()->routeIs('colegio-matriculas')" wire:navigate>{{ __('Matrículas') }}</flux:navlist.item>
                         <flux:navlist.item icon="book-open" :href="route('colegio-grupos')" :current="request()->routeIs('colegio-grupos')" wire:navigate>{{ __('Grupos') }}</flux:navlist.item>
+                        <flux:navlist.item icon="chat-bubble-left-right" :href="route('foro')" :current="request()->routeIs('foro')" wire:navigate>{{ __('Foro') }}</flux:navlist.item>
                     </flux:navlist.group>
 
                     {{-- Asignaciones y Distribuciones --}}
@@ -54,6 +53,7 @@
                         <flux:navlist.item icon="bell" :href="route('colegio-anuncios')" :current="request()->routeIs('colegio-anuncios')" wire:navigate>{{ __('Anuncios') }}</flux:navlist.item>
                         <flux:navlist.item icon="calendar-days" :href="route('colegio-horarios')" :current="request()->routeIs('colegio-horarios')" wire:navigate>{{ __('Horarios') }}</flux:navlist.item>
                         <flux:navlist.item icon="calendar-date-range" :href="route('colegio-periodos')" :current="request()->routeIs('colegio-periodos')" wire:navigate>{{ __('Periodos') }}</flux:navlist.item>
+                        <flux:navlist.item icon="academic-cap" :href="route('colegio-historial-academico')" :current="request()->routeIs('colegio-historial-academico')" wire:navigate>{{ __('Historial Academico') }}</flux:navlist.item>
                     </flux:navlist.group>
                 @endif
 
@@ -69,6 +69,7 @@
                     <flux:navlist.item icon="calendar-days" :href="route('docente-asistencias')" :current="request()->routeIs('docente-asistencias')" wire:navigate>{{ __('Asistencias') }}</flux:navlist.item>
                     <flux:navlist.item icon="folder" :href="route('docente-actividades')" :current="request()->routeIs('docente-actividades')" wire:navigate>{{ __('Actividades') }}</flux:navlist.item>
                     <flux:navlist.item icon="folder" :href="route('docente-evaluaciones')" :current="request()->routeIs('docente-evaluaciones')" wire:navigate>{{ __('Evaluaciones') }}</flux:navlist.item>
+                    <flux:navlist.item icon="chat-bubble-left-right" :href="route('foro')" :current="request()->routeIs('foro')" wire:navigate>{{ __('Foro') }}</flux:navlist.item>
                 </flux:navlist.group>
                 {{-- informativo --}}
                 <flux:navlist.group :heading="__('Informativo')" class="grid">
@@ -87,7 +88,7 @@
                 <flux:navlist.group :heading="__('Estudiantil')" class="grid">
                     <flux:navlist.item icon="folder" :href="route('estudiante-actividades')" :current="request()->routeIs('estudiante-actividades')" wire:navigate>{{ __('Mis Actividades') }}</flux:navlist.item>
                     <flux:navlist.item icon="envelope" :href="route('estudiante-examenes')" :current="request()->routeIs('estudiante-examenes')" wire:navigate>{{ __('Examenes') }}</flux:navlist.item>
-                    <flux:navlist.item icon="chat-bubble-bottom-center-text" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Foros') }}</flux:navlist.item>
+                    <flux:navlist.item icon="chat-bubble-left-right" :href="route('foro')" :current="request()->routeIs('foro')" wire:navigate>{{ __('Foro') }}</flux:navlist.item>
                 </flux:navlist.group>
                 {{-- Informacitivo del estudiante --}}
                 <flux:navlist.group :heading="__('Informativo')" class="grid">

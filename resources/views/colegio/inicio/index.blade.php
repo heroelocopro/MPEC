@@ -73,7 +73,7 @@
                 <div class="grid grid-cols-2 gap-3 text-sm">
                     @php
                         $accessos = [
-                            ['label' => 'Docentes', 'icon' => '👩‍🏫'],
+                            ['label' => 'Docentes', 'icon' => '👩‍🏫', 'link' => 'xd'],
                             ['label' => 'Estudiantes', 'icon' => '🎓'],
                             ['label' => 'Grados', 'icon' => '📈'],
                             ['label' => 'Grupos', 'icon' => '👥'],
@@ -90,6 +90,7 @@
                         <div class="flex items-center gap-2 bg-gray-100 dark:bg-neutral-800 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-neutral-700 transition">
                             <span class="text-lg">{{ $item['icon'] }}</span>
                             <span class="text-sm">{{ $item['label'] }}</span>
+                            <a href="{{ $item['link'] }}"></a>
                         </div>
                     @endforeach
                 </div>

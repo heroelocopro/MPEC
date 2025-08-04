@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\asignatura;
 use App\Models\Colegio;
+use App\Models\configNota;
+use App\Models\Estudiante;
 use App\Models\EstudianteGrupo;
 use App\Models\Grupo;
 use App\Models\matricula;
+use App\Models\NotaFinal;
+use App\Models\PeriodoAcademico;
 use App\Models\Profesor;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -71,5 +76,41 @@ class ColegioController extends Controller
     public function mostrarAnuncios()
     {
         return view('colegio.anuncios.index');
+    }
+    public function descargarNotas($periodo,$estudiante)
+    {
+        $estudiante = Estudiante::with('colegio')->where('id',$estudiante)->first();
+        $grupo = EstudianteGrupo::with('grupo')->where('estudiante_id', $estudiante->id)->first()->grupo;
+        $colegio = $estudiante->colegio;
+        $periodoObj = PeriodoAcademico::findOrFail($periodo);
+        $notaMinima = configNota::where('colegio_id',$estudiante->colegio->id)->first()->nota_minima ?? 3.5;
+        $plataforma = env('APP_NAME');
+        $fecha = now();
+
+        $notas = NotaFinal::with('asignatura')
+            ->where('estudiante_id', $estudiante->id)
+            ->where('periodo_id', $periodo)
+            ->get()
+            ->map(function ($nota) {
+                return (object)[
+                    'nombre' => $nota->asignatura->nombre,
+                    'nota_final' => $nota->nota,
+                ];
+            });
+
+        $pdf = Pdf::loadView('pdf.notas', [
+            'estudiante' => $estudiante,
+            'grupo' => $grupo,
+            'colegio' => $colegio,
+            'periodo' => $periodoObj,
+            'notas' => $notas,
+            'notaMinima' => $notaMinima,
+            'plataforma' => $plataforma,
+            'fecha' => $fecha,
+        ]);
+
+        $nombre = 'Notas_' . str_replace(' ', '_', $estudiante->nombre_completo).'_' . str_replace(' ', '_', $periodoObj->nombre) . '.pdf';
+
+        return $pdf->download($nombre);
     }
 }

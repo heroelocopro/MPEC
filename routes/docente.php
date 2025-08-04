@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\DocenteController;
 use App\Livewire\Docente\DocenteAnuncios;
+use App\Livewire\Docente\DocenteForo;
+use App\Livewire\Docente\DocenteGrupo;
 use App\Livewire\Docente\DocenteHorarios;
 use App\Livewire\Docente\DocenteNotas;
 use App\Livewire\Docente\DocenteNotasPeriodo;
@@ -9,6 +11,7 @@ use App\Livewire\Docente\DocenteVerAnuncios;
 use App\Livewire\Docente\DocenteVerExamenes;
 use App\Livewire\Docente\DocenteVerRespuestasActividades;
 use App\Livewire\Docente\DocenteVerRespuestasExamenes;
+use App\Livewire\Foro;
 use App\Models\Actividad;
 use App\Models\Estudiante;
 use App\Models\EstudianteGrupo;
@@ -20,11 +23,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'role:docente'])->prefix('docente')->group(function () {
     Route::get('/inicio',[DocenteController::class,'inicio'])->name('docente-inicio');
+    Route::get('/grupo/{id}',DocenteGrupo::class)->name("docente-grupo");
     Route::get('/notas',[DocenteController::class,'mostrarNotas'] )->name('docente-notas');
     Route::get('/asistencias',[DocenteController::class,'mostrarAsistencias'] )->name('docente-asistencias');
     Route::get('/actividades',[DocenteController::class,'mostrarActividades'] )->name('docente-actividades');
     Route::get('/tareas',[DocenteController::class,'mostrarNotas'] )->name('docente-tareas');
     Route::get('/evaluaciones',[DocenteController::class,'mostrarEvaluaciones'] )->name('docente-evaluaciones');
+
     // Route::get('/test',[DocenteController::class,'notas'])->name('test');
     Route::get('/ver-evaluaciones',DocenteVerExamenes::class)->name('docente-ver-evaluaciones');
     Route::get('/ver-evaluacion/{id}',DocenteVerRespuestasExamenes::class)->name('docente-ver-evaluacion');

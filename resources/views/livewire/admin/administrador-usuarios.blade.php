@@ -333,4 +333,35 @@
         });
     });
 </script>
+
+{{-- js --}}
+@push('js')
+<script>
+    Livewire.on('alerta', (data) => {
+        data = data[0];
+        Swal.fire({
+            title: data['title'],
+            text: data['text'],
+            icon: data['icon'],
+            // toast: data['toast'],
+            // position: data['position'],
+        });
+    });
+    Livewire.on('confirmarEliminarUsuario', (id) => {
+            Swal.fire({
+                title: "Estas Seguro?",
+                text: "Esto no se puede deshacer!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, Eliminalo"
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    Livewire.dispatch('eliminarUsuario', id);
+                }
+            });
+        });
+</script>
+@endpush
 </div>

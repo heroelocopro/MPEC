@@ -3,6 +3,7 @@
 use App\Http\Controllers\ColegioController;
 use App\Livewire\Colegio\ColegioAsistencias;
 use App\Livewire\Colegio\ColegioGrupo;
+use App\Livewire\Colegio\ColegioHistorialAcademico;
 use App\Livewire\Colegio\ColegioInicio;
 use App\Livewire\Colegio\ColegioNotas;
 use Illuminate\Support\Facades\Route;
@@ -41,5 +42,9 @@ Route::middleware(['auth', 'role:colegio'])->prefix('colegio')->group(function (
     Route::get('/asistencias',ColegioAsistencias::class)->name('colegio-asistencias');
 
     Route::get('/notas',ColegioNotas::class)->name('colegio-notas');
+
+    Route::get('/historial-academico',ColegioHistorialAcademico::class)->name('colegio-historial-academico');
+
+    Route::get('/descargar-notas/{periodo}/{estudiante}',[ColegioController::class,'descargarNotas'])->name('colegio-descargar-notas');
 
 });

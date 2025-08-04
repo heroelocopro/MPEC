@@ -61,7 +61,7 @@ class AdministradorColegio extends Component
 
         $this->promedioSuperiores = round(
             $this->colegio->notas()
-                ->whereHas('grupo.grado', fn($q) => $q->where('nivel', '=', 'secundaria'))
+                ->whereHas('grupo.grado', fn($q) => $q->whereIn('nivel', ['secundaria','media']))
                 ->avg('nota') ?? 0,
             2
         );

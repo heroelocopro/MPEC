@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Profesor extends Model
 {
@@ -126,4 +127,28 @@ class Profesor extends Model
     {
         return $this->morphMany(Anuncio::class, 'anunciable');
     }
+    #obtener los grupos que se asignaron al profesor.
+    #seria una asignatura->grado
+    #seria una asignatura->profesor
+    #seria una estudiante->grupos
+    #orden final profesor->asignatura->grado->grupo->estudiante
+public function gruposAsignados()
+{
+    $gruposAsignados = [];
+    $profesorR = Profesor::where('user_id',Auth::user()->id)->first();
+    $grupos = Grupo::with('grado.asignaturas.profesores')->where('colegio_id', $this->colegio_id)->get();
+    foreach ($grupos as $grupo) {
+        foreach ($grupo->grado->asignaturas as $asignatura) {
+            foreach ($asignatura->profesores as $profesor) {
+                if ($profesor->id == $profesorR->id) {
+                    $gruposAsignados[] = $grupo;
+                    break 2; // grupo válido, salir de los dos bucles internos
+                }
+            }
+        }
+    }
+
+    return collect($gruposAsignados)->unique('id')->values(); // sin duplicados
+}
+
 }

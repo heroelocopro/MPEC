@@ -69,23 +69,26 @@
                 <div class="grid grid-cols-2 gap-3 text-sm">
                     @php
                         $atajos = [
-                            ['label' => 'Profesores', 'icon' => '🧑‍🏫'],
-                            ['label' => 'Alumnos', 'icon' => '🎒'],
-                            ['label' => 'Grados', 'icon' => '📊'],
-                            ['label' => 'Grupos', 'icon' => '👥'],
-                            ['label' => 'Materias', 'icon' => '📚'],
-                            ['label' => 'Matrículas', 'icon' => '📝'],
-                            ['label' => 'Asignaciones', 'icon' => '🧩'],
-                            ['label' => 'Foros', 'icon' => '💬'],
-                            ['label' => 'Horarios', 'icon' => '⏰'],
-                            ['label' => 'Períodos', 'icon' => '📆'],
+                            ['label' => 'Profesores', 'icon' => '🧑‍🏫','link' => route("colegio-docentes")],
+                            ['label' => 'Alumnos', 'icon' => '🎒','link' => route("colegio-estudiantes")],
+                            ['label' => 'Grados', 'icon' => '📊','link' => route("colegio-grados")],
+                            ['label' => 'Grupos', 'icon' => '👥','link' => route("colegio-grupos")],
+                            ['label' => 'Materias', 'icon' => '📚','link' => route("colegio-asignaturas")],
+                            ['label' => 'Matrículas', 'icon' => '📝','link' => route("colegio-matriculas")],
+                            // ['label' => 'Asignaciones', 'icon' => '🧩','link' => route("colegio-")],
+                            ['label' => 'Foros', 'icon' => '💬','link' => route("foro")],
+                            ['label' => 'Horarios', 'icon' => '⏰','link' => route("colegio-horarios")],
+                            ['label' => 'Períodos', 'icon' => '📆','link' => route("colegio-periodos")],
+                            ['label' => 'Historial Academico', 'icon' => '🗂️','link' => route("colegio-historial-academico")],
                         ];
                     @endphp
 
                     @foreach ($atajos as $acceso)
                         <div class="flex items-center gap-2 bg-gray-100 dark:bg-neutral-800 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-neutral-700 transition cursor-pointer select-none">
+                            <a href="{{ $acceso['link'] }}">
                             <span class="text-lg">{{ $acceso['icon'] }}</span>
                             <span>{{ $acceso['label'] }}</span>
+                            </a>
                         </div>
                     @endforeach
                 </div>

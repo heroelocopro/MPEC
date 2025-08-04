@@ -63,7 +63,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
             default:
                 # code...
                 // Por defecto: redirige al dashboard general
-        $this->redirectRoute('dashboard', navigate: true);
+                $this->redirectRoute('dashboard', navigate: true);
         }
 
         // $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
@@ -100,9 +100,10 @@ new #[Layout('components.layouts.auth')] class extends Component {
 }; ?>
 <div class="  dark:bg-[#121212] flex items-center justify-center px-4">
     <div class="w-full max-w-md bg-white dark:bg-[#1A1A1A] rounded-xl shadow-lg p-8">
-        <h1 class="text-3xl lg:text-5xl font-bold mb-4 text-center">
-           <span class="text-blue-600 dark:text-yellow-400">{{ env("APP_NAME") }}</span>
+        <h1 class="text-3xl lg:text-4xl font-bold mb-4 text-center text-wrap">
+           <span class="text-blue-600 dark:text-yellow-400 text-wrap">{{ env("APP_NAME") }}</span>
         </h1>
+        <img src="{{ asset('images/GuruEducativa2.png') }}" alt="" srcset="">
         <!-- Título -->
         <div class="text-center mb-6">
             <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Inicio de Sesión</h1>

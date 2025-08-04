@@ -10,7 +10,7 @@ use Livewire\WithPagination;
 
 class AdministradorUsuarios extends Component
 {
-    protected $listeners = ['deleteUser' => 'eliminarUsuario'];
+    protected $listeners = ['eliminarUsuario' => 'eliminarUsuario'];
     use WithPagination;
     public $sortField = 'name'; // Campo por defecto para ordenar
     public $sortDirection = 'asc'; // Dirección por defecto

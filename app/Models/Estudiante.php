@@ -152,6 +152,12 @@ class Estudiante extends Model
     {
         return $this->hasMany(Asistencia::class, 'estudiante_id');
     }
+    public function getAsistenciasTotalesAttribute()
+    {
+        return $this->hasMany(Asistencia::class, 'estudiante_id')
+                ->where('estado', 'presente')
+                ->count();
+    }
 
     public function notasFinales()
     {
@@ -162,12 +168,14 @@ class Estudiante extends Model
     {
         return NotaFinal::where('grupo_id', $grupo_id)
             ->where('estudiante_id', $this->id)
+            ->where('ano',now()->format('Y'))
             ->avg('nota');
     }
 
     public function edad()
     {
         $edad = now()->diffInYears($this->fecha_nacimiento);
-        return max($edad, 0);
+
+        return intval(abs($edad));
     }
 }

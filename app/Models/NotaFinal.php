@@ -37,4 +37,5 @@ class NotaFinal extends Model
         return $this->belongsTo(Grupo::class);
     }
 
+
 }

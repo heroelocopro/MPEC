@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PeriodoAcademico extends Model
 {
@@ -23,8 +24,7 @@ protected $casts = [
 
 public function getEsActivoAttribute()
 {
-    $hoy = Carbon::now();
-    return $hoy->between($this->fecha_inicio, $this->fecha_fin);
+    return $this->estado == 'activo';
 }
 public static function diasTotales($colegio_id = null)
 {
@@ -64,6 +64,21 @@ public static function periodoActual($colegio_id = null)
         ->orderByDesc('fecha_inicio') // por si hay varios activos, devuelve el más reciente
         ->first();
 }
+
+public static function activarPeriodo($periodo_id)
+{
+    $periodo = self::findOrFail($periodo_id);
+
+    DB::transaction(function () use ($periodo) {
+        self::where('colegio_id', $periodo->colegio_id)
+            ->where('ano', now()->format('Y'))
+            ->update(['estado' => 'inactivo']);
+
+        $periodo->update(['estado' => 'activo']);
+    });
+}
+
+
 
 public function colegio()
 {

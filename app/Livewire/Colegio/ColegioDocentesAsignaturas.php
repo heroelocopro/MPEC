@@ -62,7 +62,7 @@ class ColegioDocentesAsignaturas extends Component
             $this->limpiarAsignacion();
         } catch (\Throwable $th) {
             $data = [
-            'title' => 'Error al crear estudiante!',
+            'title' => 'Error al asignar materia al docente!',
             'text' => $th->getMessage(),
             'icon' => 'error'
             ];

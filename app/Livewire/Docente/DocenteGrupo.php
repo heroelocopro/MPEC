@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Colegio;
+namespace App\Livewire\Docente;
 
 use App\Models\Asistencia;
 use App\Models\Estudiante;
@@ -8,7 +8,7 @@ use App\Models\Grupo;
 use App\Models\PeriodoAcademico;
 use Livewire\Component;
 
-class ColegioGrupo extends Component
+class DocenteGrupo extends Component
 {
     // variables iniciales para datos
     public $grupo;
@@ -37,7 +37,7 @@ class ColegioGrupo extends Component
         // datos estadisticos
         $this->estudiantes = $this->grupo->estudiantes->count();
         $this->tablaEstudiantes = $this->grupo->estudiantes;
-        $this->promedioNotas = round($this->grupo->promedioNotas(),2);
+        $this->promedioNotas = $this->grupo->promedioNotas();
         $this->estudiantesEspeciales = count($this->grupo->estudiantesEspeciales());
         $this->diasTotales = PeriodoAcademico::diasTotales($this->colegio->id);
         $this->diasAsistidos = Asistencia::where('colegio_id',$this->colegio->id)->where('grupo_id',$this->grupo->id)->count();
@@ -45,6 +45,6 @@ class ColegioGrupo extends Component
     }
     public function render()
     {
-        return view('livewire.colegio.colegio-grupo');
+        return view('livewire.docente.docente-grupo');
     }
 }

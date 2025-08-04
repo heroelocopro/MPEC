@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Colegio;
 
-use App\Models\asignatura;
+use App\Models\Asignatura;
 use App\Models\AsignaturaGrado;
 use App\Models\Colegio;
 use App\Models\Grado;
@@ -12,87 +12,124 @@ use Livewire\Component;
 
 class ColegioAsignaturasGrados extends Component
 {
-    protected $listeners = ['eliminarAsignacionAsignaturaGrado' => 'eliminarAsignacionAsignaturaGrado'];
-    protected $rules = ['grado_id' => 'required|integer|exists:grados,id','asignatura_id' => 'required|integer|exists:asignaturas,id',];
+    // Variables públicas
     public $grupo_id;
     public $grado_id;
-    public $asignatura_id;
     public $grado = null;
-    public $asignaturasGrados = [];
     public $modalCreacion = false;
 
+    public $asignaturasGrados = [];
+    public $asignaturasSeleccionadas = [];
+
+    // Listeners
+    protected $listeners = [
+        'eliminarAsignacionAsignaturaGrado' => 'eliminarAsignacionAsignaturaGrado'
+    ];
+
+    // Reglas de validación
+    protected function rules()
+    {
+        return [
+            'grado_id' => 'required|integer|exists:grados,id',
+            'asignaturasSeleccionadas' => 'required|array|min:1',
+            'asignaturasSeleccionadas.*' => 'integer|exists:asignaturas,id',
+        ];
+    }
+
+    /**
+     * Elimina la relación asignatura-grado
+     */
     public function eliminarAsignacionAsignaturaGrado($id)
     {
         try {
             AsignaturaGrado::findOrFail($id)->delete();
-            $data = [
-            'title' => 'Asignatura-Grado',
-            'text' => 'Desvinculacion Exitosa!',
-            'icon' => 'success'
-            ];
-            $this->limpiarAsignacion();
+            $this->notificar('Asignatura-Grado', 'Desvinculación exitosa!', 'success');
         } catch (\Throwable $th) {
-            $data = [
-            'title' => 'Asignatura-Grado',
-            'text' => 'Desvinculacion Fallida! ' . $th->getMessage(),
-            'icon' => 'error'
-            ];
+            $this->notificar('Asignatura-Grado', 'Desvinculación fallida: ' . $th->getMessage(), 'error');
         }
-        $this->dispatch('alerta',$data);
+
+        $this->actualizarAsignaturasGrado();
     }
 
+    /**
+     * Asigna múltiples asignaturas al grado
+     */
     public function asignarAsignaturaGrado()
     {
-        $this->validate($this->rules);
+        $this->validate();
+
         try {
-            $datos = [
-                'asignatura_id' => $this->asignatura_id,
-                'grado_id' => $this->grado_id,
-            ];
-            AsignaturaGrado::create($datos);
-            $data = [
-            'title' => 'Asignatura-Grado',
-            'text' => 'Asignacion Exitosa!',
-            'icon' => 'success'
-            ];
-            $this->limpiarAsignacion();
+            foreach ($this->asignaturasSeleccionadas as $asignaturaId) {
+                AsignaturaGrado::firstOrCreate([
+                    'grado_id' => $this->grado_id,
+                    'asignatura_id' => $asignaturaId,
+                ]);
+            }
+
+            $this->notificar('Asignatura-Grado', 'Asignaciones exitosas!', 'success');
+            $this->resetModal();
         } catch (\Throwable $th) {
-            $data = [
-            'title' => 'Asignatura-Grado',
-            'text' => 'Asignacion Fallida! ' . $th->getMessage(),
-            'icon' => 'error'
-            ];
+            $this->notificar('Asignatura-Grado', 'Asignación fallida: ' . $th->getMessage(), 'error');
         }
-        $this->dispatch('alerta',$data);
     }
 
-    public function limpiarAsignacion()
+    /**
+     * Resetea y actualiza el estado tras asignación
+     */
+    private function resetModal()
     {
         $this->modalCreacion = false;
-        $this->asignatura_id = '';
-        $this->asignaturasGrados = AsignaturaGrado::where('grado_id',$this->grado_id)->get();
+        $this->asignaturasSeleccionadas = [];
+        $this->actualizarAsignaturasGrado();
     }
 
+    /**
+     * Carga asignaturas asociadas al grado seleccionado
+     */
+    private function actualizarAsignaturasGrado()
+    {
+        $this->asignaturasGrados = AsignaturaGrado::where('grado_id', $this->grado_id)->get();
+    }
+
+    /**
+     * Al cambiar el grado, se actualiza la información relacionada
+     */
     public function updatedGradoId($value)
     {
-        if($value != null || $value != '')
-        {
-            $this->asignaturasGrados = AsignaturaGrado::where('grado_id',$value)->get();
+        if (!empty($value)) {
             $this->grado = Grado::findOrFail($value);
+            $this->actualizarAsignaturasGrado();
         }
     }
+
+    /**
+     * Enviar notificación al frontend
+     */
+    private function notificar($titulo, $mensaje, $icono)
+    {
+        $this->dispatch('alerta', [
+            [
+                'title' => $titulo,
+                'text' => $mensaje,
+                'icon' => $icono
+            ]
+        ]);
+    }
+
+    /**
+     * Renderiza la vista
+     */
     public function render()
     {
-        $colegio = Colegio::where('user_id',Auth::user()->id)->first();
-        $grupos = Grupo::where('colegio_id',$colegio->id)->get();
-        $grados = Grado::where('colegio_id',$colegio->id)->get();
-        // $grado = Grado::find($grado_id); // o el que estés usando
-        if($this->grado == null)
-        {
-            $asignaturas = [];
-        }else{
-            $asignaturas = Asignatura::whereNotIn('id', $this->grado->asignaturas->pluck('id'))->get();
-        }
-        return view('livewire.colegio.colegio-asignaturas-grados',compact('colegio','grupos','grados','asignaturas'));
+        $colegio = Colegio::where('user_id', Auth::id())->firstOrFail();
+
+        $grupos = Grupo::where('colegio_id', $colegio->id)->get();
+        $grados = Grado::where('colegio_id', $colegio->id)->get();
+
+        $asignaturas = $this->grado
+            ? Asignatura::whereNotIn('id', $this->grado->asignaturas->pluck('id'))->get()
+            : [];
+
+        return view('livewire.colegio.colegio-asignaturas-grados', compact('colegio', 'grupos', 'grados', 'asignaturas'));
     }
 }

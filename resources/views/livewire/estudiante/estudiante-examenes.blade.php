@@ -3,19 +3,18 @@
     <div class="fixed top-4 right-4 z-50 cursor-pointer">
         <livewire:notificaciones />
     </div>
+
     {{-- Parte Superior --}}
     <div class="flex items-center justify-between mb-6">
         <div>
             <flux:breadcrumbs>
                 <flux:breadcrumbs.item href="#">Panel Principal</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item href="{{ route('estudiante-examenes') }}">Exámenes</flux:breadcrumbs.item>
-                @if (isset($colegio))
-
-                <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>
+                @if (isset($colegio) && isset($colegio->nombre))
+                    <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>
                 @endif
                 @isset($grupo)
-
-                <flux:breadcrumbs.item>{{ $grupo->nombre }}</flux:breadcrumbs.item>
+                    <flux:breadcrumbs.item>{{ $grupo->nombre }}</flux:breadcrumbs.item>
                 @endisset
             </flux:breadcrumbs>
         </div>
@@ -39,46 +38,60 @@
             ];
         @endphp
 
-        @foreach ($examenesAsignaturas as $index => $asignatura)
-            <section class="bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6">
-                <header class="flex items-center space-x-4 mb-4">
-                    <div class="flex items-center justify-center w-12 h-12 bg-indigo-600 rounded-full text-white text-2xl select-none">
-                        {{ $iconos[$asignatura[0]] ?? '📖' }}
-                    </div>
-                    <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">{{ $asignatura[0] }}</h2>
-                </header>
+        @if (!empty($examenesAsignaturas) && is_array($examenesAsignaturas))
+            @foreach ($examenesAsignaturas as $index => $asignatura)
+                @php
+                    $nombreAsignatura = $asignatura[0] ?? 'Asignatura desconocida';
+                    $examenes = $asignatura[1] ?? [];
+                @endphp
 
-                @if (empty($asignatura[1]) || count($asignatura[1]) == 0)
-                    <p class="text-gray-600 dark:text-gray-400 italic">No hay exámenes disponibles para esta asignatura.</p>
-                @else
-                    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach ($asignatura[1] as $examen)
-                            <li class="flex items-center justify-between py-3 hover:bg-indigo-50 dark:hover:bg-indigo-800 rounded-md transition-colors">
-                                <div>
-                                    <p class="font-medium text-gray-800 dark:text-gray-200 truncate max-w-xs">
-                                        📝 {{ $examen->titulo }}
-                                    </p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                                        Fecha de vencimiento: {{ \Carbon\Carbon::parse($examen->fecha_vencimiento)->format('d/m/Y') }}
-                                    </p>
-                                </div>
+                <section class="bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6">
+                    <header class="flex items-center space-x-4 mb-4">
+                        <div class="flex items-center justify-center w-12 h-12 bg-indigo-600 rounded-full text-white text-2xl select-none">
+                            {{ $iconos[$nombreAsignatura] ?? '📖' }}
+                        </div>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">{{ $nombreAsignatura }}</h2>
+                    </header>
 
-                                <div>
-                                    <flux:modal.trigger wire:click="cargarExamen({{ $examen->id }})" name="ver-examen">
-                                        <button class="inline-block cursor-pointer bg-indigo-600 text-white text-sm px-4 py-1.5 rounded-full shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
-                                            Ver Examen
-                                        </button>
-                                    </flux:modal.trigger>
-                                </div>
-                            </li>
-                        @endforeach
-                    </ul>
-                @endif
-            </section>
-        @endforeach
+                    @if (empty($examenes) || !is_iterable($examenes))
+                        <p class="text-gray-600 dark:text-gray-400 italic">No hay exámenes disponibles para esta asignatura.</p>
+                    @else
+                        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                            @foreach ($examenes as $examen)
+                                @if (isset($examen->id, $examen->titulo, $examen->fecha_vencimiento))
+                                    <li class="flex items-center justify-between py-3 hover:bg-indigo-50 dark:hover:bg-indigo-800 rounded-md transition-colors">
+                                        <div>
+                                            <p class="font-medium text-gray-800 dark:text-gray-200 truncate max-w-xs">
+                                                📝 {{ $examen->titulo }}
+                                            </p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                                                Fecha de vencimiento:
+                                                {{ \Carbon\Carbon::parse($examen->fecha_vencimiento)->format('d/m/Y') }}
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <flux:modal.trigger wire:click="cargarExamen({{ $examen->id }})" name="ver-examen">
+                                                <button class="inline-block cursor-pointer bg-indigo-600 text-white text-sm px-4 py-1.5 rounded-full shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
+                                                    Ver Examen
+                                                </button>
+                                            </flux:modal.trigger>
+                                        </div>
+                                    </li>
+                                @else
+                                    <li class="text-sm text-red-600 dark:text-red-400 italic">Examen no válido.</li>
+                                @endif
+                            @endforeach
+                        </ul>
+                    @endif
+                </section>
+            @endforeach
+        @else
+            <p class="text-gray-500 dark:text-gray-400 italic">No se encontraron exámenes.</p>
+        @endif
     </div>
 
-    {{-- Modal para ver el examen --}}
+ {{-- Modal para ver el examen --}}
     <flux:modal wire:model.live="verModal" name="ver-examen" class="max-w-xl lg:max-w-2xl">
         <div class="p-6 space-y-6 bg-white dark:bg-gray-900 rounded-lg">
             <div>

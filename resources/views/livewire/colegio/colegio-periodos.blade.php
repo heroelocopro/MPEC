@@ -46,12 +46,14 @@
                             <h3 class="text-xl font-semibold text-blue-700 dark:text-blue-400">
                                 {{ $periodo->nombre }}
                             </h3>
-                        <span class="px-3 py-1 text-sm rounded-full
-                                    {{ $periodo->es_activo
+                            <button wire:click="$dispatch('confirmarCambioPeriodo', {id: {{ $periodo->id }}})" class="cursor-pointer">
+                                <span class="px-3 py-1 text-sm rounded-full
+                                {{ $periodo->es_activo
                                         ? 'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200'
                                         : 'bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200' }}">
                             {{ $periodo->es_activo ? 'Activo' : 'Inactivo' }}
                         </span>
+                    </button>
                         </div>
 
                         <div class="text-gray-700 dark:text-gray-300 space-y-1 text-sm">
@@ -61,10 +63,10 @@
                         </div>
 
                         <div class="mt-4 flex justify-end gap-2">
-                            <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-sm">
+                            <button wire:click="seleccionarPeriodo({{ $periodo->id }})" class="cursor-pointer bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-sm">
                                 Editar
                             </button>
-                            <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm">
+                            <button  wire:click="$dispatch('confirmarEliminarPeriodoAcademico', {id: {{ $periodo->id }}})" class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm">
                                 Eliminar
                             </button>
                         </div>
@@ -133,12 +135,60 @@
             <!-- Botones -->
             <div class="flex justify-end pt-4 space-x-3">
                 <button type="button" wire:click="crearPeriodoAcademico"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    class="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     Crear Período
                 </button>
             </div>
         </div>
     </flux:modal>
+
+    {{-- modal edicion --}}
+
+    @if (isset($periodoSeleccionado))
+        <flux:modal name="editar-periodo" wire:model="modalEdicion" class="md:w-96 lg:w-1/2" >
+            <div class="space-y-6">
+                {{-- titulo --}}
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Editar Período Académico</h2>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300">estas editando el periodo <span class="text-red-500">{{ $periodoSeleccionado->nombre }}</span> </p>
+                </div>
+                {{-- campos --}}
+                <div class="space-y-4">
+                    <!-- Nombre -->
+                    <div>
+                        <label for="nombre" class="block text-sm font-medium text-gray-900 dark:text-white">Nombre del Período*</label>
+                        <input type="text" id="nombre" wire:model="periodoEditarNombre"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            placeholder="Ej: Período 2025 - A">
+                        @error('periodoEditarNombre') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+                    </div>
+
+                    <!-- Fecha Inicio -->
+                    <div>
+                        <label for="fecha_inicio" class="block text-sm font-medium text-gray-900 dark:text-white">Fecha de Inicio*</label>
+                        <input type="date" id="fecha_inicio" value="{{ $periodo->editarFechaInicio }}" wire:model="periodoEditarFechaInicio"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        @error('periodoEditarFechaInicio') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+                    </div>
+
+                    <!-- Fecha Fin -->
+                    <div>
+                        <label for="fecha_fin" class="block text-sm font-medium text-gray-900 dark:text-white">Fecha de Finalización*</label>
+                        <input type="date" id="fecha_fin" wire:model="periodoEditarFechaFin"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        @error('periodoEditarFechaFin') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                {{-- botones --}}
+                <div class="flex justify-end pt-4 space-x-3">
+                    <button wire:click="actualizarPeriodoAcademico" type="button" class="cursor-pointer text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">
+                        Editar Periodo
+                    </button>
+                </div>
+            </div>
+        </flux:modal>
+    @endif
 
 
     {{-- js --}}
@@ -155,7 +205,22 @@
             position: data['position'],
         });
     });
-    Livewire.on('confirmarEliminarAsignatura', (id) => {
+    Livewire.on('confirmarCambioPeriodo',(id) => {
+        Swal.fire({
+                title: "Estas Seguro?",
+                text: "Quieres activar este periodo?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, Cambialo"
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    Livewire.dispatch('cambiarPeriodo', id);
+                }
+            });
+    });
+    Livewire.on('confirmarEliminarPeriodoAcademico', (id) => {
             Swal.fire({
                 title: "Estas Seguro?",
                 text: "Esto no se puede deshacer!",
@@ -166,7 +231,7 @@
                 confirmButtonText: "Si, Eliminalo"
                 }).then((result) => {
                 if (result.isConfirmed) {
-                    Livewire.dispatch('eliminarAsignatura', id);
+                    Livewire.dispatch('eliminarPeriodoAcademico', id);
                 }
             });
         });

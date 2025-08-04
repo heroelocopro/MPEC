@@ -42,27 +42,30 @@
                 'Religión' => '🙏',
             ];
         @endphp
-        @if (isset($actividadesAsignaturas) && count($actividadesAsignaturas) > 0)
-        @foreach ($actividadesAsignaturas as $index => $asignatura)
-            <div class="relative rounded-3xl border-2 border-blue-300 bg-white dark:bg-blue-900 p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                {{-- Icono grande difuminado atrás --}}
-                <div class="absolute top-6 right-6 text-8xl opacity-10 select-none pointer-events-none">
-                    {{ $iconos[$asignatura[0]] ?? '📘' }}
-                </div>
+@if (!empty($actividadesAsignaturas) && is_array($actividadesAsignaturas) && count($actividadesAsignaturas) > 0)
+    @foreach ($actividadesAsignaturas as $index => $asignatura)
+        @php
+            $nombreAsignatura = $asignatura[0] ?? 'Asignatura desconocida';
+            $actividades = $asignatura[1] ?? [];
+        @endphp
+        <div class="relative rounded-3xl border-2 border-blue-300 bg-white dark:bg-blue-900 p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+            {{-- Icono --}}
+            <div class="absolute top-6 right-6 text-8xl opacity-10 select-none pointer-events-none">
+                {{ $iconos[$nombreAsignatura] ?? '📘' }}
+            </div>
 
-                {{-- Nombre asignatura --}}
-                <h3 class="text-2xl font-bold text-blue-900 dark:text-blue-300 mb-6 flex items-center gap-3">
-                    <span class="text-4xl">{{ $iconos[$asignatura[0]] ?? '📘' }}</span> {{ $asignatura[0] }}
-                </h3>
+            <h3 class="text-2xl font-bold text-blue-900 dark:text-blue-300 mb-6 flex items-center gap-3">
+                <span class="text-4xl">{{ $iconos[$nombreAsignatura] ?? '📘' }}</span> {{ $nombreAsignatura }}
+            </h3>
 
-                {{-- Lista de actividades --}}
-                @if (empty($asignatura[1]) || count($asignatura[1]) === 0)
-                    <p class="text-lg font-medium text-gray-600 dark:text-gray-400 italic">
-                        ¡Aún no hay actividades para esta materia!
-                    </p>
-                @else
-                    <ul class="space-y-5 max-h-72 overflow-y-auto pr-2">
-                        @foreach ($asignatura[1] as $actividad)
+            @if (empty($actividades))
+                <p class="text-lg font-medium text-gray-600 dark:text-gray-400 italic">
+                    ¡Aún no hay actividades para esta materia!
+                </p>
+            @elseif (is_iterable($actividades))
+                <ul class="space-y-5 max-h-72 overflow-y-auto pr-2">
+                    @foreach ($actividades as $actividad)
+                        @if (isset($actividad->id, $actividad->titulo, $actividad->fecha_entrega))
                             <li class="bg-blue-50 dark:bg-blue-800 border border-blue-200 dark:border-blue-700 rounded-xl p-4 shadow hover:scale-[1.03] transform transition-transform duration-200 cursor-pointer">
                                 <div class="flex justify-between items-start">
                                     <div>
@@ -70,29 +73,40 @@
                                             📝 {{ $actividad->titulo }}
                                         </h4>
                                         <p class="text-sm text-blue-600 dark:text-blue-300 mt-1">
-                                            Entrega: <time datetime="{{ $actividad->fecha_entrega }}">{{ \Carbon\Carbon::parse($actividad->fecha_entrega)->format('d/m/Y') }}</time>
+                                            Entrega:
+                                            <time datetime="{{ \Carbon\Carbon::parse($actividad->fecha_entrega)->toDateString() }}">
+                                                {{ \Carbon\Carbon::parse($actividad->fecha_entrega)->format('d/m/Y') }}
+                                            </time>
                                         </p>
                                     </div>
-                                    <div class="ml-3 shrink-0">
+                                    <div class="ml-3 shrink-0 space-y-2">
                                         <flux:modal.trigger wire:click="cargarSubirActividad({{ $actividad->id }})" name="subir-actividad">
-                                            <flux:button class="bg-blue-600 cursor-pointer hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm font-medium transition">
+                                            <flux:button class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm font-medium transition">
                                                 subir actividad
                                             </flux:button>
                                         </flux:modal.trigger>
                                         <flux:modal.trigger wire:click="cargarActividad({{ $actividad->id }})" name="ver-actividad">
-                                            <flux:button class="bg-blue-600 cursor-pointer hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm font-medium transition">
+                                            <flux:button class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm font-medium transition">
                                                 Ver
                                             </flux:button>
                                         </flux:modal.trigger>
                                     </div>
                                 </div>
                             </li>
-                        @endforeach
-                    </ul>
-                @endif
-            </div>
-        @endforeach
-        @endif
+                        @else
+                            <li class="text-sm text-red-600 dark:text-red-400 italic">Actividad mal definida</li>
+                        @endif
+                    @endforeach
+                </ul>
+            @else
+                <p class="text-sm text-red-600 dark:text-red-400 italic">Error: datos de actividades corruptos</p>
+            @endif
+        </div>
+    @endforeach
+@else
+    <p class="text-gray-500 dark:text-gray-400 italic">No se encontraron actividades por asignatura.</p>
+@endif
+
     </div>
 
     {{-- Modal para ver la actividad --}}
