@@ -1,7 +1,7 @@
 <div>
     {{-- Migajas de pan --}}
     <flux:breadcrumbs>
-        <flux:breadcrumbs.item href="#">Panel Principal</flux:breadcrumbs.item>
+        <flux:breadcrumbs.item href="{{ route('login') }}">Panel Principal</flux:breadcrumbs.item>
         <flux:breadcrumbs.item href="{{ route('colegio-estudiantes') }}">Estudiantes</flux:breadcrumbs.item>
         @isset($colegioId)
         <flux:breadcrumbs.item>{{ $colegioId->nombre }}</flux:breadcrumbs.item>
@@ -28,7 +28,7 @@
             </select>
 
             <!-- Input (80%) - Versión corregida -->
-            <input wire:model.live.debounce.250ms="buscador"
+            <input wire:model.live="buscador"
                 type="text"
                 placeholder="Buscar Estudiante"
                 class="w-[80%] h-12 px-4 rounded-lg border border-gray-300 bg-white text-gray-700

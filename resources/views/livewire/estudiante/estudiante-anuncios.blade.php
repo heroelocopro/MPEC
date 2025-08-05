@@ -34,7 +34,7 @@
                                 {{ $anuncio->contenido }}
                             </p>
                             <div class="text-xs text-gray-500 dark:text-gray-400 mt-auto">
-                                Publicado el {{ \Carbon\Carbon::parse($anuncio->created_at)->format('d M Y') }}
+                                Publicado el {{ \Carbon\Carbon::parse($anuncio->created_at)->format('d M Y') }} por {{ $anuncio->anunciable->nombre }}
                             </div>
                         </div>
                     @empty
@@ -57,7 +57,7 @@
                                 {{ $anuncio->contenido }}
                             </p>
                             <div class="text-xs text-gray-500 dark:text-gray-400 mt-auto">
-                                Publicado el {{ \Carbon\Carbon::parse($anuncio->created_at)->format('d M Y') }}
+                                Publicado el {{ \Carbon\Carbon::parse($anuncio->created_at)->format('d M Y') }} por {{ $anuncio->anunciable->nombre_completo }}
                             </div>
                         </div>
                     @empty

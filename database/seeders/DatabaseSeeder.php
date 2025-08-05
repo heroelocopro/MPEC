@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\Actividad;
 use App\Models\Acudiente;
 use App\Models\asignatura;
+use App\Models\AsignaturaGrado;
+use App\Models\asignaturaProfesor;
 use App\Models\Colegio;
 use App\Models\Estudiante;
 use App\Models\EstudianteGrupo;
@@ -96,13 +98,13 @@ class DatabaseSeeder extends Seeder
         //     ['colegio_id' => 3,'sede_id' => null, 'nombre_completo' => 'William Alfredo Gazabon Marengo', 'documento' => '92506012', 'tipo_documento' => 'CC', 'correo' => 'maggjunior@gmail.com', 'telefono' => '3227185856', 'titulo_academico' => 'Administrador de Empresas'],
         // ];
 
-        Profesor::factory(10)->create([
+        Profesor::factory(13)->create([
             'colegio_id' => 1
         ]);
-        Profesor::factory(10)->create([
+        Profesor::factory(13)->create([
             'colegio_id' => 2
         ]);
-        Profesor::factory(10)->create([
+        Profesor::factory(13)->create([
             'colegio_id' => 3
         ]);
 
@@ -220,23 +222,23 @@ class DatabaseSeeder extends Seeder
 
 
 
-        // 🔟 Crear foros
-        $foros = [
-            ['colegio_id' => 1, 'titulo' => 'Discusión sobre reciclaje', 'contenido' => 'Compartan ideas sobre cómo mejorar el reciclaje en el colegio.', 'autor_id' => 1, 'tipo_autor' => 'profesor'],
-        ];
+        // // 🔟 Crear foros
+        // $foros = [
+        //     ['colegio_id' => 1, 'titulo' => 'Discusión sobre reciclaje', 'contenido' => 'Compartan ideas sobre cómo mejorar el reciclaje en el colegio.', 'autor_id' => 1, 'tipo_autor' => 'profesor'],
+        // ];
 
-        foreach ($foros as $data) {
-            Foro::create($data);
-        }
+        // foreach ($foros as $data) {
+        //     Foro::create($data);
+        // }
 
-        // 🔁 Crear respuestas del foro
-        $respuestas_foro = [
-            ['foro_id' => 1, 'autor_id' => 1, 'tipo_autor' => 'estudiante', 'mensaje' => 'Podríamos tener más canecas de reciclaje en los pasillos.']
-        ];
+        // // 🔁 Crear respuestas del foro
+        // $respuestas_foro = [
+        //     ['foro_id' => 1, 'autor_id' => 1, 'tipo_autor' => 'estudiante', 'mensaje' => 'Podríamos tener más canecas de reciclaje en los pasillos.']
+        // ];
 
-        foreach ($respuestas_foro as $data) {
-            Respuesta_Foro::create($data);
-        }
+        // foreach ($respuestas_foro as $data) {
+        //     Respuesta_Foro::create($data);
+        // }
         $asignaturas = [
             [
                 'nombre' => 'Matemáticas',
@@ -806,32 +808,7 @@ class DatabaseSeeder extends Seeder
         Grupo::create($data);
     }
 
-    // asignando eestudiantes a grupos
-    // recorro 3 ccolegios,
-    // ahora consigo todos los eestudiantes y grupos de eese colegio
-    // y los agrego
-    // for($i = 1;$i<3;$i++)
-    // {
-    //     $colegio = Colegio::findOrFail($i);
-    //     $estudiantes = $colegio->estudiantes;
-    //     $grupos = Grupo::where('colegio_id',$colegio->id)->get();
-    //     $contador = 1;
-    //     $contadorGrupo = 0;
-    //     foreach($estudiantes as $estudiante)
-    //     {
-    //         if($contador == 10)
-    //         {
-    //             $contador = 1;
-    //             $contadorGrupo ++;
-    //         }
-    //         EstudianteGrupo::create([
-    //             'estudiante_id' => $estudiante->id,
-    //             'grupo_id' => $grupos[$contadorGrupo]->id,
-    //             'colegio_id' => $colegio->id
-    //         ]);
-    //         $contador++;
-    //     }
-    // }
+
     for ($i = 1; $i <= 3; $i++) {
         $colegio = Colegio::findOrFail($i);
         $estudiantes = $colegio->estudiantes;
@@ -861,6 +838,56 @@ class DatabaseSeeder extends Seeder
             $contador++;
         }
     }
+
+        for ($i = 1; $i <= 3; $i++) {
+        $colegio = Colegio::findOrFail($i);
+        $profesores = $colegio->profesores;
+        $asignaturas = asignatura::where('colegio_id', $colegio->id)->get()->values(); // reindexar los grupos
+        foreach ($profesores as $index => $profesor) {
+            if (!isset($asignaturas[$index])) break;
+
+            asignaturaProfesor::create([
+                'asignatura_id' => $asignaturas[$index]->id,
+                'profesor_id' => $profesor->id,
+            ]);
+        }
+
+        }
+
+        for ($i = 1; $i <= 3; $i++) {
+    $colegio = Colegio::findOrFail($i);
+    $grados = $colegio->grados->values(); // Reindexar grados
+    $asignaturas = asignatura::where('colegio_id', $colegio->id)->get()->values(); // Reindexar asignaturas
+
+    // Validar que haya asignaturas
+    if ($asignaturas->isEmpty()) {
+        continue; // Saltar este colegio si no hay asignaturas
+    }
+
+    $asignaturaCount = $asignaturas->count();
+    $asignaturaIndex = 0;
+
+    foreach ($grados as $nivel => $grado) {
+        // Asignar al menos 4 asignaturas, más si el grado es superior
+        $cantidadAsignaturas = min(8, 4 + intdiv($nivel, 1));
+
+        for ($j = 0; $j < $cantidadAsignaturas; $j++) {
+            // Si se acaban las asignaturas, reiniciar (o salir si no quieres repetir)
+            if ($asignaturaIndex >= $asignaturaCount) {
+                $asignaturaIndex = 0;
+            }
+
+            AsignaturaGrado::create([
+                'asignatura_id' => $asignaturas[$asignaturaIndex]->id,
+                'grado_id' => $grado->id,
+            ]);
+
+            $asignaturaIndex++;
+        }
+    }
+}
+
+
 
 
 

@@ -137,7 +137,10 @@ class DocenteAsistencias extends Component
             }
             foreach($this->grados as $g)
             {
-                 $this->grupos = $g->grupos;
+                foreach($g->grupos as $grupo)
+                {
+                    array_push($this->grupos,$grupo);
+                }
             }
         }else{
             $this->grados = [];

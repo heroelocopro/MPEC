@@ -1,9 +1,9 @@
 <div>
     {{-- breadcrumbs --}}
     <flux:breadcrumbs>
-        <flux:breadcrumbs.item href="{{ route('colegio-inicio') }}">Panel Principal</flux:breadcrumbs.item>
+        <flux:breadcrumbs.item href="{{ route('docente-inicio') }}">Panel Principal</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>
-        <flux:breadcrumbs.item href="{{ route('colegio-grupos') }}">Grupos</flux:breadcrumbs.item>
+        <flux:breadcrumbs.item href="">Grupo</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>{{ $grupo->nombre }}</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Detalles</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>{{ $grupo->grado->nombre }}</flux:breadcrumbs.item>

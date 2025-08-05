@@ -10,6 +10,7 @@ use Livewire\Component;
 
 class ColegioGrupos extends Component
 {
+    public $listeners = ['eliminarGrupo' => 'eliminarGrupo'];
     // edicion
     public $grupoEdicionId, $nombreEdicion, $gradoIdEdicion, $modalEdicion = false;
     // grupos

@@ -4,7 +4,7 @@
         {{-- Migas de pan --}}
         <div>
             <flux:breadcrumbs>
-                <flux:breadcrumbs.item href="#">Panel Principal</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item href="{{ route('login') }}">Panel Principal</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item href="{{ route('colegio-grados') }}">Asistencias</flux:breadcrumbs.item>
                 @isset($colegio)
                     <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>

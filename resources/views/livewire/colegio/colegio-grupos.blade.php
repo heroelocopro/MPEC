@@ -4,7 +4,7 @@
         {{-- Migajas de pan --}}
         <div>
             <flux:breadcrumbs>
-                <flux:breadcrumbs.item href="#">Panel Principal</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item href="{{ route('login') }}">Panel Principal</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item href="{{ route('colegio-grados') }}">Grupos</flux:breadcrumbs.item>
                 @isset($colegio)
                     <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>
@@ -83,7 +83,7 @@
 
 
                                             <!-- Eliminar -->
-                                            <button wire:click="eliminarGrupo({{ $grupo->id }})" class="bg-white text-rose-500 p-1 rounded-full hover:bg-rose-100 dark:bg-gray-200 dark:hover:bg-rose-200" title="Eliminar">
+                                            <button wire:click="$dispatch('confirmarEliminarGrupo',{id: {{ $grupo->id }}})" class="bg-white text-rose-500 p-1 rounded-full hover:bg-rose-100 dark:bg-gray-200 dark:hover:bg-rose-200" title="Eliminar">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M6 18L18 6M6 6l12 12" />
@@ -217,6 +217,21 @@
                     position: data['position'],
                 });
             });
+            Livewire.on('confirmarEliminarGrupo', (id) => {
+            Swal.fire({
+                title: "Estas Seguro?",
+                text: "Esto no se puede deshacer!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, Eliminalo"
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    Livewire.dispatch('eliminarGrupo', id);
+                }
+            });
+        });
         </script>
     @endpush
 </div>

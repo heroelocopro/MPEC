@@ -58,7 +58,7 @@ class ColegioPeriodos extends Component
             $this->validate([
             'periodoEditarNombre' => 'required|string|max:100',
             'periodoEditarFechaInicio' => 'required|date',
-            'periodoEditarFechaFin' => 'required|date|after_or_equal:fecha_inicio',
+            'periodoEditarFechaFin' => 'required|date|after_or_equal:periodoEditarFechaInicio',
             ]);
             $hoy = Carbon::today();
             if ($hoy->between($this->periodoEditarFechaInicio, $this->periodoEditarFechaFin)) {

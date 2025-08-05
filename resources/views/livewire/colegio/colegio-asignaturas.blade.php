@@ -274,11 +274,43 @@
 
             {{-- Botones --}}
             <div class="flex justify-end pt-4 space-x-3">
-                <button type="button" wire:click="guardarAsignatura"
-                    class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800">
+                <button type="button" wire:click="editarAsignatura"
+                    class="px-5 cursor-pointer py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800">
                     Guardar Cambios
                 </button>
             </div>
         </div>
     </flux:modal>
+
+        {{-- Script de alerta --}}
+    @push('js')
+        <script>
+            Livewire.on('alerta', (data) => {
+                data = data[0];
+                Swal.fire({
+                    title: data['title'],
+                    text: data['text'],
+                    icon: data['icon'],
+                    toast: data['toast'],
+                    position: data['position'],
+                });
+            });
+
+            Livewire.on('confirmarEliminarAsignatura', (id) => {
+            Swal.fire({
+                title: "Estas Seguro?",
+                text: "Esto no se puede deshacer!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, Eliminalo"
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    Livewire.dispatch('eliminarAsignatura', id);
+                }
+            });
+        });
+        </script>
+    @endpush
 </div>

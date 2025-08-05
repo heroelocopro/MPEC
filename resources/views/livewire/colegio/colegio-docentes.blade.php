@@ -1,8 +1,8 @@
 <div>
     {{-- Migajas de pan --}}
     <flux:breadcrumbs>
-        <flux:breadcrumbs.item href="#">Panel Principal</flux:breadcrumbs.item>
-        <flux:breadcrumbs.item href="#">Docentes</flux:breadcrumbs.item>
+        <flux:breadcrumbs.item href="{{ route('colegio-inicio') }}">Panel Principal</flux:breadcrumbs.item>
+        <flux:breadcrumbs.item href="{{ route('colegio-docentes') }}">Docentes</flux:breadcrumbs.item>
         @isset($colegio)
                     <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>
                 @endisset
@@ -16,7 +16,7 @@
     {{-- filtros --}}
         <div class="flex items-center gap-2 w-full">
             <!-- Select (10%) - Versión corregida -->
-            <select wire:model="paginacion"
+            <select wire:model.live="paginacion"
                     class="w-[10%] h-12 px-3 rounded-lg border border-gray-300 bg-white text-gray-700
                         dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300
                         focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -27,7 +27,7 @@
             </select>
 
             <!-- Input (80%) - Versión corregida -->
-            <input wire:model.live.debounce.250ms="buscador"
+            <input wire:model.live="buscador"
                 type="text"
                 placeholder="Buscar Profesor"
                 class="w-[80%] h-12 px-4 rounded-lg border border-gray-300 bg-white text-gray-700
