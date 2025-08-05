@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Colegio;
 
-use App\Models\Asignatura;
+use App\Models\asignatura;
 use App\Models\AsignaturaGrado;
 use App\Models\Colegio;
 use App\Models\Grado;
