@@ -12,7 +12,7 @@
                 </flux:breadcrumbs.item>
                 <flux:breadcrumbs.item href="{{ route('docente-evaluaciones') }}">Examenes</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item href="">Ver</flux:breadcrumbs.item>
-                <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item>{{ $colegio->nombre ?? 'Sin nombre' }}</flux:breadcrumbs.item>
             </flux:breadcrumbs>
         </div>
         {{-- espacio para boton --}}

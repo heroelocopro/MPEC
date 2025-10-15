@@ -71,8 +71,8 @@ class ColegioHistorialAcademico extends Component
     {
         $this->notasFinales = NotaFinal::with(['asignatura'])
         ->where('estudiante_id',$this->estudianteSeleccionado->id)
-        ->where('periodo_id',$this->periodoSeleccionado->id)
-        ->get();
+        ->where('periodo_id',$this->periodoSeleccionado->id ?? 0)
+        ->get() ??  (object)['id'=>0];
     }
     public function cargarDatos()
     {

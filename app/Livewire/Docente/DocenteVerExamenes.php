@@ -12,70 +12,90 @@ use Livewire\Component;
 
 class DocenteVerExamenes extends Component
 {
-
-    // modal
+    // ====== Variables para el modal ======
     public $examen;
-    public $modal;
+    public $modal = false;
 
-    // selectores
-    public $asignatura_id;
+    // ====== Selectores ======
+    public $asignatura_id = null;
+    public $grupo_id = null;
     public $grupos = [];
     public $grados = [];
-    public $grupo_id;
 
-
-    // variables iniciales
+    // ====== Variables base ======
     public $profesor;
     public $colegio;
-    public $asignaturas = [];
     public $periodo;
+    public $asignaturas = [];
     public $examenes = [];
+
+    // ============================================================
+    // ======================== MÉTODOS ============================
+    // ============================================================
 
     public function mostrarExamen($id)
     {
         $this->modal = true;
-        $this->examen = Examen::findOrFail($id);
+        $this->examen = Examen::find($id);
+
+        if (!$this->examen) {
+            session()->flash('error', 'El examen no existe o fue eliminado.');
+            $this->modal = false;
+        }
     }
 
     public function cargarExamenes($grupo_id)
     {
-        $this->examenes = Examen::where('grupo_id',$grupo_id)->where('asignatura_id',$this->asignatura_id)->get();
+        $this->examenes = [];
+
+        if (!$this->asignatura_id || !$grupo_id) {
+            return;
+        }
+
+        $this->examenes = Examen::where('grupo_id', $grupo_id)
+            ->where('asignatura_id', $this->asignatura_id)
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     public function cargarGrupos($asignatura_id)
     {
-        // Limpiar variables antes de usarlas
         $this->grupos = [];
         $this->grados = [];
 
-        if ($asignatura_id != null && $asignatura_id != 0) {
-            // Obtener relaciones de grados con la asignatura
-            $asignaturasGrados = AsignaturaGrado::where('asignatura_id', $asignatura_id)->with('grado.grupos')->get();
+        if (!$asignatura_id) {
+            return;
+        }
 
-            // Agregar grados
-            foreach ($asignaturasGrados as $asignaturaGrado) {
+        // Traer grados y grupos relacionados
+        $asignaturasGrados = AsignaturaGrado::where('asignatura_id', $asignatura_id)
+            ->with('grado.grupos')
+            ->get();
+
+        foreach ($asignaturasGrados as $asignaturaGrado) {
+            if ($asignaturaGrado->grado) {
                 $this->grados[] = $asignaturaGrado->grado;
-            }
 
-            // Recorrer grados y agregar grupos
-            foreach ($this->grados as $grado) {
-                foreach ($grado->grupos as $grupo) {
+                foreach ($asignaturaGrado->grado->grupos ?? [] as $grupo) {
                     $this->grupos[] = $grupo;
                 }
             }
         }
+
+        // Evitar duplicados
+        $this->grupos = collect($this->grupos)->unique('id')->values()->all();
+        $this->grados = collect($this->grados)->unique('id')->values()->all();
     }
 
     public function updatedAsignaturaId($value)
     {
         $this->grupos = [];
         $this->grados = [];
+        $this->grupo_id = null;
+        $this->examenes = [];
 
-        if ($value != null && $value != 0) {
+        if ($value) {
             $this->cargarGrupos($value);
-        }else{
-            $this->grupos = [];
-            $this->grados = [];
         }
     }
 
@@ -83,34 +103,49 @@ class DocenteVerExamenes extends Component
     {
         $this->examenes = [];
 
-        if($value != null && $value != 0)
-        {
+        if ($value) {
             $this->cargarExamenes($value);
-        }
-        else{
-            $this->examenes = [];
         }
     }
 
     public function cargarAsignaturas($asignaturas)
     {
-        // limpiamos
         $this->asignaturas = [];
-        // bucle array
-        foreach($asignaturas as $asignatura)
-        {
-            array_push($this->asignaturas,$asignatura->asignatura);
+
+        foreach ($asignaturas as $asignatura) {
+            if (isset($asignatura->asignatura)) {
+                $this->asignaturas[] = $asignatura->asignatura;
+            }
         }
+
+        // eliminar duplicados
+        $this->asignaturas = collect($this->asignaturas)->unique('id')->values()->all();
     }
+
     public function mount()
     {
-        // obtenemos al profesor colegio asignaturas periodo y cargamos asignaturas
-        $this->profesor = Profesor::where('user_id',Auth::user()->id)->first();
-        $this->colegio = $this->profesor->colegio;
-        $asignaturas = asignaturaProfesor::where('profesor_id',$this->profesor->id)->get();
-        $this->periodo = PeriodoAcademico::periodoActual($this->colegio->id);
+        // ===== Obtener profesor actual =====
+        $this->profesor = Profesor::where('user_id', Auth::id())->first();
+
+        if (!$this->profesor) {
+            // Caso sin profesor asignado
+            $this->colegio = (object)['id' => null];
+            $this->periodo = null;
+            $this->asignaturas = [];
+            return;
+        }
+
+        $this->colegio = $this->profesor->colegio ?? (object)['id' => null];
+        $this->periodo = $this->colegio->id ? PeriodoAcademico::periodoActual($this->colegio->id) : null;
+
+        // ===== Cargar asignaturas del profesor =====
+        $asignaturas = asignaturaProfesor::where('profesor_id', $this->profesor->id)
+            ->with('asignatura')
+            ->get();
+
         $this->cargarAsignaturas($asignaturas);
     }
+
     public function render()
     {
         return view('livewire.docente.docente-ver-examenes');

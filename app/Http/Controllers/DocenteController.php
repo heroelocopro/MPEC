@@ -15,8 +15,9 @@ class DocenteController extends Controller
 {
     public function inicio()
     {
-        $profesor = Profesor::where('user_id',Auth::user()->id)->first();
-        $gruposProfesor = $profesor->gruposAsignados();
+        $profesor = Profesor::where('user_id',Auth::user()->id)->first() ?? null;
+
+        $gruposProfesor = $profesor ? $profesor->gruposAsignados() : null;
         return view('docente.inicio.inicio',compact('gruposProfesor'));
     }
     public function mostrarNotas()

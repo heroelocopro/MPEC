@@ -6,16 +6,19 @@
             <div>
                 <flux:breadcrumbs>
                     <flux:breadcrumbs.item href="{{ route('login') }}">Panel</flux:breadcrumbs.item>
-                    <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>
+                    <flux:breadcrumbs.item>{{ $colegio->nombre ?? 'sin Colegio' }}</flux:breadcrumbs.item>
                     <flux:breadcrumbs.item href="{{ route('foro') }}">Foro</flux:breadcrumbs.item>
                 </flux:breadcrumbs>
             </div>
 
             {{-- Botón alineado a la derecha si el rol lo permite --}}
+            @if ($usuario != null)
+
             @if ($usuario->usuario->role_id < 4)
-                <div>
-                    <flux:button class="cursor-pointer" wire:click="$set('modalCrear',true)">Crear Foro</flux:button>
-                </div>
+            <div>
+                <flux:button class="cursor-pointer" wire:click="$set('modalCrear',true)">Crear Foro</flux:button>
+            </div>
+            @endif
             @endif
         </div>
     </div>

@@ -13,7 +13,7 @@
                     </a>
                 </flux:breadcrumbs.item>
                 <flux:breadcrumbs.item href="{{ route('docente-asistencias') }}">Notas - Periodo</flux:breadcrumbs.item>
-                <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item>{{ $colegio->nombre ?? 'Sin nombre' }}</flux:breadcrumbs.item>
             </flux:breadcrumbs>
         </div>
     </div>
@@ -26,7 +26,7 @@
             <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-3 text-center">
                 Selecciona un Periodo
             </h2>
-            @if ($periodos->isEmpty())
+            @if (empty($periodos))
                 <p class="text-center text-gray-600 dark:text-gray-300">No hay períodos registrados.</p>
             @else
                 <div class="space-y-3">

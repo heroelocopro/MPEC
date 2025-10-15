@@ -22,30 +22,40 @@ class ColegioInicio extends Component
 
     public function loadData()
     {
-        $colegioId = Colegio::where('user_id', Auth::user()->id)->first()->id;
+        // Protección si no existe el colegio asociado al usuario
+        $colegio = Colegio::where('user_id', Auth::user()->id)->first() ?? (object) ['id' => null];
+        $colegioId = $colegio->id;
+
+        if (!$colegioId) {
+            // Si no hay colegio, evitar errores y mostrar datos vacíos
+            $this->totalEstudiantes = 0;
+            $this->totalDocentes = 0;
+            $this->totalGrupos = 0;
+            $this->totalAsignaturas = 0;
+            $this->totalClasesProgramadas = 0;
+            $this->dispatch('chartUpdate', [], [], []);
+            return;
+        }
+
+        // Cálculos principales
         $this->totalEstudiantes = matricula::where('colegio_id', $colegioId)->count();
         $this->totalDocentes = Profesor::where('colegio_id', $colegioId)->count();
         $this->totalGrupos = Grupo::where('colegio_id', $colegioId)->count();
         $this->totalAsignaturas = asignatura::where('colegio_id', $colegioId)->count();
-        $this->totalClasesProgramadas = Horario::where('colegio_id',$colegioId)->count();
+        $this->totalClasesProgramadas = Horario::where('colegio_id', $colegioId)->count();
 
+        // Solo una consulta para los grupos y sus estudiantes
         $grupos = Grupo::where('colegio_id', $colegioId)
             ->withCount('estudiantes')
-            ->get();
+            ->get(['id', 'nombre']);
 
+        // Datos para el gráfico
         $nombresGrupos = $grupos->pluck('nombre');
         $cantidadesEstudiantes = $grupos->pluck('estudiantes_count');
-        $grupos = Grupo::where('colegio_id', $colegioId)
-        ->withCount('estudiantes')
-        ->pluck( 'nombre');
-        $estudiantes = Grupo::where('colegio_id', $colegioId)
-        ->withCount('estudiantes')
-        ->pluck('estudiantes_count');
-        $ids = Grupo::where('colegio_id', $colegioId)
-        ->withCount('estudiantes')
-        ->pluck( 'id');
-        $this->dispatch('chartUpdate', $grupos,$estudiantes,$ids);
+        $ids = $grupos->pluck('id');
 
+        // Enviar datos al gráfico
+        $this->dispatch('chartUpdate', $nombresGrupos, $cantidadesEstudiantes, $ids);
     }
 
     public function render()

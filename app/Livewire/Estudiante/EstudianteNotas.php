@@ -26,15 +26,15 @@ class EstudianteNotas extends Component
 
     public function mount()
     {
-        $this->estudiante = Estudiante::where('user_id', Auth::id())->first();
+        $this->estudiante = Estudiante::where('user_id', Auth::id())->first() ?? (object) ['id' => null];
         $this->colegio = $this->estudiante->colegio ?? null;
         $this->matricula = $this->estudiante->matricula ?? null;
         $this->grado = $this->matricula->grado ?? null;
         $this->grupo = EstudianteGrupo::where('estudiante_id', $this->estudiante->id)->first()->grupo ?? null;
 
-        $this->periodos = PeriodoAcademico::where('colegio_id', $this->colegio->id)->orderBy('fecha_inicio', 'asc')->get() ?? null;
-        $this->periodoSeleccionadoObj = PeriodoAcademico::periodoActual($this->colegio->id) ?? null;
-        $this->periodoSeleccionado = PeriodoAcademico::periodoActual($this->colegio->id)->id ?? null;
+        $this->periodos = PeriodoAcademico::where('colegio_id', $this->colegio->id ?? null)->orderBy('fecha_inicio', 'asc')->get() ?? null;
+        $this->periodoSeleccionadoObj = PeriodoAcademico::periodoActual($this->colegio->id ?? null) ?? null;
+        $this->periodoSeleccionado = PeriodoAcademico::periodoActual($this->colegio->id ?? null)->id ?? null;
         if($this->grado != null && $this->grupo != null)
         {
             // cargar metodos

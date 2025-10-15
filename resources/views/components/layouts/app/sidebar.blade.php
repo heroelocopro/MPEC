@@ -3,12 +3,12 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+    <body class="min-h-screen bg-white  dark:bg-zinc-800">
+        <flux:sidebar sticky stashable class="border-e border-[#8F1718] bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
             <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
-                <img class="img-fluid" src="{{ asset('images/GuruEducativa2.png') }}" alt="">
+                <img class="img-fluid rounded-2xl  border-2 border-black" src="{{ asset('images/GuruEducativa2.png') }}" alt="">
             </a>
             <flux:navlist variant="outline">
                 {{-- Administrador --}}
@@ -130,9 +130,9 @@
                     icon-trailing="chevrons-up-down"
                 />
 
-                <flux:menu class="w-[220px] ">
+                <flux:menu class="w-[220px]  ">
                     <flux:menu.radio.group>
-                        <div class="p-0 text-sm font-normal">
+                        <div class="p-0 text-sm font-normal ">
                             <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                                 <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
                                     <span
@@ -228,6 +228,20 @@
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
         {{-- scripts de otros lados --}}
-        @stack('js')
+
+
+<script>
+    Livewire.on('alerta', (data) => {
+        data = data[0];
+        Swal.fire({
+            title: data['title'],
+            text: data['text'],
+            icon: data['icon'],
+            toast: data['toast'],
+            position: data['position'],
+        });
+    });
+</script>
+@stack('js')
     </body>
 </html>

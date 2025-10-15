@@ -19,6 +19,11 @@
 
     {{-- Contenido dividido en 2 columnas --}}
     <div class="px-6 py-8">
+        @if ($anuncios == null)
+            <p class="text-gray-500 dark:text-gray-400 italic">No hay anuncios disponibles.</p>
+        @else
+
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{-- Columna de Anuncios del Colegio --}}
             <div>
@@ -66,5 +71,6 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 </div>

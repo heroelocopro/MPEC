@@ -212,18 +212,22 @@ protected function guardarNota($tipo, $estudianteId, $notableId, $valor)
     }
     public function mount()
     {
-        $this->profesor = Profesor::where('user_id',Auth::user()->id)->first();
-        $this->colegio = $this->profesor->colegio;
-        $this->asignaturas = asignaturaProfesor::where('profesor_id',$this->profesor->id)->get();
-        $this->periodo = PeriodoAcademico::periodoActual($this->colegio->id);
-        $configNota = configNota::where('colegio_id',$this->colegio->id)->first();
+        $this->profesor = Profesor::where('user_id', Auth::id())->first() ?? (object)[];
+        $this->colegio = isset($this->profesor->colegio) ? $this->profesor->colegio : (object)['id' => null];
+        $this->asignaturas = isset($this->profesor->id)
+            ? asignaturaProfesor::where('profesor_id', $this->profesor->id)->get()
+            : collect(); // colección vacía
+
+        $this->periodo = isset($this->colegio->id)
+            ? PeriodoAcademico::periodoActual($this->colegio->id)
+            : null;
+
+        $configNota = isset($this->colegio->id)
+            ? configNota::where('colegio_id', $this->colegio->id)->first()
+            : null;
+
         $this->nota_minima = $configNota->nota_minima ?? 1;
         $this->nota_maxima = $configNota->nota_maxima ?? 5;
-
-
-
-
-
     }
     public function render()
     {

@@ -160,11 +160,20 @@ class Foro extends Component
     public function mount()
     {
         $this->usuario = $this->detectarTipoUsuario();
-        $this->cargarDatos();
+        if($this->usuario != null)
+        {
+            $this->cargarDatos();
+        }
     }
 
     public function render()
     {
+        if($this->usuario == null)
+        {
+            $foros = [];
+        }else{
+
+
         $foros = ModelsForo::where('colegio_id', $this->colegio->id)
             ->when($this->tipoUsuario === 'estudiante', function ($q) {
                 $q->where(function ($q) {
@@ -185,6 +194,9 @@ class Foro extends Component
             ->when($this->busqueda, fn($q) => $q->where('titulo', 'like', '%' . $this->busqueda . '%'))
             ->orderBy('created_at', $this->orden)
             ->paginate($this->paginate);
+
+
+        }
 
 
 

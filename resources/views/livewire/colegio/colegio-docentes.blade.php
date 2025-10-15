@@ -4,7 +4,7 @@
         <flux:breadcrumbs.item href="{{ route('colegio-inicio') }}">Panel Principal</flux:breadcrumbs.item>
         <flux:breadcrumbs.item href="{{ route('colegio-docentes') }}">Docentes</flux:breadcrumbs.item>
         @isset($colegio)
-                    <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>
+                    <flux:breadcrumbs.item>{{ $colegio->nombre ?? 'Sin nombre' }}</flux:breadcrumbs.item>
                 @endisset
     </flux:breadcrumbs>
     {{-- fin migajas de pan --}}

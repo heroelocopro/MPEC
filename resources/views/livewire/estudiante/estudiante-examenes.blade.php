@@ -149,4 +149,20 @@
             @endif
         </div>
     </flux:modal>
+
+    @push('js')
+<script>
+    Livewire.on('alerta', (data) => {
+        data = data[0];
+        Swal.fire({
+            title: data['title'],
+            text: data['text'],
+            icon: data['icon'],
+            toast: data['toast'],
+            position: data['position'],
+        });
+    });
+</script>
+@endpush
+
 </div>

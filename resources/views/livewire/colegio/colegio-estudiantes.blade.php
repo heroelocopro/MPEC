@@ -4,7 +4,7 @@
         <flux:breadcrumbs.item href="{{ route('login') }}">Panel Principal</flux:breadcrumbs.item>
         <flux:breadcrumbs.item href="{{ route('colegio-estudiantes') }}">Estudiantes</flux:breadcrumbs.item>
         @isset($colegioId)
-        <flux:breadcrumbs.item>{{ $colegioId->nombre }}</flux:breadcrumbs.item>
+        <flux:breadcrumbs.item>{{ $colegioId->nombre ?? 'Sin Colegio' }}</flux:breadcrumbs.item>
         @endisset
     </flux:breadcrumbs>
     {{-- fin migajas de pan --}}
@@ -126,9 +126,12 @@
         </div>
 
             {{-- paginacion --}}
-        @if ($estudiantes->hasPages())
+            @if (isset($estudiantes))
+
             {{ $estudiantes->links() }}
-        @endif
+            {{-- @if ($estudiantes->hasPages())
+            @endif --}}
+            @endif
 
     </div>
 
@@ -453,11 +456,18 @@
                     <label for="colegio_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Colegio de Afiliación*</label>
                     <select id="colegio_id" wire:model.defer="colegio_id"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        @if ($colegioId->colegio)
+                       @if (isset($colegioId))
+                           @if (isset($colegioId->colegio))
+                               <option value="{{ $colegioId->colegio->id }}">{{ $colegioId->colegio->nombre }}</option>
+                            @else
+                                <option value="{{ $colegioId->id ?? 0 }}">{{ $colegioId->nombre ?? 'Sin nombre' }}</option>
+                           @endif
+                       @endif
+                        {{-- @if ($colegioId->colegio)
                         <option value="{{ $colegioId->colegio->id }}">{{ $colegioId->colegio->nombre }}</option>
                         @else
                         <option value="{{ $colegioId->id }}">{{ $colegioId->nombre }}</option>
-                        @endif
+                        @endif --}}
                     </select>
                     @error('colegio_id')
                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -470,8 +480,8 @@
                     <select id="sede_id" wire:model.defer="sede_id"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         {{-- es una sede --}}
-                        @if ($colegioId->colegio)
-                            <option value="{{ $colegioId->id }}">{{ $colegioId->nombre }}</option>
+                        @if ($colegioId != null)
+                            <option value="{{ $colegioId->id }}">{{ $colegioId->nombre ?? 'Sin colegio' }}</option>
                         @elseif($colegioId)
                             <option value="">Sede principal</option>
                             @foreach ($colegioId->sedes as $sede)

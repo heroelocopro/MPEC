@@ -98,16 +98,16 @@ new #[Layout('components.layouts.auth')] class extends Component {
         return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
     }
 }; ?>
-<div class="  dark:bg-[#121212] flex items-center justify-center px-4">
-    <div class="w-full max-w-md bg-white dark:bg-[#1A1A1A] rounded-xl shadow-lg p-8">
+<div class=" bg-[#0E1848] rounded-4xl   dark:bg-[#121212] flex items-center justify-center px-4">
+    <div class="w-full max-w-md bg-[#0E1848] dark:bg-[#1A1A1A] rounded-xl shadow-lg p-8">
         <h1 class="text-3xl lg:text-4xl font-bold mb-4 text-center text-wrap">
-           <span class="text-blue-600 dark:text-yellow-400 text-wrap">{{ env("APP_NAME") }}</span>
+           <span class="text-[#8F1718] dark:text-yellow-400 text-wrap">{{ env("APP_NAME") }}</span>
         </h1>
-        <img src="{{ asset('images/GuruEducativa2.png') }}" alt="" srcset="">
+        <img class="rounded-2xl border-2 border-black" src="{{ asset('images/GuruEducativa2.png') }}" alt="" srcset="">
         <!-- Título -->
         <div class="text-center mb-6">
-            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Inicio de Sesión</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Ingresa tu nombre y contraseña</p>
+            <h1 class="text-2xl font-bold text-[#8F1718] dark:text-white">Inicio de Sesión</h1>
+            <p class="text-sm text-[#8F1718] dark:text-gray-400">Ingresa tu nombre y contraseña</p>
         </div>
 
         <!-- Estado de sesión -->
@@ -116,13 +116,13 @@ new #[Layout('components.layouts.auth')] class extends Component {
         <!-- Formulario -->
         <form wire:submit="login" class="space-y-5">
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Email</label>
+                <label class="block text-sm font-medium text-[#8F1718] dark:text-gray-200">Email</label>
                 <input type="text" wire:model="email" required class="mt-1 block text-black w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-[#2A2A2A] dark:text-white shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Tu Email">
                 @error('email') <span class="text-sm text-red-500">{{ $message }}</span> @enderror
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Contraseña</label>
+                <label class="block text-sm font-medium text-[#8F1718] dark:text-gray-200">Contraseña</label>
                 <input type="password" wire:model="password" required class="mt-1 block text-black w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-[#2A2A2A] dark:text-white shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="••••••••">
                 @error('password') <span class="text-sm text-red-500">{{ $message }}</span> @enderror
             </div>

@@ -286,9 +286,9 @@ class ColegioDocentes extends Component
 
         $this->totalSteps = 3;
 
-        $this->colegio = Colegio::where('user_id','=',Auth::user()->id)->first();
+        $this->colegio = Colegio::where('user_id','=',Auth::user()->id)->first() ?? (object)[];
 
-        $this->colegio_id = $this->colegio->id;
+        $this->colegio_id = $this->colegio->id ?? null;
 
         $this->sede_idEdicion = null;
 
@@ -302,9 +302,9 @@ class ColegioDocentes extends Component
     }
     public function render()
     {
-        $colegioId = Colegio::where('user_id','=',Auth::user()->id)->first();
+        $colegioId = Colegio::where('user_id','=',Auth::user()->id)->first() ?? (object) [];
         $profesores = Profesor::query()
-        ->where('colegio_id', $colegioId->id)
+        ->where('colegio_id', $colegioId->id ?? 0)
         ->where(function($query) {
             $query->where('nombre_completo', 'like', '%'.$this->buscador.'%')
                 ->orWhere('correo', 'like', '%'.$this->buscador.'%')

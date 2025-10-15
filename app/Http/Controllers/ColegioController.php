@@ -20,13 +20,38 @@ class ColegioController extends Controller
 {
     public function mostrarInicio()
     {
-        $colegioId = Colegio::where('user_id',Auth::user()->id)->first()->id;
-        $totalEstudiantes = count(matricula::where('colegio_id',$colegioId)->get());
-        $totalDocentes = count(Profesor::where('colegio_id',$colegioId)->get());
-        $totalGrupos = count(Grupo::where('colegio_id',$colegioId)->get());
-        $totalAsignaturas = count(asignatura::where('colegio_id',$colegioId)->get());
-        $estudiantesPorGrupo = Grupo::withCount('estudiantes')->pluck('estudiantes_count', 'nombre')->toArray();
-        return view('colegio.inicio.index', compact('totalEstudiantes','totalDocentes','totalGrupos','totalAsignaturas','estudiantesPorGrupo'));
+        $colegio = Colegio::where('user_id', Auth::user()->id)->first() ?? (object) ['id' => null];
+        $colegioId = $colegio->id;
+
+        // Si no hay colegio, devolvemos datos vacíos
+        if (!$colegioId) {
+            return view('colegio.inicio.index', [
+                'totalEstudiantes' => 0,
+                'totalDocentes' => 0,
+                'totalGrupos' => 0,
+                'totalAsignaturas' => 0,
+                'estudiantesPorGrupo' => [],
+            ]);
+        }
+
+        $totalEstudiantes = matricula::where('colegio_id', $colegioId)->count();
+        $totalDocentes = Profesor::where('colegio_id', $colegioId)->count();
+        $totalGrupos = Grupo::where('colegio_id', $colegioId)->count();
+        $totalAsignaturas = asignatura::where('colegio_id', $colegioId)->count();
+
+        $estudiantesPorGrupo = Grupo::where('colegio_id', $colegioId)
+            ->withCount('estudiantes')
+            ->pluck('estudiantes_count', 'nombre')
+            ->toArray();
+
+        return view('colegio.inicio.index', compact(
+            'totalEstudiantes',
+            'totalDocentes',
+            'totalGrupos',
+            'totalAsignaturas',
+            'estudiantesPorGrupo'
+        ));
+
     }
     public function mostrarDocentes()
     {

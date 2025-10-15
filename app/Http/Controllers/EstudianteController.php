@@ -17,8 +17,14 @@ class EstudianteController extends Controller
     {
         $usuario = Auth::user();
         $estudiante = Estudiante::where('user_id',$usuario->id)->first();
-        $colegio = $estudiante->colegio;
-        $anuncios = $colegio->anuncios()->latest()->get();
+        $colegio = $estudiante->colegio ?? 'sin Colegio';
+        if ($colegio != 'sin Colegio')
+        {
+            $anuncios = $colegio->anuncios()->latest()->get();
+        }else
+        {
+            $anuncios = [];
+        }
         return view('estudiante.inicio.index', compact('anuncios','estudiante'));
     }
     public function mostrarActividades()

@@ -172,14 +172,25 @@ class DocenteAsistencias extends Component
     }
     public function mount()
     {
-        $this->profesor = Profesor::where('user_id',Auth::user()->id)->first();
-        $this->colegio = $this->profesor->colegio;
+        $this->profesor = Profesor::where('user_id', Auth::id())->first() ?? (object)[];
+        $this->colegio = isset($this->profesor->colegio)
+            ? $this->profesor->colegio
+            : (object)['id' => null];
+
+        $this->asignaturas = []; // inicializamos antes del foreach
         $this->estudiantes = [];
-        $asignaturas = asignaturaProfesor::where('profesor_id',$this->profesor->id)->get();
-            foreach($asignaturas as $asignatura  )
-            {
-                array_push($this->asignaturas,$asignatura->asignatura);
+
+        $profesor_id = $this->profesor->id ?? null;
+
+        if ($profesor_id) {
+            $asignaturasProfesor = asignaturaProfesor::where('profesor_id', $profesor_id)->get();
+
+            foreach ($asignaturasProfesor as $asignatura) {
+                if (isset($asignatura->asignatura)) {
+                    $this->asignaturas[] = $asignatura->asignatura;
+                }
             }
+        }
     }
     // idea principal
     // seleccionar una asignatura -> grupo y tener aisstencias

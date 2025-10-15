@@ -11,21 +11,37 @@ use Livewire\WithFileUploads;
 
 class DocenteVerAnuncios extends Component
 {
-    // editar
     use WithFileUploads;
-    protected $rules = [
-        'titulo' => 'required|string|max:255',
-        'contenido' => 'required|string',
-        'imagenNueva' => 'nullable|image|max:2048', // max 2MB
-    ];
+
+    // ====== Propiedades del componente ======
     public $editarModal = false;
     public $anuncio;
     public $titulo;
     public $contenido;
     public $imagenVieja;
     public $imagenNueva;
-    // cargamos el anuncio a la variable y dividimos lo demas
-    public function cargarAnuncio($id)
+    public $anuncios = [];
+    public $profesor;
+    public $colegio;
+
+    // ====== Validaciones ======
+    protected $rules = [
+        'titulo' => 'required|string|max:255',
+        'contenido' => 'required|string',
+        'imagenNueva' => 'nullable|image|max:2048', // máx. 2 MB
+    ];
+
+    // Escucha de eventos Livewire (desde JS)
+    protected $listeners = ['eliminarAnuncio' => 'eliminarAnuncio'];
+
+    // ============================
+    // === Métodos principales ===
+    // ============================
+
+    /**
+     * Carga el anuncio seleccionado en los campos para edición.
+     */
+    public function cargarAnuncio(int $id): void
     {
         $this->anuncio = Anuncio::findOrFail($id);
         $this->titulo = $this->anuncio->titulo;
@@ -33,43 +49,56 @@ class DocenteVerAnuncios extends Component
         $this->imagenVieja = $this->anuncio->imagen;
         $this->editarModal = true;
     }
-    public function limpiarEdicion()
+
+    /**
+     * Limpia y cierra el modal de edición.
+     */
+    public function limpiarEdicion(): void
     {
-        $this->editarModal = false;
+        $this->reset(['editarModal', 'anuncio', 'titulo', 'contenido', 'imagenVieja', 'imagenNueva']);
     }
-    public function editar()
+
+    /**
+     * Edita el anuncio actual con los datos actualizados.
+     */
+    public function editar(): void
     {
-        // validamos con la regla de arriba
-        $this->validate($this->rules);
+        $this->validate();
+
         try {
+            // Ruta por defecto
             $imagePath = $this->imagenVieja;
-            // validamos si van a cambiar la imagen
-            if($this->imagenNueva)
-            {
+
+            // Si hay nueva imagen, borrar la anterior y guardar la nueva
+            if ($this->imagenNueva) {
                 if ($this->imagenVieja && Storage::disk('public')->exists($this->imagenVieja)) {
                     Storage::disk('public')->delete($this->imagenVieja);
                 }
-                $imagePath = $this->imagenNueva->store('anuncios','public');
+
+                $imagePath = $this->imagenNueva->store('anuncios', 'public');
             }
-            $datos = [
+
+            // Actualizar los datos del anuncio
+            $this->anuncio->update([
                 'titulo' => $this->titulo,
                 'contenido' => $this->contenido,
                 'imagen' => $imagePath,
-            ];
-            // actualizamos
-            $this->anuncio->update($datos);
-            // cargamos otra vez
+            ]);
+
+            // Recargar listado
             $this->limpiarEdicion();
             $this->cargarAnuncios();
-            // alerta
+
+            // Éxito
             $this->dispatch('alerta', [
-                'title' => 'Anuncio Editado',
-                'text' => '¡Se ha Editado correctamente!',
+                'title' => 'Anuncio editado',
+                'text' => '¡Se ha editado correctamente!',
                 'icon' => 'success',
                 'toast' => true,
                 'position' => 'top-end',
             ]);
         } catch (\Throwable $th) {
+            // Error controlado
             $this->dispatch('alerta', [
                 'title' => 'Error al editar anuncio',
                 'text' => $th->getMessage(),
@@ -79,53 +108,71 @@ class DocenteVerAnuncios extends Component
             ]);
         }
     }
-    // eliminar
-    protected $listeners = ['eliminarAnuncio' => 'eliminarAnuncio'];
-    public function eliminarAnuncio($id)
+
+    /**
+     * Elimina un anuncio (imagen incluida si existe).
+     */
+    public function eliminarAnuncio(int $id): void
     {
         try {
-            // obtenemos el anuncio
             $anuncio = Anuncio::findOrFail($id);
-            // borramos la foto guardada si existe
-            // Borramos la imagen si existe
+
             if ($anuncio->imagen && Storage::disk('public')->exists($anuncio->imagen)) {
                 Storage::disk('public')->delete($anuncio->imagen);
             }
-            // borramos
+
             $anuncio->delete();
+
             $this->cargarAnuncios();
+
             $this->dispatch('alerta', [
                 'title' => 'Anuncio eliminado',
-                'text' => '¡Se elimino correctamente!',
+                'text' => '¡Se eliminó correctamente!',
                 'icon' => 'success',
                 'toast' => true,
                 'position' => 'top-end',
             ]);
         } catch (\Throwable $th) {
             $this->dispatch('alerta', [
-                'title' => 'Anuncio error',
+                'title' => 'Error al eliminar',
                 'text' => $th->getMessage(),
-                'icon' => 'success',
+                'icon' => 'error',
                 'toast' => true,
                 'position' => 'top-end',
             ]);
         }
     }
-    // datos para cargar
-    public $anuncios = [];
-    public function cargarAnuncios()
+
+    /**
+     * Carga los anuncios del profesor autenticado.
+     */
+    public function cargarAnuncios(): void
     {
-        $this->anuncios = $this->profesor->anuncios()->latest()->get();
+        if ($this->profesor && $this->profesor->exists) {
+            $this->anuncios = $this->profesor->anuncios()->latest()->get();
+        } else {
+            $this->anuncios = collect();
+        }
     }
-    // datos basicos para servir
-    public $profesor;
-    public $colegio;
-    public function mount()
+
+    // ============================
+    // === Ciclo de vida Livewire ===
+    // ============================
+
+    public function mount(): void
     {
-        $this->profesor = Profesor::where('user_id',Auth::user()->id)->first();
-        $this->colegio = $this->profesor->colegio;
+        $this->profesor = Profesor::where('user_id', Auth::id())->first();
+
+        if (!$this->profesor) {
+            $this->colegio = null;
+            $this->anuncios = collect();
+            return;
+        }
+
+        $this->colegio = $this->profesor->colegio ?? null;
         $this->cargarAnuncios();
     }
+
     public function render()
     {
         return view('livewire.docente.docente-ver-anuncios');

@@ -7,8 +7,11 @@
     <div class="flex flex-col gap-6 p-4">
         {{-- Encabezado --}}
         <div>
-            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">👋 ¡Hola, {{ $estudiante->nombre_completo }}!</h1>
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">👋 ¡Hola, {{ $estudiante->nombre_completo ?? 'test' }}!</h1>
             <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Aquí encontrarás todas tus herramientas académicas reunidas.</p>
+            @if ($estudiante == null)
+                <p class="text-sm text-red-600 dark:text-red-400 mt-1">Actualmente no cuentas con un colegio.</p>
+            @endif
         </div>
 
         {{-- Accesos principales --}}
@@ -42,7 +45,7 @@
         <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-xl p-4">
             <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-3">📢 Anuncios recientes</h2>
 
-            @if ($anuncios->isEmpty())
+            @if ($anuncios == null || empty($anuncios))
                 <p class="text-gray-600 dark:text-gray-400 text-sm text-center">No hay anuncios por ahora. ¡Mantente atento!</p>
             @else
                 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

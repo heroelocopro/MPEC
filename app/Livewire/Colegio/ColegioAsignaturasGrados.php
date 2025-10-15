@@ -127,7 +127,7 @@ class ColegioAsignaturasGrados extends Component
         $grados = Grado::where('colegio_id', $colegio->id)->get();
 
         $asignaturas = $this->grado
-            ? asignatura::whereNotIn('id', $this->grado->asignaturas->pluck('id'))->get()
+            ? asignatura::whereNotIn('id', $this->grado->asignaturas->pluck('id'))->where('colegio_id',$colegio->id)->get()
             : [];
 
         return view('livewire.colegio.colegio-asignaturas-grados', compact('colegio', 'grupos', 'grados', 'asignaturas'));

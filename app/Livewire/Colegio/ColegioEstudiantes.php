@@ -480,7 +480,7 @@ private function generarNombreCompleto(array $data): string
 
     // valores importantes para el modal creacion
     public $totalSteps=4;
-    public $currentStep=1;
+    public $currentStep=4;
     public $modalCreacion = false;
 
     public function nextStep()
@@ -564,25 +564,43 @@ private function generarNombreCompleto(array $data): string
         $this->buscador = '';
         $this->sortField = 'id';
         $this->sortDirection = 'desc';
-        $colegio = Colegio::where('user_id', Auth::id())->first();
+
+        $usuarioId = Auth::id();
+
+        // Intentar primero obtener colegio asignado al usuario
+        $colegio = Colegio::where('user_id', $usuarioId)->first();
 
         if ($colegio) {
+            // Usuario es dueño o responsable del colegio
             $this->colegio_id = $colegio->id;
-        } else {
-            $sede = sedes_colegio::where('user_id', Auth::id())->first();
-            $this->colegio_id = $sede?->colegio->id;
-            $this->sede_id = $sede->id;
+            $this->sede_id = null;
+            return;
         }
-            }
-            public function render()
+
+        // Si no tiene colegio, intentar encontrar una sede asociada
+        $sede = sedes_colegio::where('user_id', $usuarioId)->first();
+
+        if ($sede) {
+            // Validar que la sede tenga relación con un colegio
+            $this->sede_id = $sede->id;
+            $this->colegio_id = $sede->colegio?->id ?? null;
+            return;
+        }
+
+        // Si no tiene ni colegio ni sede asignada
+        $this->colegio_id = null;
+        $this->sede_id = null;
+    }
+
+        public function render()
             {
                 $usuarioId = Auth::id();
 
                 // Detectar si el usuario es del colegio principal
-                $colegio = Colegio::where('user_id', $usuarioId)->first();
+                $colegio = Colegio::where('user_id', $usuarioId)->first() ?? (object) ['id' => null];
 
                 // O si es de una sede
-                $sede = sedes_colegio::where('user_id', $usuarioId)->first();
+                $sede = sedes_colegio::where('user_id', $usuarioId)->first() ?? (object) [] ;
 
                 if ($colegio) {
                     $this->colegio_id = $colegio->id;

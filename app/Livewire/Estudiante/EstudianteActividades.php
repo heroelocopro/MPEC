@@ -163,9 +163,9 @@ class EstudianteActividades extends Component
     public function mount()
     {
         // datos basicos del estudiante
-        $this->estudiante = Estudiante::where('user_id',Auth::user()->id)->first();
+        $this->estudiante = Estudiante::where('user_id',Auth::user()->id)->first() ?? (object) ['id' => null];
         $this->colegio = $this->estudiante->colegio ?? null;
-        $this->matricula = $this->estudiante->matricula;
+        $this->matricula = $this->estudiante->matricula ?? null;
         $this->grado = $this->matricula->grado ?? null;
         $this->grupo = EstudianteGrupo::where('estudiante_id',$this->estudiante->id)->first()->grupo ?? null;
 

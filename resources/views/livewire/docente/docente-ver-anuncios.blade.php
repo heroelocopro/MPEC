@@ -6,7 +6,7 @@
                 <flux:breadcrumbs.item href="#">Panel Principal</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item href="{{ route('docente-anuncios') }}">Anuncios</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item href="">Ver</flux:breadcrumbs.item>
-                <flux:breadcrumbs.item href="">{{ $colegio->nombre }}</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item href="">{{ $colegio->nombre ?? 'Sin nombre' }}</flux:breadcrumbs.item>
             </flux:breadcrumbs>
         </div>
         <a href="{{ route('docente-anuncios') }}"

@@ -8,7 +8,6 @@ use App\Models\AsignaturaGrado;
 use App\Models\asignaturaProfesor;
 use App\Models\PeriodoAcademico;
 use App\Models\Profesor;
-use App\Notifications\NuevaActividadNotification;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -19,76 +18,96 @@ class DocenteActividades extends Component
 {
     use WithFileUploads;
 
-    public $asignaturas = [];
-    public $grupos = [];
-    public $actividades = [];
-    public $colegio;
-    public $profesor;
-
+    // ---------- propiedades públicas (inicializadas de forma segura) ----------
+    public $asignaturas = [];      // array de objetos asignatura
+    public $grupos = [];          // array de objetos grupo para el select
+    public $actividades;          // Collection de actividades (puede ser collect())
+    public $colegio;              // objeto colegio o object con id = null
+    public $profesor;             // objeto Profesor o null
 
     public $mostrarFormulario = false;
     public $mostrarActividades = false;
-    // variables de creacion
-    public $profesor_id;
-    public $asignatura_id;
-    public $grupo_id;
-    public $titulo;
-    public $descripcion;
-    public $fecha_entrega;
-    public $archivo;
+
+    // variables de creación
+    public $profesor_id = null;   // int|null
+    public $asignatura_id = null;
+    public $grupo_id = null;
+    public $titulo = null;
+    public $descripcion = null;
+    public $fecha_entrega = null;
+    public $archivo = null;
+
     // filtro
     public $grupoFiltro = '';
-    public $gruposFiltro = [];
+    public $gruposFiltro = [];    // array con grupos únicos extraídos de actividades
 
+    // -------------------------------------------------------------------------
 
     public function verRespuestas($actividad_id)
     {
-
+        // implementar según flujo (dejado vacío intencionalmente)
     }
-
-
 
     public function crearActividad()
     {
+        // reglas de validación
         $rules = [
-            'profesor_id'     => 'required|exists:profesores,id',
-            'asignatura_id'   => 'required|exists:asignaturas,id',
-            'grupo_id'        => 'required|exists:grupos,id',
-            'titulo'          => 'required|string|max:255',
-            'descripcion'     => 'required|string|max:1000',
-            'fecha_entrega'   => 'required|date|after_or_equal:today',
-            'archivo'         => 'nullable|file|mimes:pdf,doc,docx,odt|max:10240',
+            'profesor_id'   => 'required|exists:profesores,id',
+            'asignatura_id' => 'required|exists:asignaturas,id',
+            'grupo_id'      => 'required|exists:grupos,id',
+            'titulo'        => 'required|string|max:255',
+            'descripcion'   => 'required|string|max:1000',
+            'fecha_entrega' => 'required|date|after_or_equal:today',
+            'archivo'       => 'nullable|file|mimes:pdf,doc,docx,odt|max:10240',
         ];
 
         $this->validate($rules);
 
+        // obtener periodo actual de forma segura
+        $periodo = null;
+        if (!empty($this->colegio) && isset($this->colegio->id)) {
+            $periodo = PeriodoAcademico::periodoActual($this->colegio->id);
+        }
+
+        if (!$periodo || !isset($periodo->id)) {
+            // no hay periodo activo: abortamos con mensaje
+            $this->dispatch('alerta', [
+                'title' => 'Error',
+                'text'  => 'No se encontró un periodo académico activo para el colegio.',
+                'icon'  => 'error',
+                'toast' => true,
+                'position' => 'top-end',
+            ]);
+            return;
+        }
+
         $rutaArchivo = null;
         if ($this->archivo) {
-            // Guarda el archivo en 'public/docnte/actividades' y obtiene la ruta
+            // guarda el archivo en storage/app/public/docente/actividades
             $rutaArchivo = $this->archivo->store('docente/actividades', 'public');
         }
 
         $datos = [
-            'profesor_id'     => $this->profesor_id,
-            'asignatura_id'   => $this->asignatura_id,
-            'grupo_id'        => $this->grupo_id,
-            'titulo'          => $this->titulo,
-            'descripcion'     => $this->descripcion,
-            'fecha_entrega'   => $this->fecha_entrega,
-            'archivo'         => $rutaArchivo, // solo guardas la ruta
-            'periodo_id' => PeriodoAcademico::periodoActual($this->colegio->id)->id,
+            'profesor_id'   => $this->profesor_id,
+            'asignatura_id' => $this->asignatura_id,
+            'grupo_id'      => $this->grupo_id,
+            'titulo'        => $this->titulo,
+            'descripcion'   => $this->descripcion,
+            'fecha_entrega' => $this->fecha_entrega,
+            'archivo'       => $rutaArchivo,
+            'periodo_id'    => $periodo->id,
         ];
 
         try {
             $actividad = Actividad::create($datos);
 
-            // Carga la relación 'usuario' de los estudiantes para evitar múltiples consultas
-            $estudiantes = $actividad->grupo->estudiantes()->with('usuario')->get();
-
-            foreach ($estudiantes as $estudiante) {
-                // Verifica que la relación existe y es una instancia de User
-                if ($estudiante->usuario instanceof \App\Models\User) {
-                    $estudiante->usuario->notify(new \App\Notifications\NuevaActividadNotification($actividad));
+            // notificar estudiantes del grupo (si existen)
+            if ($actividad->grupo) {
+                $estudiantes = $actividad->grupo->estudiantes()->with('usuario')->get();
+                foreach ($estudiantes as $estudiante) {
+                    if (!empty($estudiante->usuario) && method_exists($estudiante->usuario, 'notify')) {
+                        $estudiante->usuario->notify(new \App\Notifications\NuevaActividadNotification($actividad));
+                    }
                 }
             }
 
@@ -101,6 +120,9 @@ class DocenteActividades extends Component
             ]);
 
             $this->limpiarCrearActividad();
+
+            // recargo actividades para reflejar la nueva
+            $this->cargarActividades();
         } catch (\Throwable $th) {
             $this->dispatch('alerta', [
                 'title' => 'Creación de actividad fallida',
@@ -114,10 +136,11 @@ class DocenteActividades extends Component
 
     public function limpiarCrearActividad()
     {
-        $this->reset(['asignatura_id','grupo_id','titulo','descripcion','fecha_entrega','archivo']);
+        // resetea sólo los campos del formulario de creación
+        $this->reset(['asignatura_id', 'grupo_id', 'titulo', 'descripcion', 'fecha_entrega', 'archivo']);
     }
 
-
+    // ------------------ updated handlers ------------------
 
     public function updatedMostrarActividades()
     {
@@ -125,6 +148,7 @@ class DocenteActividades extends Component
         $this->mostrarFormulario = false;
         $this->cargarActividades();
     }
+
     public function updatedMostrarFormulario()
     {
         $this->mostrarFormulario = true;
@@ -133,71 +157,115 @@ class DocenteActividades extends Component
 
     public function updatedAsignaturaId($value)
     {
-        if($value != null || $value != '')
-        {
-            $gradoAsignatura = AsignaturaGrado::where('asignatura_id',$value)->get();
+        // si value es vacío, limpiamos los grupos
+        if (empty($value)) {
             $this->grupos = [];
-            foreach($gradoAsignatura as $g)
-            {
-                foreach($g->grado->grupos as $grupo)
-                {
-                    array_push($this->grupos,$grupo);
+            return;
+        }
+
+        // obtener los grados donde está la asignatura y luego sus grupos
+        $gradoAsignaturas = AsignaturaGrado::where('asignatura_id', $value)->with('grado.grupos')->get();
+
+        $this->grupos = [];
+        foreach ($gradoAsignaturas as $ga) {
+            if (isset($ga->grado) && isset($ga->grado->grupos)) {
+                foreach ($ga->grado->grupos as $grupo) {
+                    $this->grupos[] = $grupo;
                 }
             }
         }
+
+        // eliminar posibles duplicados (si hay)
+        $this->grupos = collect($this->grupos)->unique('id')->values()->all();
     }
+
     public function updatedGrupoFiltro($value)
     {
-
-        if($value != null || $value != '')
-        {
+        // si hay filtro, solo traemos las actividades de ese grupo; si no, recargamos todas
+        if (!empty($value)) {
             $this->actividades = Actividad::where('profesor_id', $this->profesor_id)
-            ->where('grupo_id',$value)
-        ->with(['grupo', 'notas']) // carga todo lo necesario
-        ->orderBy('grupo_id')
-        ->get();
-        }else{
-            $this->actividades = [];
+                ->where('grupo_id', $value)
+                ->with(['grupo', 'notas'])
+                ->orderBy('grupo_id')
+                ->get();
+        } else {
+            // recarga todas las actividades del profesor
+            $this->cargarActividades();
         }
+
+        // actualizar gruposFiltro para reflejar el set mostrado
+        $this->gruposFiltro = collect($this->actividades)
+            ->pluck('grupo')
+            ->filter()
+            ->unique('id')
+            ->values()
+            ->all();
     }
+
+    // ------------------ carga de actividades ------------------
 
     public function cargarActividades()
     {
-        $this->actividades = Actividad::where('profesor_id', $this->profesor_id)
-        ->with(['grupo', 'notas']) // carga todo lo necesario
-        ->orderBy('grupo_id')
-        ->get();
+        // solo si profesor_id es válido
+        if (!empty($this->profesor_id)) {
+            $this->actividades = Actividad::where('profesor_id', $this->profesor_id)
+                ->with(['grupo', 'notas'])
+                ->orderBy('grupo_id')
+                ->get();
 
-        // foreach($this->actividades as $actividad)
-        // {
-        //     array_push($this->gruposFiltro,$actividad->grupo);
-        // }
-        $this->gruposFiltro = collect($this->actividades)
-        ->pluck('grupo')       // obtiene todos los grupos
-        ->unique('id')         // elimina los duplicados por ID
-        ->values()             // reindexa
-        ->all();               // convierte en array si lo necesitas
-
-
-
-
+            // extraer grupos únicos de las actividades (para filtro)
+            $this->gruposFiltro = collect($this->actividades)
+                ->pluck('grupo')
+                ->filter()      // eliminar nulls por si acaso
+                ->unique('id')
+                ->values()
+                ->all();
+        } else {
+            // valores seguros si no hay profesor
+            $this->actividades = collect();
+            $this->gruposFiltro = [];
+        }
     }
 
+    // ------------------ lifecycle mount ------------------
 
     public function mount()
     {
+        // valores por defecto
         $this->mostrarFormulario = false;
         $this->mostrarActividades = false;
-        $this->profesor = Profesor::where('user_id',Auth::user()->id)->first();
-        $this->profesor_id = $this->profesor->id;
-        $this->cargarActividades();
-        $this->colegio = $this->profesor->colegio;
-        $asignaturaProfesor = asignaturaProfesor::where('profesor_id',$this->profesor->id)->get();
-        foreach($asignaturaProfesor as $asignatura)
-        {
-            array_push($this->asignaturas,$asignatura->asignatura);
+
+        $this->asignaturas = [];
+        $this->grupos = [];
+        $this->gruposFiltro = [];
+        $this->actividades = collect();
+
+        // obtener profesor según el usuario autenticado (si existe)
+        $this->profesor = Profesor::where('user_id', Auth::id())->first();
+
+        // profesor_id como int o null (nunca un objeto)
+        $this->profesor_id = $this->profesor->id ?? null;
+
+        // colegio seguro (objeto o fallback con id null)
+        $this->colegio = $this->profesor->colegio ?? (object) ['id' => null];
+
+        // cargar asignaturas del profesor (si tiene)
+        if (!empty($this->profesor_id)) {
+            $this->asignaturas = asignaturaProfesor::where('profesor_id', $this->profesor_id)
+                ->with('asignatura')
+                ->get()
+                ->pluck('asignatura') // devuelve colección de asignaturas (puede incluir null)
+                ->filter()            // eliminar nulls
+                ->values()
+                ->all();
+        } else {
+            $this->asignaturas = [];
         }
+
+        // cargar actividades iniciales (si aplica)
+        $this->cargarActividades();
     }
+
     public function render()
     {
         return view('livewire.docente.docente-actividades');

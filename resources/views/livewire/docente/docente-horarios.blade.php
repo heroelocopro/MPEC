@@ -11,7 +11,7 @@
                 </a>
             </flux:breadcrumbs.item>
             <flux:breadcrumbs.item href="{{ route('docente-horarios') }}">Horarios</flux:breadcrumbs.item>
-            <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item>{{ $colegio->nombre ?? 'Sin nombre' }}</flux:breadcrumbs.item>
         </flux:breadcrumbs>
     </div>
 

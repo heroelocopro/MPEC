@@ -50,18 +50,18 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'password' => bcrypt('admin'),
             'role_id' => 1],
-            ['name' => 'colegio',
-            'email' => 'colegio@gmail.com',
-            'password' => bcrypt('colegio'),
-            'role_id' => 2],
-            ['name' => 'docente',
-            'email' => 'docente@gmail.com',
-            'password' => bcrypt('docente'),
-            'role_id' => 3],
-            ['name' => 'estudiante',
-            'email' => 'estudiante@gmail.com',
-            'password' => bcrypt('estudiante'),
-            'role_id' => 4],
+            // ['name' => 'colegio',
+            // 'email' => 'colegio@gmail.com',
+            // 'password' => bcrypt('colegio'),
+            // 'role_id' => 2],
+            // ['name' => 'docente',
+            // 'email' => 'docente@gmail.com',
+            // 'password' => bcrypt('docente'),
+            // 'role_id' => 3],
+            // ['name' => 'estudiante',
+            // 'email' => 'estudiante@gmail.com',
+            // 'password' => bcrypt('estudiante'),
+            // 'role_id' => 4],
         ];
 
         foreach ($usuarios as $usuario)
@@ -91,6 +91,7 @@ class DatabaseSeeder extends Seeder
             sedes_colegio::create($data);
         }
 
+
         // 2️⃣ Crear profesores
         // $profesores = [
         //     ['colegio_id' => 1,'sede_id' => null, 'nombre_completo' => 'Laura Martínez', 'documento' => '123456789', 'tipo_documento' => 'CC', 'correo' => 'laura@colegionacional.edu.co', 'telefono' => '3000000001', 'titulo_academico' => 'Licenciada en Matemáticas'],
@@ -101,12 +102,12 @@ class DatabaseSeeder extends Seeder
         Profesor::factory(13)->create([
             'colegio_id' => 1
         ]);
-        Profesor::factory(13)->create([
-            'colegio_id' => 2
-        ]);
-        Profesor::factory(13)->create([
-            'colegio_id' => 3
-        ]);
+        // Profesor::factory(13)->create([
+        //     'colegio_id' => 2
+        // ]);
+        // Profesor::factory(13)->create([
+        //     'colegio_id' => 3
+        // ]);
 
         // foreach ($profesores as $data) {
         //     Profesor::create($data);
@@ -154,12 +155,12 @@ class DatabaseSeeder extends Seeder
             'colegio_id' => 1
         ]);
 
-        $e2 = Estudiante::factory(60)->create([
-            'colegio_id' => 2
-        ]);
-        $e3 = Estudiante::factory(60)->create([
-            'colegio_id' => 3
-        ]);
+        // $e2 = Estudiante::factory(60)->create([
+        //     'colegio_id' => 2
+        // ]);
+        // $e3 = Estudiante::factory(60)->create([
+        //     'colegio_id' => 3
+        // ]);
 
         // foreach ($estudiantes as $data) {
         //     Estudiante::create($data);
@@ -736,45 +737,45 @@ class DatabaseSeeder extends Seeder
         }
     }
     // colegio 2
-    $gradoId = 13;
-    $gradoId = Grado::where('nombre', 'Sexto')->where('colegio_id', 2)->first()->id;
-    for($i = 0; $i < count($e2); $i++)
-    {
+    // $gradoId = 13;
+    // $gradoId = Grado::where('nombre', 'Sexto')->where('colegio_id', 2)->first()->id;
+    // for($i = 0; $i < count($e2); $i++)
+    // {
 
-        matricula::create([
-            'estudiante_id' => $e2[$i]->id,
-            'colegio_id' => $e2[$i]->colegio_id,
-            'sede_id' => null,
-            'grado_id' => $gradoId,
-            'tipo_matricula' => 'nueva',
-            'estado' => 'activo',
-            'fecha_matricula' => now(),
-        ]);
-        if($i == 10 || $i == 20 || $i == 30 || $i == 40 || $i == 50 || $i == 60 )
-        {
-            $gradoId++;
-        }
-    }
-    // colegio 3
-    $gradoId = 19;
-    $gradoId = Grado::where('nombre', 'Sexto')->where('colegio_id', 3)->first()->id;
-    for($i = 0; $i < count($e3); $i++)
-    {
+    //     matricula::create([
+    //         'estudiante_id' => $e2[$i]->id,
+    //         'colegio_id' => $e2[$i]->colegio_id,
+    //         'sede_id' => null,
+    //         'grado_id' => $gradoId,
+    //         'tipo_matricula' => 'nueva',
+    //         'estado' => 'activo',
+    //         'fecha_matricula' => now(),
+    //     ]);
+    //     if($i == 10 || $i == 20 || $i == 30 || $i == 40 || $i == 50 || $i == 60 )
+    //     {
+    //         $gradoId++;
+    //     }
+    // }
+    // // colegio 3
+    // $gradoId = 19;
+    // $gradoId = Grado::where('nombre', 'Sexto')->where('colegio_id', 3)->first()->id;
+    // for($i = 0; $i < count($e3); $i++)
+    // {
 
-        matricula::create([
-            'estudiante_id' => $e3[$i]->id,
-            'colegio_id' => $e3[$i]->colegio_id,
-            'sede_id' => null,
-            'grado_id' => $gradoId,
-            'tipo_matricula' => 'nueva',
-            'estado' => 'activo',
-            'fecha_matricula' => now(),
-        ]);
-        if($i == 10 || $i == 20 || $i == 30 || $i == 40 || $i == 50 || $i == 60 )
-        {
-            $gradoId++;
-        }
-    }
+    //     matricula::create([
+    //         'estudiante_id' => $e3[$i]->id,
+    //         'colegio_id' => $e3[$i]->colegio_id,
+    //         'sede_id' => null,
+    //         'grado_id' => $gradoId,
+    //         'tipo_matricula' => 'nueva',
+    //         'estado' => 'activo',
+    //         'fecha_matricula' => now(),
+    //     ]);
+    //     if($i == 10 || $i == 20 || $i == 30 || $i == 40 || $i == 50 || $i == 60 )
+    //     {
+    //         $gradoId++;
+    //     }
+    // }
 
 
 
@@ -809,7 +810,7 @@ class DatabaseSeeder extends Seeder
     }
 
 
-    for ($i = 1; $i <= 3; $i++) {
+    for ($i = 1; $i <= 1; $i++) {
         $colegio = Colegio::findOrFail($i);
         $estudiantes = $colegio->estudiantes;
         $grupos = Grupo::where('colegio_id', $colegio->id)->get()->values(); // reindexar los grupos
@@ -839,7 +840,7 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-        for ($i = 1; $i <= 3; $i++) {
+        for ($i = 1; $i <= 1; $i++) {
         $colegio = Colegio::findOrFail($i);
         $profesores = $colegio->profesores;
         $asignaturas = asignatura::where('colegio_id', $colegio->id)->get()->values(); // reindexar los grupos
@@ -854,7 +855,7 @@ class DatabaseSeeder extends Seeder
 
         }
 
-        for ($i = 1; $i <= 3; $i++) {
+        for ($i = 1; $i <= 1; $i++) {
     $colegio = Colegio::findOrFail($i);
     $grados = $colegio->grados->values(); // Reindexar grados
     $asignaturas = asignatura::where('colegio_id', $colegio->id)->get()->values(); // Reindexar asignaturas
