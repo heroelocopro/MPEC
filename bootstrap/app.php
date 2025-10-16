@@ -6,6 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -20,5 +21,22 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('app:verificar-periodos')->daily();
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+            // Manejar error de conexión MySQL
+    $exceptions->render(function (PDOException $e, Request $request) {
+        if (str_contains($e->getMessage(), 'SQLSTATE[HY000] [2002]')) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => '⚙️ La base de datos está arrancando. Intenta nuevamente en unos segundos.'
+                ], 503);
+            }
+
+            return response(
+                '<h1>⚙️ La base de datos está arrancando...</h1>
+                 <p>Por favor, intenta nuevamente en unos segundos.</p>',
+                503
+            );
+        }
+
+        return null; // Usa el render por defecto para otros errores
+    });
     })->create();
