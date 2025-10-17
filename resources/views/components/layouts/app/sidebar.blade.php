@@ -54,6 +54,7 @@
                         <flux:navlist.item icon="calendar-days" :href="route('colegio-horarios')" :current="request()->routeIs('colegio-horarios')" wire:navigate>{{ __('Horarios') }}</flux:navlist.item>
                         <flux:navlist.item icon="calendar-date-range" :href="route('colegio-periodos')" :current="request()->routeIs('colegio-periodos')" wire:navigate>{{ __('Periodos') }}</flux:navlist.item>
                         <flux:navlist.item icon="academic-cap" :href="route('colegio-historial-academico')" :current="request()->routeIs('colegio-historial-academico')" wire:navigate>{{ __('Historial Academico') }}</flux:navlist.item>
+                        <flux:navlist.item icon="academic-cap" :href="route('colegio-cierre-de-notas')" :current="request()->routeIs('colegio-cierre-de-notas')" wire:navigate>{{ __('Cierre de notas') }}</flux:navlist.item>
                     </flux:navlist.group>
                 @endif
 

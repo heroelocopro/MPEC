@@ -8,6 +8,8 @@ use App\Models\Grado;
 use App\Models\matricula;
 use App\Models\sedes_colegio;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -47,163 +49,119 @@ class ColegioEstudiantes extends Component
     public $archivoExcel;
     public $previewData = [];
 
-    // public function importarEstudiantes()
-    // {
-    //     $this->validate([
-    //         'archivoExcel' => 'required|file|mimes:xlsx,xls,csv',
-    //     ]);
-    //     // Guardar el archivo temporalmente
-    //     $path = $this->archivoExcel->getRealPath();
-
-    //     // Leer el archivo
-    //     $reader = SimpleExcelReader::create($path);
-
-    //     // Obtener la primera fila (encabezados)
-    //     $headers = $reader->getHeaders();
-
-    //     // Obtener las primeras 10 filas de datos (ajusta según necesites)
-    //     $rows = $reader->getRows()
-    //     ->take(10)
-    //     ->toArray();
-
-    //     // Cerrar el lector
-    //     $reader->close();
-
-    //     // recorremos todos los rows y creamos tanto la matricula y el estudiante
-
-    //     foreach($rows as $row) {
-    //         // Primero normalizamos las claves (eliminamos ":" y espacios)
-    //         $normalized = array_map(function($key, $value) {
-    //             $cleanKey = strtolower(str_replace([':', ' '], ['', '_'], trim($key)));
-    //             return [$cleanKey => $value];
-    //         }, array_keys($row), $row);
-
-    //         $normalized = array_merge(...$normalized);
-
-    //         // Ahora puedes acceder con claves consistentes
-    //         // echo $normalized['estado_alumno']; // "NO MATRICULADO"
-
-    //         // ahora empezamos a crear
-
-    //         $estudiante = Estudiante::create([
-    //             'colegio_id' => $this->colegio_id,
-    //             'sede_id' => $normalized['sede'] == 'NO' || $normalized['sede'] == 'no' ? null:$normalized['sede'] ,
-    //             'nombre_completo' => $normalized['primer_nombre']." ".$normalized['segundo_nombre']." ".$normalized['primer_nombre']." ".$normalized['segundo_apellido'],
-    //             'documento' => $normalized['numero'],
-    //             'tipo_documento' => $normalized['tipo_id'],
-    //             'fecha_nacimiento' => $normalized['fecha_de_nacimiento'],
-    //             'genero' => $normalized['genero'],
-    //             'grupo_sanguineo' => $normalized['grupo_sanguineo'],
-    //             'eps' => $normalized['eps'] == "NO" || $normalized['eps'] == "no" ?  null : $normalized['eps'] ,
-    //             'sisben' => $normalized['sisben'] == "NO" || $normalized['sisben'] == "no" ? null : $normalized['sisben'],
-    //             'poblacion_vulnerable' => $normalized['poblacion_vulnerable'] == "NO" || $normalized['poblacion_vulnerable'] == "no" ? null : $normalized['poblacion_vulnerable'] ,
-    //             'discapacidad' => $normalized['listado_de_categoria_discapacidad'] == "NO APLICA" ? null : $normalized['listado_de_categoria_discapacidad'],
-    //             'direccion' => $normalized['direccion_de_residencia'],
-    //             'telefono' => $normalized['telefono'],
-    //             'correo' => $normalized['correo'],
-    //         ]);
-
-    //         $grado = Grado::where('colegio_id',$this->colegio_id)->where('nombre','like','%'. $normalized['grado'] .'%');
-
-    //         $matricula = matricula::create([
-    //             'estudiante_id' => $estudiante->id,
-    //             'colegio_id' => $estudiante->colegio_id,
-    //             'sede_id' => $estudiante->sede_id,
-    //             'grado_id' => $grado->id,
-    //             'tipo_matricula' => $normalized['tipo_matricula'],
-    //             'estado' => 'activo',
-    //             'fecha_matricula' => now(),
-    //         ]);
-
-    //     }
-    //     $this->dispatch('alerta', [
-    //         'title' => 'Importacion exitosa',
-    //         'text' => '¡Se importo correctamente correctamente!',
-    //         'icon' => 'success',
-    //         'toast' => true,
-    //         'position' => 'top-end',
-    //         ]);
-
-    // }
-    public function importarEstudiantes()
+public function importarEstudiantes()
 {
     $this->validate([
         'archivoExcel' => 'required|file|mimes:xlsx,xls,csv',
     ]);
 
-    $path = $this->archivoExcel->getRealPath();
-    $reader = SimpleExcelReader::create($path);
-    $rows = $reader->getRows()->take(10)->toArray();
-    $reader->close();
-
-    $importados = 0;
-    $errores = [];
-
-    foreach($rows as $index => $row) {
-        try {
-            $normalized = $this->normalizarDatos($row);
-
-            // Validación básica
-            if (empty($normalized['numero'])) {
-                throw new \Exception("Falta número de documento");
-            }
-
-            $estudiante = Estudiante::create([
-                'colegio_id' => $this->colegio_id,
-                'sede_id' => $this->normalizarSede($normalized['sede']),
-                'nombre_completo' => $this->generarNombreCompleto($normalized),
-                'documento' => $normalized['numero'],
-                'tipo_documento' => $normalized['tipo_id'],
-                'fecha_nacimiento' => $this->formatearFecha($normalized['fecha_de_nacimiento']),
-                'genero' => $normalized['genero'],
-                'grupo_sanguineo' => $normalized['grupo_sanguineo'] ?? null,
-                'eps' => $this->normalizarCampo($normalized['eps']),
-                'sisben' => $this->normalizarCampo($normalized['sisben']),
-                'poblacion_vulnerable' => $this->normalizarCampo($normalized['poblacion_vulnerable']),
-                'discapacidad' => $this->normalizarDiscapacidad($normalized['listado_de_categoria_discapacidad']),
-                'direccion' => $normalized['direccion_de_residencia'] ?? null,
-                'telefono' => $normalized['telefono'] ?? null,
-                'correo' => $normalized['correo'] ?? null,
-            ]);
-
-            $grado = Grado::where('colegio_id', $this->colegio_id)
-                         ->where('nombre', 'like', '%'.$normalized['grado'].'%')
-                         ->first();
-
-            if (!$grado) {
-                throw new \Exception("No se encontró el grado: {$normalized['grado']}");
-            }
-
-            Matricula::create([
-                'estudiante_id' => $estudiante->id,
-                'colegio_id' => $estudiante->colegio_id,
-                'sede_id' => $estudiante->sede_id,
-                'grado_id' => $grado->id,
-                'tipo_matricula' => $normalized['tipo_matricula'] ?? 'ordinaria',
-                'estado' => 'activo',
-                'fecha_matricula' => now(),
-            ]);
-
-            $importados++;
-        } catch (\Exception $e) {
-            $errores[] = "Fila " . ($index + 1) . ": " . $e->getMessage();
-            continue;
+    try {
+        if (!$this->archivoExcel || !$this->archivoExcel->isValid()) {
+            throw new \Exception('El archivo no fue subido correctamente o es inválido.');
         }
-    }
 
-    $mensaje = "Se importaron {$importados} estudiantes correctamente";
-    if (!empty($errores)) {
-        $mensaje .= ". Errores: " . implode(', ', $errores);
-    }
+        $archivo = $this->archivoExcel;
+        $filename = time() . '_' . $archivo->getClientOriginalName();
 
-    $this->dispatch('alerta', [
-        'title' => $importados > 0 ? 'Importación exitosa' : 'Importación con errores',
-        'text' => $mensaje,
-        'icon' => $importados > 0 ? 'success' : 'warning',
-        'toast' => true,
-        'position' => 'top-end',
-    ]);
+        // ✅ Guarda el archivo en storage/app/private/temp_imports
+        $storedPath = $archivo->storeAs('temp_imports', $filename, 'private');
+        $fullPath = Storage::disk('private')->path($storedPath);
+
+        // ✅ Procesar el archivo
+        $reader = \Spatie\SimpleExcel\SimpleExcelReader::create($fullPath);
+        $rows = $reader->getRows()->take(10)->toArray();
+        $reader->close();
+        unset($reader); // 🔥 libera completamente el archivo del sistema
+
+        // Pequeña pausa (Windows suele necesitar unos milisegundos)
+        usleep(200000); // 0.2 segundos
+
+        $importados = 0;
+        $errores = [];
+
+        foreach ($rows as $index => $row) {
+            try {
+                $normalized = $this->normalizarDatos($row);
+
+                if (empty($normalized['numero'])) {
+                    throw new \Exception("Falta número de documento");
+                }
+
+                $estudiante = Estudiante::create([
+                    'colegio_id' => $this->colegio_id,
+                    'sede_id' => null,
+                    'nombre_completo' => $this->generarNombreCompleto($normalized),
+                    'documento' => $normalized['numero'],
+                    'tipo_documento' => $normalized['tipo_id'],
+                    'fecha_nacimiento' => $this->formatearFecha($normalized['fecha_de_nacimiento']),
+                    'genero' => $normalized['genero'],
+                    'grupo_sanguineo' => $normalized['grupo_sanguineo'] ?? null,
+                    'eps' => null,
+                    'sisben' => null,
+                    'poblacion_vulnerable' => null,
+                    'discapacidad' => $this->normalizarDiscapacidad($normalized['listado_de_categoria_discapacidad']),
+                    'direccion' => $normalized['direccion_de_residencia'] ?? null,
+                    'telefono' => $normalized['telefono'] ?? null,
+                    'correo' => $normalized['correo'] ?? null,
+                ]);
+
+                $grado = Grado::where('colegio_id', $this->colegio_id)
+                    ->where('nombre', 'like', '%' . $normalized['grado'] . '%')
+                    ->first();
+
+                if (!$grado) {
+                    throw new \Exception("No se encontró el grado: {$normalized['grado']}");
+                }
+
+                Matricula::create([
+                    'estudiante_id' => $estudiante->id,
+                    'colegio_id' => $estudiante->colegio_id,
+                    'sede_id' => $estudiante->sede_id,
+                    'grado_id' => $grado->id,
+                    'tipo_matricula' => $normalized['tipo_matricula'] ?? 'ordinaria',
+                    'estado' => 'activo',
+                    'fecha_matricula' => now(),
+                ]);
+
+                $importados++;
+            } catch (\Exception $e) {
+                $errores[] = "Fila " . ($index + 1) . ": " . $e->getMessage();
+                continue;
+            }
+        }
+
+        // ✅ Eliminar el archivo temporal de forma segura
+        if (Storage::disk('private')->exists($storedPath)) {
+            Storage::disk('private')->delete($storedPath);
+        }
+
+        $mensaje = "Se importaron {$importados} estudiantes correctamente";
+        if (!empty($errores)) {
+            $mensaje .= ". Errores: " . implode(', ', $errores);
+        }
+
+        $this->dispatch('alerta', [
+            'title' => $importados > 0 ? 'Importación exitosa' : 'Importación con errores',
+            'text' => $mensaje,
+            'icon' => $importados > 0 ? 'success' : 'warning',
+            'toast' => true,
+            'position' => 'top-end',
+        ]);
+
+    } catch (\Exception $e) {
+        Log::error('Error al importar estudiantes: ' . $e->getMessage());
+
+        $this->dispatch('alerta', [
+            'title' => 'Error',
+            'text' => 'No se pudo procesar el archivo. Detalle: ' . $e->getMessage(),
+            'icon' => 'error',
+            'toast' => true,
+            'position' => 'top-end',
+        ]);
+    }
 }
+
+
 
 // Métodos auxiliares
 private function normalizarDatos(array $row): array

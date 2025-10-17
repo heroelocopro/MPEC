@@ -903,41 +903,44 @@
 {{-- script para escuchar alertas --}}
 
 <flux:modal name="importar-estudiantes" wire:model="modalImportacion" class="md:w-96 lg:w-10/12">
-    <div class="space-y-6 px-4 py-6 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-semibold text-center text-gray-800 dark:text-gray-100">
-            Importación de estudiantes vía Excel
-        </h2>
+    <form wire:submit.prevent="importarEstudiantes" enctype="multipart/form-data">
+        <div class="space-y-6 px-4 py-6 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-semibold text-center text-gray-800 dark:text-gray-100">
+                Importación de estudiantes vía Excel
+            </h2>
 
-        <div class="space-y-2">
-            <p class="text-gray-700 dark:text-gray-300">Puedes descargar la plantilla oficial aquí:</p>
-            <a href="{{ asset('archivos/Plantilla mejorada.xlsx') }}"
-               class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md shadow transition">
-                📄 Descargar plantilla Excel
-            </a>
-        </div>
+            <div class="space-y-2">
+                <p class="text-gray-700 dark:text-gray-300">Puedes descargar la plantilla oficial aquí:</p>
+                <a href="{{ asset('archivos/Plantilla mejorada.xlsx') }}"
+                   class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md shadow transition">
+                    📄 Descargar plantilla Excel
+                </a>
+            </div>
 
-        <div class="space-y-2">
-            <label class="block text-gray-700 dark:text-gray-300 font-medium">
-                Subir archivo Excel:
-            </label>
-            <input type="file" wire:model="archivoExcel"
-                   accept=".xlsx,.xls"
-                   class="w-full border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm px-3 py-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring focus:ring-blue-500">
-            @error('archivoExcel') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-        </div>
+            <div class="space-y-2">
+                <label class="block text-gray-700 dark:text-gray-300 font-medium">
+                    Subir archivo Excel:
+                </label>
+                <input type="file" wire:model="archivoExcel"
+                       accept=".xlsx,.xls,.csv"
+                       class="w-full border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm px-3 py-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring focus:ring-blue-500">
+                @error('archivoExcel') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            </div>
 
-        <div class="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-100 rounded-md px-4 py-3 text-sm">
-            ⚠️ Esta acción <strong>no se puede deshacer</strong>. Los estudiantes serán creados o actualizados según su documento.
-        </div>
+            <div class="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-100 rounded-md px-4 py-3 text-sm">
+                ⚠️ Esta acción <strong>no se puede deshacer</strong>. Los estudiantes serán creados o actualizados según su documento.
+            </div>
 
-        <div class="flex justify-end">
-            <button wire:click="importarEstudiantes"
-                    class="inline-flex cursor-pointer items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md shadow transition">
-                📥 Importar estudiantes
-            </button>
+            <div class="flex justify-end">
+                <button type="submit"
+                        class="inline-flex cursor-pointer items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md shadow transition">
+                    📥 Importar estudiantes
+                </button>
+            </div>
         </div>
-    </div>
+    </form>
 </flux:modal>
+
 
 
 {{-- modal de importacion de estudiantes --}}

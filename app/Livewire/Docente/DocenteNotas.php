@@ -156,24 +156,38 @@ protected function guardarNota($tipo, $estudianteId, $notableId, $valor)
 
 
 
-    public function cargarNotas()
-    {
-        // Obtener todas las notas del grupo
-        $notasDB = Nota::where('asignatura_id', $this->asignatura->id)->where('grupo_id',$this->grupo_id)->get();
+public function cargarNotas()
+{
+    // Obtener el periodo activo actual del colegio
+    $periodo = PeriodoAcademico::periodoActual($this->colegio->id);
+
+    // Si no hay periodo activo, no cargar nada
+    if (!$periodo) {
         $this->notas = [
             'actividad' => [],
             'examen' => [],
-            ];
-
-        foreach ($notasDB as $nota) {
-            $tipo = class_basename($nota->notable_type); // 'Actividad' o 'Examen'
-            $tipo = strtolower($tipo); // 'actividad' o 'examen'
-
-            // Establecer en el array el valor de la nota
-
-            $this->notas[$tipo][$nota->estudiante_id][$nota->notable_id] = $nota->valor;
-        }
+        ];
+        exit;
+        return; // salir sin hacer consultas
     }
+
+
+    // Obtener todas las notas del grupo en el periodo actual
+    $notasDB = Nota::where('asignatura_id', $this->asignatura->id)
+        ->where('grupo_id', $this->grupo_id)
+        ->where('periodo_id', $periodo->id)
+        ->get();
+    $this->notas = [
+        'actividad' => [],
+        'examen' => [],
+    ];
+
+    foreach ($notasDB as $nota) {
+        $tipo = strtolower(class_basename($nota->notable_type)); // 'actividad' o 'examen'
+        $this->notas[$tipo][$nota->estudiante_id][$nota->notable_id] = $nota->valor;
+    }
+}
+
 
     public function updatedAsignaturaId($value)
     {

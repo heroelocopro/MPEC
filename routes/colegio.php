@@ -45,6 +45,10 @@ Route::middleware(['auth', 'role:colegio'])->prefix('colegio')->group(function (
 
     Route::get('/historial-academico',ColegioHistorialAcademico::class)->name('colegio-historial-academico');
 
+    Route::get('/Cierre-de-notas',[ColegioController::class,'showCerrarNotas'])->name('colegio-cierre-de-notas');
+
+    Route::post('/cerrar-notas-periodo',[ColegioController::class,'cerrarNotas'])->name('colegio-cerrar-notas');
+
     Route::get('/descargar-notas/{periodo}/{estudiante}',[ColegioController::class,'descargarNotas'])->name('colegio-descargar-notas');
 
 });

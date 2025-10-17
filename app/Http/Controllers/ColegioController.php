@@ -12,6 +12,7 @@ use App\Models\matricula;
 use App\Models\NotaFinal;
 use App\Models\PeriodoAcademico;
 use App\Models\Profesor;
+use App\Services\NotasFinalesService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -138,4 +139,38 @@ class ColegioController extends Controller
 
         return $pdf->download($nombre);
     }
+
+        protected NotasFinalesService $notasFinalesService;
+
+    public function __construct(NotasFinalesService $notasFinalesService)
+    {
+        $this->notasFinalesService = $notasFinalesService;
+    }
+
+    /**
+     * Cierra las notas manualmente desde el panel o API.
+     */
+    public function showCerrarNotas()
+    {
+        $periodo = PeriodoAcademico::periodoActual();
+        return view('colegio.cerrar-notas.index', compact('periodo'));
+    }
+    public function cerrarNotas(Request $request)
+    {
+        $request->validate([
+            'periodo_id' => 'required|integer|exists:periodo_academicos,id',
+        ]);
+
+        $periodoId = $request->input('periodo_id');
+        $resultado = $this->notasFinalesService->cerrarNotas($periodoId);
+
+        // Determinar el tipo de mensaje según el resultado
+        $tipo = str_contains($resultado, 'No se encontró') ? 'error' : 'ok';
+
+        return redirect()->back()->with([
+            'mensaje' => $resultado,
+            'tipo' => $tipo,
+        ]);
+    }
+
 }

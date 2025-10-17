@@ -58,11 +58,19 @@ public static function periodoActual($colegio_id = null)
     if (!$colegio_id && Auth::check()) {
         $colegio_id = Auth::user()->colegio_id;
     }
+    $hoy = now()->toDateString();
 
     return self::where('estado', 'activo')
         ->when($colegio_id, fn($q) => $q->where('colegio_id', $colegio_id))
-        ->orderByDesc('fecha_inicio') // por si hay varios activos, devuelve el más reciente
+        ->whereDate('fecha_inicio', '<=', $hoy)
+        ->whereDate('fecha_fin', '>=', $hoy)
+        ->orderByDesc('fecha_inicio')
         ->first();
+
+    // return self::where('estado', 'activo')
+    //     ->when($colegio_id, fn($q) => $q->where('colegio_id', $colegio_id))
+    //     ->orderByDesc('fecha_inicio') // por si hay varios activos, devuelve el más reciente
+    //     ->first();
 }
 
 public static function activarPeriodo($periodo_id)
