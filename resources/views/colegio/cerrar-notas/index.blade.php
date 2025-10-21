@@ -33,7 +33,7 @@
                 <input type="hidden" name="periodo_id" value="{{ $periodo->id }}">
                 <button
                     type="submit"
-                    class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg text-base font-semibold shadow-md transition-all">
+                    class="px-6 cursor-pointer py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg text-base font-semibold shadow-md transition-all">
                     🔒 Cerrar Notas del Periodo
                 </button>
             </form>

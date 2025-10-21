@@ -140,7 +140,7 @@
 
                     <div>
                         <p class="text-sm font-semibold text-gray-700 dark:text-white">Descripción:</p>
-                        <p class="text-base text-blue-900 dark:text-blue-100 whitespace-pre-line leading-relaxed">
+                        <p class="text-base text-blue-900 dark:text-blue-100  leading-relaxed">
                             {{ $actividadModal->descripcion }}
                         </p>
                     </div>

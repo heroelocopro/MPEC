@@ -26,8 +26,9 @@ class ColegioMatriculas extends Component
     public $sede_idEdicion;
     public $grado_idEdicion;
     public $tipo_matriculaEdicion;
-    public $estadoEdicion = 'activo'; // Valor por defecto
+    public $estadoEdicion = 'cursando'; // Valor por defecto
     public $fecha_matriculaEdicion;
+    public $año_lectivoEdicion;
     // Control del modal
     public bool $modalCreacion = false;
 
@@ -40,14 +41,16 @@ class ColegioMatriculas extends Component
     public $sede_id;
     public $grado_id;
     public $tipo_matricula;
-    public $estado = 'activo'; // Valor por defecto
+    public $estado = 'cursando'; // Valor por defecto
     public $fecha_matricula;
+    public $año_lectivo;
     public $sortField = 'id'; // Campo por defecto para ordenar
     public $sortDirection = 'asc'; // Dirección por defecto
     public $paginacion = 5;
     public $buscador = '';
     public $gradoFilter = null;
     public $estadoFilter = null;
+    public $añoFilter = null;
     public $grados = [];
 
     // Reglas de validación
@@ -59,8 +62,9 @@ class ColegioMatriculas extends Component
             'sede_id' => 'nullable|exists:sedes_colegios,id',
             'grado_id' => 'required|exists:grados,id',
             'tipo_matricula' => ['required', Rule::in(['nueva', 'renovacion', 'traslado'])],
-            'estado' => ['required', Rule::in(['activo', 'completada', 'anulada'])],
+            'estado' => ['required', Rule::in(['cursando', 'aprobado', 'reprobado', 'cancelado'])],
             'fecha_matricula' => 'required|date',
+            'año_lectivo' => 'required|integer',
         ];
     }
 
@@ -75,6 +79,7 @@ class ColegioMatriculas extends Component
             'tipo_matricula' => 'tipomatricula',
             'estado' => 'estado',
             'fecha_matricula' => 'fecha',
+            'año_lectivo' => 'el año'
 
         ];
     }
@@ -95,7 +100,7 @@ class ColegioMatriculas extends Component
         $this->sede_id =  $this->estudiante->sede_id;
         $this->validate($this->rules(),$this->messages());
         try {
-            $matricula = Matricula::create([
+             Matricula::create([
                 'estudiante_id' => $this->estudiante_id,
                 'colegio_id' => $this->colegio_id,
                 'sede_id' => $this->sede_id,
@@ -103,6 +108,7 @@ class ColegioMatriculas extends Component
                 'tipo_matricula' => $this->tipo_matricula,
                 'estado' => $this->estado,
                 'fecha_matricula' => $this->fecha_matricula,
+                'año_lectivo' => now()->format('Y'),
             ]);
 
 
@@ -147,7 +153,8 @@ class ColegioMatriculas extends Component
         $this->sede_idEdicion = $matricula->sede_id;
         $this->grado_idEdicion = $matricula->grado_id;
         $this->tipo_matriculaEdicion = $matricula->tipo_matricula;
-        $this->estadoEdicion = $matricula->estado ?? 'activo';
+        $this->año_lectivoEdicion = $matricula->año_lectivo;
+        $this->estadoEdicion = $matricula->estado ?? 'cursando';
 
         $this->modalEdicion = true;
     }
@@ -167,7 +174,8 @@ class ColegioMatriculas extends Component
             'grado_idEdicion' => 'required|exists:grados,id',
             'tipo_matriculaEdicion' => ['required', Rule::in(['nueva', 'renovacion', 'traslado'])],
             'fecha_matriculaEdicion' => 'required|date',
-            'estadoEdicion' =>['required', Rule::in(['activo', 'inactivo'])],
+            'año_lectivoEdicion' => 'required|integer|min:2000|max:'.(date('Y') + 1),
+            'estadoEdicion' =>['required', Rule::in(['cursando', 'aprobado','reprobado','cancelado'])],
         ], [
             'grado_idEdicion.required' => 'Debe seleccionar un grado',
             'tipo_matriculaEdicion.required' => 'Seleccione un tipo de matrícula',
@@ -181,6 +189,7 @@ class ColegioMatriculas extends Component
                 'tipo_matricula' => $this->tipo_matriculaEdicion,
                 'fecha_matricula' => $this->fecha_matriculaEdicion,
                 'estado' => $this->estadoEdicion,
+                'año_lectivo' => $this->año_lectivoEdicion,
             ]);
 
             $this->dispatch('alerta', [
@@ -240,6 +249,7 @@ class ColegioMatriculas extends Component
         // Estamos base de las variables
         $this->modalCreacion = false;
         $this->fecha_matricula = now();
+        $this->añoFilter = now()->format('Y');
         $this->colegio_id = Colegio::where('user_id','=',Auth::user()->id)->first()->id;
         $this->sortField = 'id';
         $this->grados = Grado::where('colegio_id',$this->colegio_id)->get();
@@ -283,7 +293,12 @@ class ColegioMatriculas extends Component
             if (!empty($this->estadoFilter)) {
                 $query->where('estado', 'like', '%' . $this->estadoFilter . '%');
             }
+            if (!empty($this->añoFilter)) {
+                $query->where('año_lectivo', 'like', '%' . $this->añoFilter . '%');
+            }
+
         })
+        // ->where('año_lectivo',now()->format('Y'))
         ->orderBy($this->sortField, $this->sortDirection)
         ->paginate($this->paginacion);
 

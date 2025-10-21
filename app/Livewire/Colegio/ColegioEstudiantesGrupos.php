@@ -64,7 +64,7 @@ class ColegioEstudiantesGrupos extends Component
         // - Que aún NO estén asignados a ningún grupo en este colegio
         $this->estudiantes = Estudiante::where('colegio_id', $this->colegio_id)
             ->whereHas('matriculas', function ($query) {
-                $query->where('estado', 'activo')
+                $query->where('estado', 'cursando')
                     ->where('grado_id', $this->grupoInfo->grado_id);
             })
             ->whereDoesntHave('estudiantesGrupos', function ($query) {

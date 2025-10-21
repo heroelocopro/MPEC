@@ -18,8 +18,9 @@ return new class extends Migration
             $table->foreignId('sede_id')->nullable(true)->constrained('sedes_colegios')->onDelete('cascade');
             $table->foreignId('grado_id')->constrained('grados')->onDelete('cascade');
             $table->enum('tipo_matricula', ['nueva', 'renovacion', 'traslado'])->default('nueva'); // Nueva, Renovación, Traslado
-            $table->string('estado')->default('activo');
+            $table->enum('estado', [ 'cursando', 'aprobado', 'reprobado', 'cancelado'])->default('cursando');
             $table->timestamp('fecha_matricula')->useCurrent();
+            $table->year('año_lectivo');
             $table->timestamps();
         });
     }

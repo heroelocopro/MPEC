@@ -148,17 +148,23 @@ class NotasFinalesService
     /**
      * Cierra las notas finales de un periodo (opcional, según tu necesidad).
      */
-    public function cerrarNotas($periodoId)
-    {
-        $periodo = PeriodoAcademico::find($periodoId);
+public function cerrarNotas($periodoId)
+{
+    $periodo = PeriodoAcademico::find($periodoId);
 
-        if (!$periodo) {
-            return "No se encontró el periodo con ID {$periodoId}.";
-        }
-
-        $periodo->estado = 'inactivo';
-        $periodo->save();
-
-        return "Notas del periodo {$periodo->nombre} cerradas correctamente.";
+    if (!$periodo) {
+        return "No se encontró el periodo con ID {$periodoId}.";
     }
+
+    // 🔹 1. Generar notas finales antes de cerrar el periodo
+    $this->generarParaPeriodo($periodo);
+
+    // 🔹 2. Cambiar el estado del periodo a 'inactivo'
+    $periodo->estado = 'inactivo';
+    $periodo->save();
+
+    // 🔹 3. Mensaje final
+    return "Notas del periodo {$periodo->nombre} generadas y cerradas correctamente.";
+}
+
 }

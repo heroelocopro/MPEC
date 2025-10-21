@@ -728,8 +728,9 @@ class DatabaseSeeder extends Seeder
             'sede_id' => null,
             'grado_id' => $gradoId,
             'tipo_matricula' => 'nueva',
-            'estado' => 'activo',
+            'estado' => 'cursando',
             'fecha_matricula' => now(),
+            'año_lectivo' => now()->format('Y'),
         ]);
         if($i == 10 || $i == 20 || $i == 30 || $i == 40 || $i == 50 || $i == 60 )
         {

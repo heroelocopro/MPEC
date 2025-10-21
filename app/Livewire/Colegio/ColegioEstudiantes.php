@@ -438,7 +438,7 @@ private function generarNombreCompleto(array $data): string
 
     // valores importantes para el modal creacion
     public $totalSteps=4;
-    public $currentStep=4;
+    public $currentStep=1;
     public $modalCreacion = false;
 
     public function nextStep()

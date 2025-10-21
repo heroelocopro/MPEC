@@ -41,9 +41,23 @@
                             dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300
                             focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Estado</option>
-                    <option value="activo">Activo</option>
-                    <option value="inactivo">Inactivo</option>
+                    <option value="cursando">Cursando</option>
+                    <option value="aprobado">Aprobado</option>
+                    <option value="reprobado">Reprobado</option>
+                    <option value="cancelado">Cancelado</option>
                 </select>
+                <select wire:model.live="añoFilter"
+                    class="w-[10%] h-12 px-3 rounded-lg border border-gray-300 bg-white text-gray-700
+                        dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300
+                        focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    @php
+                        $currentYear = now()->year;
+                    @endphp
+                    @for ($year = $currentYear; $year <= $currentYear + 5; $year++)
+                        <option value="{{ $year }}">{{ $year }}</option>
+                    @endfor
+                </select>
+
 
                 <!-- Input (80%) - Versión corregida -->
                 <input wire:model.live.debounce.250ms="buscador"
@@ -112,6 +126,12 @@
                             @if($sortDirection === 'asc') ↑ @else ↓ @endif
                         @endif
                     </th>
+                    <th class="py-3 px-6 text-left cursor-pointer" wire:click="sortBy('año_lectivo')">
+                        Año Lectivo
+                        @if($sortField === 'año_lectivo')
+                            @if($sortDirection === 'asc') ↑ @else ↓ @endif
+                        @endif
+                    </th>
                     <th class="py-3 px-6 text-center">Acciones</th>
                 </tr>
             </thead>
@@ -124,13 +144,39 @@
                         <td class="py-3 px-6">{{ $matricula->grado->nombre }}</td>
                         <td class="py-3 px-6 capitalize">{{ $matricula->tipo_matricula }}</td>
                         <td class="py-3 px-6">
-                            @if($matricula->estado == 'activo')
-                                <span class="bg-green-100 text-green-700 dark:bg-green-700 dark:text-green-100 px-2 py-1 rounded-full text-xs">Activo</span>
-                            @else
-                                <span class="bg-red-100 text-red-700 dark:bg-red-700 dark:text-red-100 px-2 py-1 rounded-full text-xs">Inactivo</span>
-                            @endif
+                            @switch($matricula->estado)
+                                @case('cursando')
+                                    <span class="bg-blue-100 text-blue-700 dark:bg-blue-700 dark:text-blue-100 px-2 py-1 rounded-full text-xs">
+                                        Cursando
+                                    </span>
+                                    @break
+
+                                @case('aprobado')
+                                    <span class="bg-green-100 text-green-700 dark:bg-green-700 dark:text-green-100 px-2 py-1 rounded-full text-xs">
+                                        Aprobado
+                                    </span>
+                                    @break
+
+                                @case('reprobado')
+                                    <span class="bg-red-100 text-red-700 dark:bg-red-700 dark:text-red-100 px-2 py-1 rounded-full text-xs">
+                                        Reprobado
+                                    </span>
+                                    @break
+
+                                @case('cancelado')
+                                    <span class="bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-100 px-2 py-1 rounded-full text-xs">
+                                        Cancelado
+                                    </span>
+                                    @break
+
+                                @default
+                                    <span class="bg-yellow-100 text-yellow-700 dark:bg-yellow-700 dark:text-yellow-100 px-2 py-1 rounded-full text-xs">
+                                        Desconocido
+                                    </span>
+                            @endswitch
                         </td>
                         <td class="py-3 px-6">{{ \Carbon\Carbon::parse($matricula->fecha_matricula)->format('d/m/Y') }}</td>
+                        <td class="py-3 px-6">{{$matricula->año_lectivo }}</td>
                         <td class="px-6 py-4 text-right space-x-1">
                             <button wire:click="cargarMatriculaEdicion({{ $matricula->id }})" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-xs cursor-pointer">
                                 Editar
@@ -226,6 +272,40 @@
                     </select>
                     @error('tipo_matricula') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
+                {{-- Estado --}}
+                <div>
+                    <label for="estado" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Estado*</label>
+                    <select id="estado" wire:model.defer="estado"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option value="">Selecciona un tipo</option>
+                        <option value="cursando">Cursando</option>
+                        <option value="aprobado">Aprobado</option>
+                        <option value="reprobado">Reprobado</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                    @error('estado') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+                </div>
+                {{-- año_lectivo --}}
+                <div>
+                    <label for="año_lectivo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Año Lectivo*
+                    </label>
+                    <input
+                        type="number"
+                        id="año_lectivo"
+                        name="año_lectivo"
+                        wire:model.defer="año_lectivo"
+                        min="2000"
+                        max="{{ date('Y') + 1 }}"
+                        step="1"
+                        placeholder="Ej: {{ date('Y') }}"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5
+                            dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    @error('año_lectivo')
+                        <p class="text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
             </div>
 
             {{-- Footer modal --}}
@@ -305,9 +385,10 @@
                 <label for="estadoEdicion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Estado*</label>
                 <select id="estadoEdicion" wire:model.defer="estadoEdicion"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    <option value="">Selecciona un estado</option>
-                    <option value="activo">Activo</option>
-                    <option value="inactivo">Inactivo</option>
+                    <option value="cursando">Cursando</option>
+                        <option value="aprobado">Aprobado</option>
+                        <option value="reprobado">Reprobado</option>
+                        <option value="cancelado">Cancelado</option>
                 </select>
                 @error('estadoEdicion') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
@@ -319,6 +400,25 @@
                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                 @error('fecha_matriculaEdicion') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
+                            <div>
+                    <label for="año_lectivoEdicion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Año Lectivo*
+                    </label>
+                    <input
+                        type="number"
+                        id="año_lectivoEdicion"
+                        name="año_lectivoEdicion"
+                        wire:model.defer="año_lectivoEdicion"
+                        min="2000"
+                        max="{{ date('Y') + 1 }}"
+                        step="1"
+                        placeholder="Ej: {{ date('Y') }}"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5
+                            dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    @error('año_lectivoEdicion')
+                        <p class="text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
         </div>
 
         {{-- Footer modal --}}

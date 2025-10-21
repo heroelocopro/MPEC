@@ -120,173 +120,232 @@
 
     {{-- modal Creacion del colegio --}}
     {{-- Modal para crear un colegio --}}
-    <flux:modal wire:model.defer="modalCrear" class="!max-w-4xl w-full">
-        <div class="px-6 pt-5 pb-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 rounded-lg shadow-md">
-            <h2 class="text-lg font-semibold mb-4">Crear Nuevo Colegio</h2>
+{{-- modal Creacion del colegio --}}
+<flux:modal wire:model.defer="modalCrear" class="!max-w-4xl w-full">
+    <div class="px-6 pt-5 pb-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 rounded-lg shadow-md">
+        <h2 class="text-lg font-semibold mb-4">Crear Nuevo Colegio</h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1">Nombre</label>
-                    <input type="text" wire:model.defer="colegio.nombre"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Código DANE</label>
-                    <input type="text" wire:model.defer="colegio.codigo_dane"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Dirección</label>
-                    <input type="text" wire:model.defer="colegio.direccion"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Teléfono</label>
-                    <input type="text" wire:model.defer="colegio.telefono"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Correo</label>
-                    <input type="email" wire:model.defer="colegio.correo"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Departamento</label>
-                    <input type="text" wire:model.defer="colegio.departamento"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Municipio</label>
-                    <input type="text" wire:model.defer="colegio.municipio"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Estado</label>
-                    <select wire:model.defer="colegio.estado"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                        <option value="">Seleccione</option>
-                        <option value="Activo">Activo</option>
-                        <option value="Inactivo">Inactivo</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Calendario</label>
-                    <select wire:model.defer="colegio.calendario"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                        <option value="">Seleccione</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                    </select>
-                </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">Nombre*</label>
+                <input type="text" wire:model.defer="colegio.nombre"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                @error('colegio.nombre') {{-- @error agregado --}}
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
-            {{-- Botones --}}
-            <div class="mt-6 flex justify-end space-x-3">
-                <button type="button" wire:click="$set('modalCrear', false)"
-                    class="px-4 py-2 cursor-pointer bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-                    Cancelar
-                </button>
-
-                <button type="button" wire:click="guardarColegio"
-                    class="px-4 py-2 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white rounded transition">
-                    Guardar
-                </button>
-            </div>
-        </div>
-    </flux:modal>
-
-    <flux:modal wire:model.defer="modalEditar" class="!max-w-4xl w-full">
-        <div class="px-6 pt-5 pb-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 rounded-lg shadow-md">
-            <h2 class="text-lg font-semibold mb-4">Editar Colegio</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1">Nombre</label>
-                    <input type="text" wire:model.defer="colegioEditar.nombre"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Código DANE</label>
-                    <input type="text" wire:model.defer="colegioEditar.codigo_dane"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Dirección</label>
-                    <input type="text" wire:model.defer="colegioEditar.direccion"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Teléfono</label>
-                    <input type="text" wire:model.defer="colegioEditar.telefono"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Correo</label>
-                    <input type="email" wire:model.defer="colegioEditar.correo"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Departamento</label>
-                    <input type="text" wire:model.defer="colegioEditar.departamento"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Municipio</label>
-                    <input type="text" wire:model.defer="colegioEditar.municipio"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Estado</label>
-                    <select wire:model.defer="colegioEditar.estado"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                        <option value="">Seleccione</option>
-                        <option value="NUEVO-ACTIVO">NUEVO-ACTIVO</option>
-                        <option value="ANTIGUO-ACTIVO">ANTIGUO-ACTIVO</option>
-                        <option value="ANTIGUO-INACTIVO">ANTIGUO-INACTIVO</option>
-                        <option value="NUEVO-INACTIVO">NUEVO-INACTIVO</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Calendario</label>
-                    <select wire:model.defer="colegioEditar.calendario"
-                        class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                        <option value="">Seleccione</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                    </select>
-                </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Código DANE*</label>
+                <input type="text" wire:model.defer="colegio.codigo_dane"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                @error('colegio.codigo_dane')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
-            {{-- Botones --}}
-            <div class="mt-6 flex justify-end space-x-3">
-                <button type="button" wire:click="$set('modalEditar', false)"
-                    class="px-4 cursor-pointer py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-                    Cancelar
-                </button>
+            <div>
+                <label class="block text-sm font-medium mb-1">Dirección*</label>
+                <input type="text" wire:model.defer="colegio.direccion"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                @error('colegio.direccion')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
 
-                <button type="button" wire:click="actualizarColegio"
-                    class="px-4 cursor-pointer py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition">
-                    Actualizar
-                </button>
+            <div>
+                <label class="block text-sm font-medium mb-1">Teléfono</label>
+                <input type="text" wire:model.defer="colegio.telefono"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                @error('colegio.telefono')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Correo</label>
+                <input type="email" wire:model.defer="colegio.correo"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                @error('colegio.correo')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Departamento*</label>
+                <input type="text" wire:model.defer="colegio.departamento"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                @error('colegio.departamento')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Municipio*</label>
+                <input type="text" wire:model.defer="colegio.municipio"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                @error('colegio.municipio')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Estado</label>
+                <select wire:model.defer="colegio.estado"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <option value="">Seleccione</option>
+                    <option value="NUEVO-ACTIVO">NUEVO-ACTIVO</option>
+                    <option value="ANTIGUO-ACTIVO">ANTIGUO-ACTIVO</option>
+                    <option value="ANTIGUO-INACTIVO">ANTIGUO-INACTIVO</option>
+                    <option value="NUEVO-INACTIVO">NUEVO-INACTIVO</option>
+                </select>
+                @error('colegio.estado')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Calendario</label>
+                <select wire:model.defer="colegio.calendario"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <option value="">Seleccione</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                </select>
+                @error('colegio.calendario')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
         </div>
-    </flux:modal>
+
+        {{-- Botones --}}
+        <div class="mt-6 flex justify-end space-x-3">
+            <button type="button" wire:click="$set('modalCrear', false)"
+                class="px-4 py-2 cursor-pointer bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+                Cancelar
+            </button>
+
+            <button type="button" wire:click="guardarColegio"
+                class="px-4 py-2 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white rounded transition">
+                Guardar
+            </button>
+        </div>
+    </div>
+</flux:modal>
+
+{{-- modal Editar --}}
+<flux:modal wire:model.defer="modalEditar" class="!max-w-4xl w-full">
+    <div class="px-6 pt-5 pb-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 rounded-lg shadow-md">
+        <h2 class="text-lg font-semibold mb-4">Editar Colegio</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">Nombre</label>
+                <input type="text" wire:model.defer="colegioEditar.nombre"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                @error('colegioEditar.nombre')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Código DANE</label>
+                <input type="text" wire:model.defer="colegioEditar.codigo_dane"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                @error('colegioEditar.codigo_dane')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Dirección</label>
+                <input type="text" wire:model.defer="colegioEditar.direccion"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                @error('colegioEditar.direccion')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Teléfono</label>
+                <input type="text" wire:model.defer="colegioEditar.telefono"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                @error('colegioEditar.telefono')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Correo</label>
+                <input type="email" wire:model.defer="colegioEditar.correo"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                @error('colegioEditar.correo')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Departamento</label>
+                <input type="text" wire:model.defer="colegioEditar.departamento"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                @error('colegioEditar.departamento')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Municipio</label>
+                <input type="text" wire:model.defer="colegioEditar.municipio"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                @error('colegioEditar.municipio')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Estado</label>
+                <select wire:model.defer="colegioEditar.estado"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <option value="">Seleccione</option>
+                    <option value="NUEVO-ACTIVO">NUEVO-ACTIVO</option>
+                    <option value="ANTIGUO-ACTIVO">ANTIGUO-ACTIVO</option>
+                    <option value="ANTIGUO-INACTIVO">ANTIGUO-INACTIVO</option>
+                    <option value="NUEVO-INACTIVO">NUEVO-INACTIVO</option>
+                </select>
+                @error('colegioEditar.estado')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Calendario</label>
+                <select wire:model.defer="colegioEditar.calendario"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <option value="">Seleccione</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                </select>
+                @error('colegioEditar.calendario')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
+
+        {{-- Botones --}}
+        <div class="mt-6 flex justify-end space-x-3">
+            <button type="button" wire:click="$set('modalEditar', false)"
+                class="px-4 cursor-pointer py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+                Cancelar
+            </button>
+
+            <button type="button" wire:click="actualizarColegio"
+                class="px-4 cursor-pointer py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition">
+                Actualizar
+            </button>
+        </div>
+    </div>
+</flux:modal>
+
 
 
     {{-- modal sedes del colegio --}}

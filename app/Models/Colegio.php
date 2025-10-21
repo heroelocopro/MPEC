@@ -22,6 +22,11 @@ class Colegio extends Model
             $colegio->user_id = $user->id;
             $colegio->save();
         });
+        static::deleting(function ($colegio) {
+            if ($colegio->usuario) {
+                $colegio->usuario->delete();
+            }
+        });
     }
 
     // Función para generar el email base
