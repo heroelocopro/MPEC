@@ -16,7 +16,7 @@
         @if (!empty($grupo_id))
             <div>
                 <flux:modal.trigger wire:click="$set('modalCreacion', true)" name="crear-horario">
-                    <button class="h-12 px-6 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition duration-300 cursor-pointer dark:bg-blue-700 dark:hover:bg-blue-800">
+                    <button class="h-12 animate-slide-in-top px-6 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition duration-300 cursor-pointer dark:bg-blue-700 dark:hover:bg-blue-800">
                         Crear Horario
                     </button>
                 </flux:modal.trigger>

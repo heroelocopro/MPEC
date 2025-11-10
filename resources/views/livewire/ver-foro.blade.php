@@ -48,7 +48,7 @@
 
             <div class="mt-4 flex justify-end">
                 <button type="submit"
-                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition">
+                        class="px-4 cursor-pointer py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition">
                     Comentar
                 </button>
             </div>
@@ -67,11 +67,17 @@
                     <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                         <div class="flex justify-between items-center mb-1">
                             <span class="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                               {{ $comentario->autor->nombre ?? $comentario->autor->nombre_completo ?? 'Usuario' }}
+                               {{ $comentario->autor->nombre ?? $comentario->autor->nombre_completo . ' ' . $comentario->autor->matricula->grado->nombre ?? 'Usuario' }}
                             </span>
-                            <span class="text-xs text-gray-500 dark:text-gray-400">
+                            <span class="text-xs text-gray-500 dark:text-gray-400 ">
                                 {{ $comentario->created_at->diffForHumans() }}
+                                {{-- <flux:button variant="primary" color="red">Eliminar</flux:button> --}}
+                                @if (Auth::user()->role_id <= 2)
+
+                                <span wire:click="dispatch('eliminacion',  {{ $comentario->id }})" class="text-red-500 cursor-pointer">Eliminar</span>
+                                @endif
                             </span>
+
                         </div>
                         <div class="text-sm text-gray-700 dark:text-gray-300">
                             {{ $comentario->mensaje }}
@@ -98,6 +104,22 @@
                 color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#000000',
             });
         });
+        Livewire.on('eliminacion', (comentarioId) => {
+            console.log(comentarioId);
+                        Swal.fire({
+            title: "Estas Seguro?",
+            text: "Esto no se puedes deshacer!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, eliminalo!"
+            }).then((result) => {
+            if (result.isConfirmed) {
+                Livewire.dispatch('eliminar', {'comentarioId' : comentarioId});
+            }
+            });
+        })
     </script>
     @endpush
 </div>

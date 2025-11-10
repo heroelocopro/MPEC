@@ -186,6 +186,7 @@ class EstudianteActividades extends Component
         }
 
 
+
     }
     public function render()
     {

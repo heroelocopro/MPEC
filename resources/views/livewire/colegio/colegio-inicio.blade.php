@@ -8,10 +8,10 @@
             </div>
             <div class="flex flex-wrap gap-2">
                 <a href="{{ route('colegio-horarios') }}">
-                    <x-button>Editar Horarios</x-button>
+                    <x-button class="cursor-pointer animate-pop">Editar Horarios</x-button>
                 </a>
                 <a href="{{ route('colegio-anuncios') }}">
-                    <x-button color="secondary">Crear Anuncio</x-button>
+                    <x-button class="cursor-pointer animate-pop" color="secondary">Crear Anuncio</x-button>
                 </a>
             </div>
         </div>
@@ -84,9 +84,9 @@
                     @endphp
 
                     @foreach ($atajos as $acceso)
-                        <div class="flex items-center gap-2 bg-gray-100 dark:bg-neutral-800 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-neutral-700 transition cursor-pointer select-none">
+                        <div class="flex items-center gap-2 animate-pop bg-gray-100 dark:bg-neutral-800 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-neutral-700 transition cursor-pointer select-none">
                             <a href="{{ $acceso['link'] }}">
-                            <span class="text-lg">{{ $acceso['icon'] }}</span>
+                            <span class="text-lg ">{{ $acceso['icon'] }}</span>
                             <span>{{ $acceso['label'] }}</span>
                             </a>
                         </div>
@@ -193,7 +193,4 @@
         chart.render();
     });
 </script>
-
-
-
 @endpush

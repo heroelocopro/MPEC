@@ -16,7 +16,7 @@
             @if ($grupoInfo)
                 <flux:modal.trigger wire:click="$set('modalCreacion', true)" name="crear-profesor">
                     <button
-                        class="h-12 px-6 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition duration-300 cursor-pointer dark:bg-blue-700 dark:hover:bg-blue-800">
+                        class="h-12 animate-slide-in-top px-6 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition duration-300 cursor-pointer dark:bg-blue-700 dark:hover:bg-blue-800">
                         Asignar Estudiante a Grupo
                     </button>
                 </flux:modal.trigger>
@@ -49,7 +49,7 @@
 
     {{-- Mostrar estudiantes asignados al grupo --}}
 @if ($grupoInfo)
-<div class="max-w-6xl mx-auto mt-10 p-6 rounded-2xl shadow-lg bg-white dark:bg-gray-800">
+<div class="max-w-6xl animate-slide-in-top mx-auto mt-10 p-6 rounded-2xl shadow-lg bg-white dark:bg-gray-800">
     <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow-sm">
         <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">Información del Grupo</h3>
         <p class="text-gray-600 dark:text-gray-300"><strong>Nombre:</strong> {{ $grupoInfo->nombre }}</p>

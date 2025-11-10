@@ -11,7 +11,7 @@
 
         @if (!empty($grado_id))
             <flux:modal.trigger wire:click="$set('modalCreacion', true)" name="asignacion-asignatura-grado">
-                <button class="h-12 px-6 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition">
+                <button class="h-12 px-6 animate-slide-in-top bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition">
                     Asignar Asignatura al Grado
                 </button>
             </flux:modal.trigger>
@@ -37,7 +37,7 @@
 
     {{-- Información del grado y asignaturas --}}
     @if (!empty($asignaturasGrados))
-        <div class="max-w-6xl mx-auto mt-10 p-6 rounded-2xl shadow-lg bg-white dark:bg-gray-800">
+        <div class="max-w-6xl animate-slide-in-top mx-auto mt-10 p-6 rounded-2xl shadow-lg bg-white dark:bg-gray-800">
             <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
                 <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">Información del Grado</h3>
                 <p><strong>Nombre:</strong> {{ $grado->nombre }}</p>

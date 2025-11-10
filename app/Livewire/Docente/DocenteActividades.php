@@ -98,6 +98,7 @@ class DocenteActividades extends Component
             'periodo_id'    => $periodo->id,
         ];
 
+
         try {
             $actividad = Actividad::create($datos);
 

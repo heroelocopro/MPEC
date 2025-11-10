@@ -4,11 +4,11 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white  dark:bg-zinc-800">
-        <flux:sidebar sticky stashable class="border-e border-[#8F1718] bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+        <flux:sidebar sticky stashable class=" bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
             <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
-                <img class="img-fluid rounded-2xl  border-2 border-black" src="{{ asset('images/GuruEducativa2.png') }}" alt="">
+                <img class="img-fluid rounded-2xl  animate-tada border-2 border-black" src="{{ asset('images/GuruEducativa2.png') }}" alt="">
             </a>
             <flux:navlist variant="outline">
                 {{-- Administrador --}}
@@ -222,6 +222,7 @@
         {{ $slot }}
 
         @fluxScripts
+        @include('sweetalert::alert')
         @livewireScripts
         <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -233,6 +234,16 @@
 
 <script>
     Livewire.on('alerta', (data) => {
+        data = data[0];
+        Swal.fire({
+            title: data['title'],
+            text: data['text'],
+            icon: data['icon'],
+            toast: data['toast'],
+            position: data['position'],
+        });
+    });
+    Livewire.on('alerta2', (data) => {
         data = data[0];
         Swal.fire({
             title: data['title'],

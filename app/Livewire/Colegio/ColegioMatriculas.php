@@ -4,6 +4,7 @@ namespace App\Livewire\Colegio;
 
 use App\Models\Colegio;
 use App\Models\Estudiante;
+use App\Models\EstudianteGrupo;
 use App\Models\Grado;
 use App\Models\matricula;
 use App\Models\sedes_colegio;
@@ -184,6 +185,8 @@ class ColegioMatriculas extends Component
         ]);
 
         try {
+            $gradoAntiguo = 0;
+            $gradoAntiguo = $this->matriculaEdicion->grado_id;
             $this->matriculaEdicion->update([
                 'grado_id' => $this->grado_idEdicion,
                 'tipo_matricula' => $this->tipo_matriculaEdicion,
@@ -192,6 +195,13 @@ class ColegioMatriculas extends Component
                 'año_lectivo' => $this->año_lectivoEdicion,
             ]);
 
+            // desvincular grupo si hay cambio de grado
+            if ( $gradoAntiguo != $this->grado_idEdicion)
+            {
+                EstudianteGrupo::where('estudiante_id',$this->matriculaEdicion->estudiante_id)->delete();
+                session()->flash('informacion','El cambio de grado desvincula automaticamente el grupo del estudiante.');
+            }
+
             $this->dispatch('alerta', [
                 'title' => 'Actualización exitosa',
                 'text' => 'La matrícula fue actualizada correctamente',
@@ -199,6 +209,7 @@ class ColegioMatriculas extends Component
                 'toast' => true,
                 'position' => 'top-end',
             ]);
+
 
             $this->modalEdicion = false;
 

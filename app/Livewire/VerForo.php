@@ -9,6 +9,8 @@ use Livewire\Component;
 
 class VerForo extends Component
 {
+    // senales
+    public $listeners = ['eliminar' => 'eliminar'];
     // datos iniciales
     public $usuario;
     // datos para crear
@@ -30,8 +32,20 @@ class VerForo extends Component
         try {
             Respuesta_Foro::create($datos);
             $this->notificar('success','comentario creado','comentario creado con exito',true,'top-end');
+            $this->reset(['mensaje','autor_id']);
         } catch (\Throwable $th) {
             $this->notificar('error','no se pudo crear el comentario',$th->getMessage(),false,'center');
+        }
+        $this->cargarComentarios();
+    }
+    public function eliminar($comentarioId)
+    {
+        try {
+            $respuesta = Respuesta_Foro::findOrFail($comentarioId);
+            $respuesta->delete();
+             $this->notificar('success','comentario eliminado','comentario eliminado con exito',true,'top-end');
+        } catch (\Throwable $th) {
+             $this->notificar('error','Error al eliminar','comentario no se pudo eliminar con exito',true,'top-end');
         }
         $this->cargarComentarios();
     }

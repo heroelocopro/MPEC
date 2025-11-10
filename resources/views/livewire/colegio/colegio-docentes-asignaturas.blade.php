@@ -17,7 +17,7 @@
         <div>
             @if (!empty($profesor))
             <flux:modal.trigger wire:click="$set('modalCreacion', true)" name="asignar-asignatura-docente">
-                <button class="h-12 px-6 bg-blue-600 text-white rounded-lg text-sm
+                <button class="h-12 animate-slide-in-top px-6 bg-blue-600 text-white rounded-lg text-sm
                 hover:bg-blue-700 transition duration-300 cursor-pointer
                 dark:bg-blue-700 dark:hover:bg-blue-800">
                 Asignar Asignatura al Docente
@@ -51,7 +51,7 @@
 
 
 @if (isset($asignaturasProfesor) && count($asignaturasProfesor) > 0)
-    <div class="max-w-6xl mx-auto mt-10 p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
+    <div class="max-w-6xl  mx-auto mt-10 p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
         <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-sm">
             <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">Información del Docente</h3>
             <p class="text-gray-600 dark:text-gray-300"><strong>Nombre:</strong> {{ $profesor->nombre_completo }}</p>

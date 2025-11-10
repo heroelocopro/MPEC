@@ -34,7 +34,7 @@
 
             @foreach ($accesos as $acceso)
                 <a href="{{ $acceso['route'] }}"
-                   class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-xl p-4 flex flex-col items-center justify-center text-center shadow-sm hover:bg-blue-100 dark:hover:bg-blue-800 transition">
+                   class="bg-white animate-heartbeat dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-xl p-4 flex flex-col items-center justify-center text-center shadow-sm hover:bg-blue-100 dark:hover:bg-blue-800 transition">
                     <div class="text-3xl mb-2">{{ $acceso['icon'] }}</div>
                     <div class="text-sm font-medium text-gray-800 dark:text-white">{{ $acceso['label'] }}</div>
                 </a>

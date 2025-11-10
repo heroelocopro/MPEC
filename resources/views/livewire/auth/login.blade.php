@@ -10,6 +10,8 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
+use RealRashid\SweetAlert\Facades\Alert;
+
 
 new #[Layout('components.layouts.auth')] class extends Component {
     #[Validate('required|string|email')]
@@ -33,7 +35,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
+                'email' => __('No se encuentran registros en la base de datos.'),
             ]);
         }
 
@@ -43,9 +45,14 @@ new #[Layout('components.layouts.auth')] class extends Component {
         $usuario = Auth::user();
         // 1.admin 2.colegio 3.docente 4.estudiante 5.acudiente
         // solo redirigir a su correspondiente igualmente necesitas el rol para entrar.
+
+        Alert::toast('Bienvenido de vuelta', 'success');
+
+
         switch ($usuario->role_id) {
             case 1:
                 // Por defecto: redirige al dashboard general
+
                 $this->redirectRoute('administrador-principal');
                 break;
             case 2:
@@ -65,6 +72,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
                 // Por defecto: redirige al dashboard general
                 $this->redirectRoute('dashboard', navigate: true);
         }
+
 
         // $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
@@ -128,15 +136,29 @@ new #[Layout('components.layouts.auth')] class extends Component {
             </div>
 
             <div>
-                <button type="submit" class="w-full cursor-pointer py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition">
+                <flux:button variant="primary" color="sky" class="w-full cursor-pointer py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition" type="submit" :loading="true" >
                     Ingresar
-                </button>
+                </flux:button>
             </div>
         </form>
         <p class="mt-6 text-xs text-center text-gray-400">
             Corporalma &copy; {{ now()->year }}. Todos los derechos reservados.
         </p>
     </div>
+    @push('js')
+        <script>
+            Livewire.on('alerta', (data) => {
+                data = data[0];
+                Swal.fire({
+                    title: data['title'],
+                    text: data['text'],
+                    icon: data['icon'],
+                    toast: data['toast'],
+                    position: data['position'],
+                });
+            });
+        </script>
+    @endpush
 </div>
 
 

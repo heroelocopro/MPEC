@@ -78,6 +78,12 @@
             </div>
         </div>
 
+        @if (session('informacion'))
+<div class="text-center text-red-500 py-5">
+    {{ session('informacion') }}
+</div>
+@endif
+
 {{-- Tabla Matrículas --}}
 <div class="mt-2">
     <div class="overflow-x-auto shadow-md sm:rounded-lg">
@@ -435,16 +441,6 @@
     {{-- Script de alerta --}}
     @push('js')
         <script>
-            Livewire.on('alerta', (data) => {
-                data = data[0];
-                Swal.fire({
-                    title: data['title'],
-                    text: data['text'],
-                    icon: data['icon'],
-                    toast: data['toast'],
-                    position: data['position'],
-                });
-            });
 
             Livewire.on('confirmarEliminarMatricula', (id) => {
             Swal.fire({

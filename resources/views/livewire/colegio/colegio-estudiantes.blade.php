@@ -127,8 +127,7 @@
 
             {{-- paginacion --}}
             @if (isset($estudiantes))
-
-            {{ $estudiantes->links() }}
+                {{ $estudiantes->links('vendor.pagination.tailwind') }}
             {{-- @if ($estudiantes->hasPages())
             @endif --}}
             @endif

@@ -16,7 +16,9 @@
 
             @if ($usuario->usuario->role_id < 4)
             <div>
-                <flux:button class="cursor-pointer" wire:click="$set('modalCrear',true)">Crear Foro</flux:button>
+                <flux:button variant="primary" color="sky" class="h-12 animate-slide-in-top px-6 bg-blue-600 text-white rounded-lg text-sm
+                hover:bg-blue-700 transition duration-300 cursor-pointer
+                dark:bg-blue-700 dark:hover:bg-blue-800" wire:click="$set('modalCrear',true)">Crear Foro</flux:button>
             </div>
             @endif
             @endif
@@ -61,7 +63,7 @@
             @if (isset($foros) && count($foros) > 0)
                 @foreach($foros as $foro)
                     <a href="{{ route('ver-foro',$foro->id) }}"
-                        class="block border rounded-lg p-4 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition text-gray-800 dark:text-gray-100">
+                        class="block animate-fade-in-right border rounded-lg p-4 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition text-gray-800 dark:text-gray-100">
                         <div class="flex justify-between items-start mb-2">
                             <div>
                                 <h3 class="text-xl font-semibold">{{ $foro->titulo }}</h3>
@@ -72,7 +74,18 @@
                             <div class="text-right">
                                 <span
                                     class="px-2 py-1 text-sm rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                    {{ $foro->tipo }}
+                                    @switch($foro->tipo)
+                                        @case('Grupo')
+                                            {{ $foro->tipo . ' ' . $foro->grupo->nombre }}
+                                            @break
+                                        @case('Grado')
+                                            {{ $foro->tipo . ' ' . $foro->grado->nombre }}
+                                            @break
+
+                                        @default
+                                            {{ $foro->tipo }}
+                                    @endswitch
+
                                 </span>
                             </div>
                         </div>
