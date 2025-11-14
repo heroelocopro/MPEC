@@ -76,7 +76,7 @@
                                 <select wire:model="grupo_id" id="grupo_id" class="block bg-white text-black w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white dark:bg-gray-700 dark:text-white">
                                     <option value="">Seleccione un grupo</option>
                                     @foreach($groups as $group)
-                                        <option value="{{ $group->id }}">{{ $group->nombre }}</option>
+                                        <option value="{{ $group->id }}"> {{ $group->grado->nombre }} {{ $group->nombre }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -260,4 +260,22 @@
             </form>
         </div>
     </div>
+
+    {{-- JavaScript
+    @push('js')
+    <script>
+        Livewire.on('alerta', (data) => {
+            data = data[0];
+            Swal.fire({
+                title: data['title'],
+                text: data['text'],
+                icon: data['icon'],
+                toast: data['toast'],
+                position: data['position'],
+                background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#ffffff',
+                color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#000000',
+            });
+        });
+    </script>
+    @endpush --}}
 </div>

@@ -57,8 +57,11 @@
             </div>
 
             {{-- Gráfico de Estudiantes por Grupo --}}
-            <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 p-6 rounded-2xl shadow-md">
-                <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Estudiantes por Grupo</h2>
+            <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 p-6 rounded-2xl shadow-md text-center">
+                <div class="text-center">
+
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 ">Estudiantess por Grupo</h2>
+                </div>
                 <canvas id="estudiantesPorGrupoChart" class="w-full h-64"></canvas>
             </div>
 

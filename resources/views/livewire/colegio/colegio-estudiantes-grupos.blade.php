@@ -34,11 +34,12 @@
         <div
             wire:click="$set('grupo_id', {{ $grupo->id }})"
             class="cursor-pointer p-4 border rounded-xl shadow-sm transition hover:shadow-md
-                {{ $grupo_id == $grupo->id ? 'border-blue-500  bg-blue-100 dark:bg-blue-800 dark:border-blue-400 text-blue-800 dark:text-white' : 'bg-white hover:text-white dark:bg-neutral-800 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white dark:hover:bg-blue-700' }}"
+                {{ $grupo_id == $grupo->id ?   'bg-blue-600 text-white border-blue-700 dark:bg-white dark:text-black dark:border-blue-700'
+                        : 'bg-white text-gray-900 border-gray-300 hover:bg-blue-100 hover:dark:bg-white hover:dark:text-black dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700' }}"
         >
-            <div class="text-lg font-semibold">{{ $grupo->nombre }}</div>
-            <div class="text-sm text-gray-600 dark:text-gray-300">Grado: {{ $grupo->grado->nombre }}</div>
-        </div>
+        <div class="text-lg font-semibold">{{ $grupo->nombre }}</div>
+            <div class="text-sm ">Grado: {{ $grupo->grado->nombre }}</div>
+    </div>
     @empty
         <div class="col-span-full text-center text-gray-500 dark:text-gray-400">
             No hay grupos disponibles.
@@ -83,7 +84,7 @@
 
 
     {{-- Modal para asignar estudiante a grupo --}}
-    <flux:modal name="crear-grado" wire:model="modalCreacion" class="md:w-96 lg:w-10/12">
+    <flux:modal name="crear-grado" wire:model="modalCreacion" class="md:w-96 lg:w-10/12 animate-fade-in-up">
         <div class="space-y-6">
             {{-- Título Modal --}}
             <div>

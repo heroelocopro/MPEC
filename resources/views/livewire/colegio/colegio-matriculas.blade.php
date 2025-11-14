@@ -53,7 +53,7 @@
                     @php
                         $currentYear = now()->year;
                     @endphp
-                    @for ($year = $currentYear; $year <= $currentYear + 5; $year++)
+                    @for ($year = $currentYear - 5; $year <= $currentYear + 5; $year++)
                         <option value="{{ $year }}">{{ $year }}</option>
                     @endfor
                 </select>
@@ -200,7 +200,7 @@
 
         @if ($matriculas->hasPages())
             <div class="mt-4">
-                {{ $matriculas->links() }}
+                {{ $matriculas->links('vendor.pagination.tailwind') }}
             </div>
         @endif
     </div>
@@ -317,7 +317,7 @@
             {{-- Footer modal --}}
             <div class="flex pt-4 justify-end space-x-3">
                 <button type="button" wire:click="guardarMatricula"
-                        class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
+                        class="text-white cursor-pointer bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
                     Guardar Matrícula
                 </button>
             </div>

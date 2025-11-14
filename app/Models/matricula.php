@@ -20,6 +20,10 @@ class matricula extends Model
         'fecha_matricula',
         'año_lectivo',
     ];
+    public static function validarMatricula(int $estudianteId, int $gradoId)
+    {
+        return self::where('estudiante_id',$estudianteId)->where('grado_id',$gradoId)->where('estado','aprobado')->get()->count() > 0;
+    }
     public function estudiante()
     {
         return $this->belongsTo(Estudiante::class,'estudiante_id');

@@ -35,6 +35,14 @@ class ColegioHistorialAcademico extends Component
     public $paginate = 5;
     public $search;
     public $gradoFiltro;
+    public $anoFiltro;
+    public function updatedAnoFiltro($value)
+    {
+        if($value != null)
+         {
+            $this->cargarDatos();
+         }
+    }
     public function updatedPeriodoId($value)
     {
          if($value != null)
@@ -48,6 +56,7 @@ class ColegioHistorialAcademico extends Component
     }
     public function mount()
     {
+        $this->anoFiltro = now()->format('Y');
         $this->cargarUsuario();
         $this->cargarDatos();
     }
@@ -77,7 +86,8 @@ class ColegioHistorialAcademico extends Component
     public function cargarDatos()
     {
         $this->grados = Grado::where('colegio_id',$this->colegio->id)->get();
-        $this->periodos = PeriodoAcademico::where('colegio_id',$this->colegio->id)->get();
+        // $this->periodos = PeriodoAcademico::where('colegio_id',$this->colegio->id)->get();
+        $this->periodos = PeriodoAcademico::getPeriodsByYearsAndSchool($this->colegio->id,$this->anoFiltro)->get();
         $this->periodoSeleccionado = $this->periodos != null && count($this->periodos)> 0 ? $this->periodos[0] : null;
         $this->notaMinima = configNota::where('colegio_id',$this->colegio->id)->first() ?? (object) ['nota_minima' => 3.5];
     }
@@ -100,6 +110,11 @@ class ColegioHistorialAcademico extends Component
                 ->orWhere('documento', 'like', "%$search%");
             });
         })
+        ->when($this->anoFiltro, function ($query,$anoFecha) {
+            $query->whereHas('matricula', function ($q) use ($anoFecha) {
+                $q->where('año_lectivo',$anoFecha);
+            } );
+        } )
         ->when($this->gradoFiltro, function ($query, $gradoId) {
             $query->whereHas('matricula', function ($q) use ($gradoId) {
                 $q->where('grado_id', $gradoId); // Aquí se filtra por el ID del grado

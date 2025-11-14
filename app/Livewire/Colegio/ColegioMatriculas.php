@@ -8,6 +8,7 @@ use App\Models\EstudianteGrupo;
 use App\Models\Grado;
 use App\Models\matricula;
 use App\Models\sedes_colegio;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -76,8 +77,8 @@ class ColegioMatriculas extends Component
             'estudiante_id.required' => 'Debe seleccionar un estudiante',
             'tipo_matricula.in' => 'El tipo de matrícula no es válido',
             'sede_id' => 'sede',
-            'grado_id' => 'grado',
-            'tipo_matricula' => 'tipomatricula',
+            'grado_id' => 'Selecciona un grado para matricular',
+            'tipo_matricula' => 'Selecciona el tipo de matricula',
             'estado' => 'estado',
             'fecha_matricula' => 'fecha',
             'año_lectivo' => 'el año'
@@ -96,12 +97,16 @@ class ColegioMatriculas extends Component
     // Método para guardar la matrícula
     public function guardarMatricula()
     {
-        $this->estudiante = Estudiante::findOrFail($this->estudiante_id);
-        $this->colegio_id = $this->estudiante->colegio_id;
-        $this->sede_id =  $this->estudiante->sede_id;
+        $this->estudiante = Estudiante::find($this->estudiante_id);
+        $this->colegio_id = $this->estudiante->colegio_id ?? null;
+        $this->sede_id =  $this->estudiante->sede_id ?? null;
         $this->validate($this->rules(),$this->messages());
-        try {
-             Matricula::create([
+            try {
+            if(Matricula::validarMatricula($this->estudiante_id,$this->grado_id))
+            {
+                throw new Exception("El estudiante ya curso en este grado.");
+            }
+            $matricula = Matricula::create([
                 'estudiante_id' => $this->estudiante_id,
                 'colegio_id' => $this->colegio_id,
                 'sede_id' => $this->sede_id,
@@ -109,8 +114,10 @@ class ColegioMatriculas extends Component
                 'tipo_matricula' => $this->tipo_matricula,
                 'estado' => $this->estado,
                 'fecha_matricula' => $this->fecha_matricula,
-                'año_lectivo' => now()->format('Y'),
+                'año_lectivo' => $this->año_lectivo ?? now()->format('Y'),
             ]);
+
+            EstudianteGrupo::where('estudiante_id',$matricula->estudiante_id)->delete();
 
 
             $this->dispatch('alerta', [
@@ -131,9 +138,9 @@ class ColegioMatriculas extends Component
         } catch (\Exception $e) {
 
             $this->dispatch('alerta', [
-            'title' => 'Cambio de notas exitoso',
+            'title' => 'Ha ocurrido un error.',
             'text' => $e->getMessage(),
-            'icon' => 'success',
+            'icon' => 'error',
             'toast' => true,
             'position' => 'top-end',
         ]);
@@ -186,7 +193,9 @@ class ColegioMatriculas extends Component
 
         try {
             $gradoAntiguo = 0;
+            $estadoAntiguo = '';
             $gradoAntiguo = $this->matriculaEdicion->grado_id;
+            $estadoAntiguo = $this->matriculaEdicion->estado;
             $this->matriculaEdicion->update([
                 'grado_id' => $this->grado_idEdicion,
                 'tipo_matricula' => $this->tipo_matriculaEdicion,
@@ -200,6 +209,12 @@ class ColegioMatriculas extends Component
             {
                 EstudianteGrupo::where('estudiante_id',$this->matriculaEdicion->estudiante_id)->delete();
                 session()->flash('informacion','El cambio de grado desvincula automaticamente el grupo del estudiante.');
+            }
+            // desvincular grupo si hay cambio de estado
+            if ( $estadoAntiguo != $this->estadoEdicion)
+            {
+                EstudianteGrupo::where('estudiante_id',$this->matriculaEdicion->estudiante_id)->delete();
+                session()->flash('informacion','El cambio de estado desvincula automaticamente el grupo del estudiante.');
             }
 
             $this->dispatch('alerta', [
@@ -284,12 +299,35 @@ class ColegioMatriculas extends Component
         $colegio = Colegio::where('user_id','=',Auth::user()->id)->first();
         $sedes = sedes_colegio::where('colegio_id','=',$colegio->id)->get();
         $grados = Grado::where('colegio_id','=',$colegio->id)->orderBy('nivel')->get();
-        $estudiantesSinMatricula = Estudiante::where('colegio_id', $colegio->id)
-        ->whereDoesntHave('matricula', function($query) use ($colegio) {
-            $query->where('colegio_id', $colegio->id);
+        $colegioId = $colegio->id;
+
+        $estudiantesSinMatricula = Estudiante::where('colegio_id', $colegioId)
+        ->where(function ($q) use ($colegioId) {
+
+            // 1. Estudiantes con matrícula cerrada
+            $q->whereHas('matricula', function ($sub) use ($colegioId) {
+                $sub->where('colegio_id', $colegioId)
+                    ->whereIn('estado', ['aprobado', 'cancelado', 'reprobado']);
+            })
+
+            // 2. O estudiantes sin ninguna matrícula
+            ->orWhereDoesntHave('matricula', function ($sub) use ($colegioId) {
+                $sub->where('colegio_id', $colegioId);
+            });
+
         })
-        ->orderBy('nombre_completo')  // Ordenar alfabéticamente
+
+        // 3. Pero nadie debe tener matrícula en cursando
+        ->whereDoesntHave('matricula', function ($q) use ($colegioId) {
+            $q->where('colegio_id', $colegioId)
+            ->where('estado', 'cursando');
+        })
+
+        ->orderBy('nombre_completo')
         ->get();
+
+
+
         $matriculas = Matricula::where('colegio_id', $colegio->id)
         ->whereHas('estudiante', function ($query) {
             $query->where(function ($q) {

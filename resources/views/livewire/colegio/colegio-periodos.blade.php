@@ -12,9 +12,20 @@
             </flux:breadcrumbs>
         </div>
 
-        {{-- boton de crear --}}
+
+        {{-- boton de crear y filtro --}}
 
         <div>
+            <label class="mx-5" for=""> año </label>
+            <select wire:model.live="periodoAno"
+                    class="w-50 h-12 px-3 rounded-lg border border-gray-300 bg-white text-gray-700
+                        dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300
+                        focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option selected value="{{ now()->format('Y') }}">{{ now()->format('Y') }}</option>
+                        @for ($i = now()->format('Y')-1; $i >= now()->format('Y') - 5; $i--)
+                            <option value="{{ $i }}">{{ $i }}</option>
+                        @endfor
+            </select>
             <flux:modal.trigger wire:click="$set('modalCreacion', true)" name="crear-periodo">
                 <button class="h-12 px-6 bg-blue-600 text-white rounded-lg text-sm
                     hover:bg-blue-700 transition duration-300 cursor-pointer
@@ -145,7 +156,7 @@
     {{-- modal edicion --}}
 
     @if (isset($periodoSeleccionado))
-        <flux:modal name="editar-periodo" wire:model="modalEdicion" class="md:w-96 lg:w-1/2" >
+        <flux:modal name="editar-periodo" wire:model="modalEdicion" class="md:w-96 lg:w-1/2 animate-fade-in-up" >
             <div class="space-y-6">
                 {{-- titulo --}}
                 <div>
@@ -166,7 +177,7 @@
                     <!-- Fecha Inicio -->
                     <div>
                         <label for="fecha_inicio" class="block text-sm font-medium text-gray-900 dark:text-white">Fecha de Inicio*</label>
-                        <input type="date" id="fecha_inicio" value="{{ $periodo->editarFechaInicio }}" wire:model="periodoEditarFechaInicio"
+                        <input type="date" id="fecha_inicio" wire:model="periodoEditarFechaInicio"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         @error('periodoEditarFechaInicio') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
@@ -177,6 +188,14 @@
                         <input type="date" id="fecha_fin" wire:model="periodoEditarFechaFin"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         @error('periodoEditarFechaFin') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+                    </div>
+
+                    <!-- Year -->
+                    <div>
+                        <label for="periodoEditarAno" class="block text-sm font-medium text-gray-900 dark:text-white">ano*</label>
+                        <input type="number" id="ano" wire:model="periodoEditarAno"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        @error('periodoEditarAno') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                 </div>
 

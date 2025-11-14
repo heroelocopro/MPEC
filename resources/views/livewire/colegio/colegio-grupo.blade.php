@@ -9,7 +9,7 @@
         <flux:breadcrumbs.item>{{ $grupo->grado->nombre }}</flux:breadcrumbs.item>
     </flux:breadcrumbs>
     {{-- Main --}}
-    <div class="p-4 sm:p-6 lg:p-8 bg-white dark:bg-gray-900 rounded-xl shadow-md space-y-6">
+    <div class="p-4 sm:p-6 lg:p-8 bg-white dark:bg-gray-900 rounded-xl shadow-md space-y-6 my-5">
 
         {{-- Título --}}
         <div class="flex items-center space-x-3">
@@ -124,7 +124,8 @@
                                 <span class=" {{ $estudiante->discapacidad == 'Ninguna' ? 'text-gray-500' : 'text-rose-500' }} font-semibold">Discapacidad {{ $estudiante->discapacidad }}</span>
                             @elseif ($estudiante->superdotado)
                                 <span class=" {{ $estudiante->discapacidad == 'Ninguna' ? 'text-gray-500' : 'text-emerald-500' }} font-semibold">Superdotado</span>
-
+                            @else
+                            <span class=" text-gray-500 font-semibold">Ninguna</span>
                             @endif
                         </td>
                         <td class="px-6 py-4 text-center">
@@ -147,7 +148,7 @@
     {{-- modal show para los estudiantes jsjsjsj --}}
 
 @if ($estudianteSeleccionado != null && isset($estudianteSeleccionado))
-<flux:modal wire:model.live="modalVer" name="ver-estudiante" class="lg:w-7xl w-full">
+<flux:modal wire:model.live="modalVer" name="ver-estudiante" class="lg:w-full w-full">
     <div class="space-y-6">
         <div>
             <flux:heading size="lg">Información del Estudiante</flux:heading>

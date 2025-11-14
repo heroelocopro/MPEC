@@ -172,6 +172,15 @@ class DocenteEvaluaciones extends Component
 
         // Redirigir con mensaje
         session()->flash('success', 'Examen creado correctamente.');
+
+         $this->dispatch('alerta', [
+            'title' => 'Evaluacion creada con exito',
+            'text' => '¡Se guardó correctamente!',
+            'icon' => 'success',
+            'toast' => true,
+            'position' => 'top-end',
+        ]);
+
         return redirect()->route('docente-evaluaciones');
     }
 

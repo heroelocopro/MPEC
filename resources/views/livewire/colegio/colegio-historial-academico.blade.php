@@ -24,6 +24,12 @@
                 <option value="10">10 paginacion</option>
                 <option value="25">25 paginacion</option>
             </select>
+            <select wire:model.live="anoFiltro" class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-sm text-gray-800 dark:text-white">
+                <option value="">Selecciona el año a filtrar  </option>
+                @for ($i = now()->format('Y'); $i > now()->format('Y')-5;$i--)
+                <option value="{{ $i }}">{{ $i }}</option>
+                @endfor
+            </select>
             <select wire:model.live="gradoFiltro" class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-sm text-gray-800 dark:text-white">
                 <option value="">Todos</option>
                 @foreach ($grados as $grado)
@@ -36,29 +42,33 @@
 
     {{-- Tarjetas de estudiantes --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        @foreach ($estudiantes as $est)
+    @forelse ($estudiantes as $est)
             <div wire:click="seleccionarEstudiante({{ $est->id }})" class="bg-white border-2 hover:border-2 hover:border-blue-500 dark:bg-gray-900 p-4 rounded-xl shadow-md cursor-pointer hover:shadow-lg transition-all">
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white">{{ $est->nombre_completo }}</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-300">Documento: {{ $est->documento }} </p>
                 <p class="text-sm text-gray-600 dark:text-gray-300">Grado: {{ $est->matricula->grado->nombre }} </p>
-                <p class="text-sm text-gray-600 dark:text-gray-300">Promedio: {{ $est->promedio($est->estudiantesGrupos->first()->grupo->id ?? 0) ?? 'sin notas' }} </p>
+                <p class="text-sm text-gray-600 dark:text-gray-300">Promedio: {{ $est->promedio($anoFiltro) ?? 'sin notas' }} </p>
                 <p class="text-sm text-gray-600 dark:text-gray-300">Asistencias: {{ $est->asistenciasTotales }} </p>
                 <p class="mt-2 text-sm text-blue-600 dark:text-blue-400 font-medium">Ver detalles</p>
             </div>
-        @endforeach
-    </div>
+            @empty
+            <div>
+                <h3 class="text-center text-red-500">No se encontraron estudiantes.</h3>
+            </div>
+            @endforelse
+        </div>
         <div class="space-y-6 mt-5">
-            {{ $estudiantes->links() }}
+            {{ $estudiantes->links('vendor.pagination.tailwind') }}
         </div>
 
     {{-- Modal del estudiante --}}
     @if ($mostrarModal && isset($estudianteSeleccionado))
-        <div class="fixed inset-0  bg-opacity-50 flex items-center justify-center z-50">
+        <div class="fixed inset-0  bg-opacity-50 flex items-center justify-center z-50 animate-fade-in-up">
             <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto">
                 <div class="flex justify-between items-start mb-4">
                     <div>
                         <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Detalle de {{ $estudianteSeleccionado->nombre_completo }} </h2>
-                        <p class="text-sm text-gray-600 dark:text-gray-300">Promedio general: <span class="font-semibold">{{ $estudianteSeleccionado->promedio($estudianteSeleccionado->estudiantesGrupos->first()->grupo->id ?? 0) ?? 'sin notas' }}</span></p>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">Promedio general: <span class="font-semibold">{{ $estudianteSeleccionado->promedio($anoFiltro) ?? 'sin notas' }}</span></p>
                     </div>
                     <button wire:click="$set('mostrarModal',false)" class="text-gray-500 cursor-pointer dark:text-gray-400 hover:text-red-500 text-3xl font-bold">&times;</button>
                 </div>
@@ -66,6 +76,7 @@
                 {{-- Selector de período --}}
                 <div class="mb-4">
                     <select wire:model.live="periodo_id" class="px-4 cursor-pointer py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-sm text-gray-800 dark:text-white">
+                        <option value="">Selecciona un periodo</option>
                         @foreach ($periodos as $p)
                             <option value="{{ $p->id }}" {{ $periodoSeleccionado != null &&  $p->id == $periodoSeleccionado->id ? 'selected' : '' }}>{{ $p->nombre }}</option>
                         @endforeach

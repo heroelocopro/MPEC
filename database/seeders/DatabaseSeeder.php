@@ -68,6 +68,7 @@ class DatabaseSeeder extends Seeder
         {
             \App\Models\User::create($usuario);
         }
+        return;
         // 1️⃣ Crear colegios
         $colegios = [
             ['nombre' => 'Colegio Nacional', 'codigo_dane' => '110001', 'direccion' => 'Calle 123 #45-67', 'telefono' => '3001234567', 'correo' => 'info@colegionacional.edu.co','departamento' => 'cundinamarca','municipio' => 'girardot','estado' => 'ANTIGUO-ACTIVO','calendario' => 'A'],

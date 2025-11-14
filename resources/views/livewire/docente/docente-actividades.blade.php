@@ -60,7 +60,7 @@
                                bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 focus:ring focus:ring-blue-500">
                     <option value="">Selecciona un grupo</option>
                     @foreach ($grupos as $g)
-                        <option value="{{ $g->id }}">{{ $g->nombre }}</option>
+                        <option value="{{ $g->id }}"> {{ $g->grado->nombre }} {{ $g->nombre }} </option>
                     @endforeach
                 </select>
                 @error('grupo_id')
@@ -125,7 +125,7 @@
                                 class="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-4 py-2">
                             <option value="">Todos los grupos</option>
                             @foreach ($gruposFiltro as $grupo)
-                                <option value="{{ $grupo->id }}">{{ $grupo->nombre }}</option>
+                                <option value="{{ $grupo->id }}"> {{ $grupo->grado->nombre }} {{ $grupo->nombre }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -137,7 +137,7 @@
                         @if ($grupoFiltro == '' || $grupoFiltro == $grupoId)
                             <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
                                 <h3 class="text-2xl font-semibold text-blue-700 dark:text-blue-400 mb-4">
-                                    Grupo: {{ $actividadesDelGrupo->first()->grupo->nombre }}
+                                    Grupo: {{ $actividadesDelGrupo->first()->grupo->grado->nombre }} {{ $actividadesDelGrupo->first()->grupo->nombre }}
                                 </h3>
 
                                 <div class="grid gap-6 md:grid-cols-2">

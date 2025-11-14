@@ -203,8 +203,14 @@ public function cargarNotas()
         if($value != null || $value != '')
         {
             $this->grupo = EstudianteGrupo::where('grupo_id',$value)->get();
-            $this->actividades = Actividad::where('grupo_id',$value)->where('asignatura_id',$this->asignatura->id)->get();
-            $this->examenes = Examen::where('grupo_id',$value)->where('asignatura_id',$this->asignatura->id)->get();
+            $this->actividades = Actividad::where('grupo_id',$value)
+                                            ->where('asignatura_id',$this->asignatura->id)
+                                            ->where('periodo_id',PeriodoAcademico::periodoActual($this->colegio->id)->id ?? null)
+                                            ->get();
+            $this->examenes = Examen::where('grupo_id',$value)
+                                    ->where('asignatura_id',$this->asignatura->id)
+                                    ->where('periodo_id',PeriodoAcademico::periodoActual($this->colegio->id)->id ?? null)
+                                    ->get();
             $this->totalNotas = count($this->examenes) + count($this->actividades);
             $this->cargarNotas();
         }
@@ -214,9 +220,10 @@ public function cargarNotas()
     {
         $this->asignatura = asignatura::findOrFail($id);
         $this->grupos = collect(DB::select("
-            SELECT grupos.*
+            SELECT grupos.*, grados.nombre as gradoNombre
             FROM asignatura_grados
             INNER JOIN grupos ON asignatura_grados.grado_id = grupos.grado_id
+            INNER JOIN grados on grupos.grado_id = grados.id
             WHERE asignatura_grados.asignatura_id = ?
         ", [$this->asignatura->id]));
         $this->grupo_id = '';

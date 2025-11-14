@@ -128,7 +128,7 @@
                             @if (isset($grupos) && count($grupos) > 0)
                                 <option value="" class="text-black bg-white dark:bg-gray-700 dark:text-gray-100">Selecciona un grupo</option>
                                 @foreach ($grupos as $g)
-                                    <option value="{{ $g->id }}" class="dark:bg-gray-700 bg-white text-black dark:text-gray-100">{{ $g->nombre }}</option>
+                                    <option value="{{ $g->id }}" class="dark:bg-gray-700 bg-white text-black dark:text-gray-100">{{ $g->gradoNombre }} {{ $g->nombre }}</option>
                                 @endforeach
                             @else
                                 <option value="" class="dark:bg-gray-700 dark:text-gray-100">No hay grupos</option>

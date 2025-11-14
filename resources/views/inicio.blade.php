@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Título SEO -->
-    <title>GurupEducativa | Plataforma Escolar Colombia - Corporalma</title>
+    <title>Guru Educativa | Plataforma Escolar Colombia - Corporalma</title>
 
     <!-- Descripción SEO -->
     <meta
       name="description"
-      content="GurupEducativa es una plataforma educativa desarrollada en Colombia para colegios y escuelas modernas. Conecta a estudiantes, docentes, directivos y acudientes en una experiencia integral de gestión académica. Desarrollada por la Corporación de Altos Estudios del Magdalena - Corporalma."
+      content="Guru Educativa es una plataforma educativa desarrollada en Colombia para colegios y escuelas modernas. Conecta a estudiantes, docentes, directivos y acudientes en una experiencia integral de gestión académica. Desarrollada por la Corporación de Altos Estudios del Magdalena - Corporalma."
     />
 
     <!-- Palabras clave -->
@@ -51,7 +51,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:title"
-      content="GurupEducativa | Plataforma Escolar Integral en Colombia"
+      content="Gurup ducativa | Plataforma Escolar Integral en Colombia"
     />
     <meta
       name="twitter:description"
@@ -75,7 +75,7 @@
     <header
       class="bg-gradient-to-r from-indigo-600 to-blue-700 text-white py-20 px-6 text-center"
     >
-      <h1 class="text-5xl md:text-6xl font-bold mb-4">GurupEducativa</h1>
+      <h1 class="text-5xl md:text-6xl font-bold mb-4">Guru Educativa</h1>
       <p class="text-xl md:text-2xl mb-6">
         La plataforma educativa integral para instituciones modernas
       </p>
@@ -105,12 +105,12 @@
     <!-- Sección sobre la plataforma -->
     <section class="max-w-5xl mx-auto py-16 px-6">
       <h2 class="text-3xl font-bold text-center mb-6">
-        ¿Qué es GurupEducativa?
+        ¿Qué es Guru Educativa?
       </h2>
       <p
         class="text-center text-lg text-gray-600 dark:text-gray-300 leading-relaxed"
       >
-        GurupEducativa es una solución web desarrollada para facilitar la
+        Guru Educativa es una solución web desarrollada para facilitar la
         gestión escolar en colegios y escuelas. Nuestra plataforma conecta a
         administradores, docentes, estudiantes y familias, brindando
         herramientas prácticas para el aprendizaje, evaluación, comunicación y

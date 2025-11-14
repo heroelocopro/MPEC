@@ -108,7 +108,7 @@
     @endif
 
     {{-- Modal de Creación --}}
-    <flux:modal name="crear-horario" wire:model="modalCreacion" class="md:w-96 lg:w-10/12">
+    <flux:modal name="crear-horario" wire:model="modalCreacion" class="md:w-96 lg:w-10/12 animate-fade-in-up">
         <div class="space-y-6">
             {{-- Título Modal --}}
             <div>

@@ -21,6 +21,7 @@ class ColegioPeriodos extends Component
     public $periodoEditarNombre;
     public $periodoEditarFechaInicio;
     public $periodoEditarFechaFin;
+    public $periodoEditarAno;
     // variables Periodo
     public $colegio_id;
     public $nombre;
@@ -28,6 +29,16 @@ class ColegioPeriodos extends Component
     public $fecha_fin;
     public $estado;
     public $ano;
+    // filtro
+    public $periodoAno;
+
+    public function updatedPeriodoAno($value)
+    {
+        if ($value != null && $value != 0)
+        {
+            $this->cargarPeriodos();
+        }
+    }
 
     public function eliminarPeriodoAcademico($id)
     {
@@ -59,6 +70,12 @@ class ColegioPeriodos extends Component
             'periodoEditarNombre' => 'required|string|max:100',
             'periodoEditarFechaInicio' => 'required|date',
             'periodoEditarFechaFin' => 'required|date|after_or_equal:periodoEditarFechaInicio',
+            'periodoEditarAno' => 'required|lte:'.now()->format('Y'),
+            ],[
+                'periodoEditarNombre' => 'El nombre debe tener un maximo de 100 palabras y es requerido.',
+                'periodoEditarFechaInicio' => 'La fecha de inicio es requerida y debe ser de tipo fecha.',
+                'periodoEditarFechaFin' => 'La fecha de fin es requerida y debe ser de tipo fecha.',
+                'periodoEditarAno' => 'El ano debe ser menor o igual al ano actual y es requerido.',
             ]);
             $hoy = Carbon::today();
             if ($hoy->between($this->periodoEditarFechaInicio, $this->periodoEditarFechaFin)) {
@@ -66,13 +83,13 @@ class ColegioPeriodos extends Component
             } else {
                 $this->estado = 'inactivo';
             }
-            $this->ano =  now()->format('Y');
+            $this->ano =  $this->periodoEditarAno;
             $datos = [
                 'nombre' => $this->periodoEditarNombre,
                 'fecha_inicio' => $this->periodoEditarFechaInicio,
                 'fecha_fin' => $this->periodoEditarFechaFin,
                 'estado' => $this->estado,
-                'ano' => now()->format('Y'),
+                'ano' => $this->ano,
                 'colegio_id' => $this->colegio->id,
             ];
             try {
@@ -105,6 +122,7 @@ class ColegioPeriodos extends Component
         $this->periodoEditarNombre = $this->periodoSeleccionado->nombre;
         $this->periodoEditarFechaInicio = Carbon::parse($this->periodoSeleccionado->fecha_inicio)->format('Y-m-d');
         $this->periodoEditarFechaFin = Carbon::parse($this->periodoSeleccionado->fecha_fin)->format('Y-m-d');
+        $this->periodoEditarAno = $this->periodoSeleccionado->ano;
     }
 
     public function cambiarPeriodo($id)
@@ -185,18 +203,21 @@ class ColegioPeriodos extends Component
         $this->periodoEditarNombre = '';
         $this->periodoEditarFechaInicio = '';
         $this->periodoEditarFechaFin = '';
+        $this->periodoEditarAno = '';
         $this->modalCreacion = false;
         $this->modalEdicion = false;
     }
 
     public function cargarPeriodos()
     {
-        $this->periodos = PeriodoAcademico::where('colegio_id',$this->colegio->id)->get();
+        $this->periodos = PeriodoAcademico::getPeriodsByYearsAndSchool($this->colegio->id,$this->periodoAno)->get();
+        //  PeriodoAcademico::where('colegio_id',$this->colegio->id)->get();
     }
     public function mount()
     {
         $this->colegio = Colegio::where('user_id',Auth::user()->id)->first();
         $this->colegio_id = $this->colegio->id;
+        $this->periodoAno = now()->format('Y');
         $this->cargarPeriodos();
     }
     public function render()

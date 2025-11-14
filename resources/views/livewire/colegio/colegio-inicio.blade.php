@@ -56,7 +56,7 @@
 
             {{-- Gráfico de Estudiantes por Grupo --}}
             <div wire:ignore class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 p-6 rounded-2xl shadow-md col-span-1">
-                <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Estudiantes por Grupo</h2>
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 text-center">Estudiantes por Grupo</h2>
                 <div id="graficoEstudiantes" class="w-full h-[300px]"></div>
             </div>
 

@@ -27,7 +27,7 @@
                 class="cursor-pointer border rounded-lg p-4 text-center shadow transition
                     {{ $grado_id == $g->id
                         ? 'bg-blue-600 text-white border-blue-700 dark:bg-white dark:text-black dark:border-blue-700'
-                        : 'bg-white text-gray-900 border-gray-300 hover:bg-blue-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700' }} ">
+                        : 'bg-white text-gray-900 border-gray-300 hover:bg-blue-100 hover:dark:bg-white hover:dark:text-black dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700' }} ">
                 <span class="font-medium text-md">{{ $g->nombre }}</span>
             </div>
         @empty
@@ -65,7 +65,7 @@
     @endif
 
     {{-- Modal para asignación --}}
-    <flux:modal name="asignacion-asignatura-grado" wire:model="modalCreacion" class="md:w-96 lg:w-10/12">
+    <flux:modal name="asignacion-asignatura-grado" wire:model="modalCreacion" class="md:w-96 lg:w-10/12 animate-fade-in-up">
         <div class="space-y-6">
             <h2 class="text-2xl font-bold">Asignación de la Asignatura</h2>
             <p class="text-gray-600 dark:text-gray-300">Seleccione asignaturas para el grado actual.</p>

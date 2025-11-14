@@ -39,10 +39,10 @@
             wire:click="$set('profesor_id', {{ $p->id }})"
             class="cursor-pointer border rounded-lg p-4 text-center shadow transition
                 {{ $profesor_id == $p->id
-                    ? 'bg-blue-600 text-white border-blue-700'
-                    : 'bg-white dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-blue-300 dark:hover:bg-blue-700 dark:hover:text-white' }}">
+                     ? 'bg-blue-600 text-white border-blue-700 dark:bg-white dark:text-black dark:border-blue-700'
+                        : 'bg-white text-gray-900 border-gray-300 hover:bg-blue-100 hover:dark:bg-white hover:dark:text-black dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700' }}">
             <div class="font-medium text-md">{{ $p->nombre_completo }}</div>
-            <div class="text-sm text-gray-700 dark:text-gray-300 hover:text-white">Documento: {{ $p->documento }}</div>
+            <div class="text-s">Documento: {{ $p->documento }}</div>
         </div>
     @empty
         <div class="col-span-full text-center text-gray-500 dark:text-gray-400">No hay docentes disponibles</div>
@@ -51,7 +51,7 @@
 
 
 @if (isset($asignaturasProfesor) && count($asignaturasProfesor) > 0)
-    <div class="max-w-6xl  mx-auto mt-10 p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
+    <div class="max-w-6xl  mx-auto mt-10 p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg animate-slide-in-top" >
         <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-sm">
             <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">Información del Docente</h3>
             <p class="text-gray-600 dark:text-gray-300"><strong>Nombre:</strong> {{ $profesor->nombre_completo }}</p>
@@ -80,7 +80,7 @@
 
 
     {{-- modal Asignacion de asignaturas al docente --}}
-        <flux:modal name="asignar-asignatura-docente" wire:model="modalCreacion" class="md:w-96 lg:w-10/12">
+        <flux:modal name="asignar-asignatura-docente" wire:model="modalCreacion" class="md:w-96 lg:w-10/12 animate-fade-in-up">
             <div class="space-y-6">
                 {{-- Titulo Modal --}}
                 <div>

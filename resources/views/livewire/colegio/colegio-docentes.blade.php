@@ -229,7 +229,7 @@
 
             {{-- paginacion --}}
         @if ($profesores->hasPages())
-            {{ $profesores->links() }}
+            {{ $profesores->links('vendor.pagination.tailwind') }}
         @endif
 
     </div>

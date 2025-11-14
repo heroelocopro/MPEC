@@ -164,12 +164,11 @@ class Estudiante extends Model
         return $this->hasMany(NotaFinal::class);
     }
 
-    public function Promedio($grupo_id = null)
+    public function Promedio($anoFiltro = null)
     {
 
-        return round(NotaFinal::where('grupo_id', $grupo_id)
-            ->where('estudiante_id', $this->id)
-            ->where('ano',now()->format('Y'))
+        return round(NotaFinal::where('estudiante_id', $this->id)
+            ->where('ano',$anoFiltro)
             ->avg('nota'),1);
     }
 

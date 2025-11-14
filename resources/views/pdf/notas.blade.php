@@ -67,9 +67,10 @@
     <div class="student-info">
         <p><strong>Estudiante:</strong> {{ $estudiante->nombre_completo }}</p>
         <p><strong>Documento:</strong> {{ $estudiante->documento }}</p>
-        <p><strong>Grupo:</strong> {{ $grupo->nombre }}</p>
+        <p><strong>Grado:</strong> {{ $grupo->grado->nombre }}</p>
         <p><strong>Colegio:</strong> {{ $colegio->nombre }}</p>
         <p><strong>Período:</strong> {{ $periodo->nombre }} ({{ $periodo->fecha_inicio->format('d/m/Y') }} - {{ $periodo->fecha_fin->format('d/m/Y') }})</p>
+        <p><strong>Promedio:</strong> {{ $estudiante->promedio(now()->format('Y')) }} </p>
     </div>
 
     <table>

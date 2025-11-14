@@ -89,40 +89,44 @@ public function importarEstudiantes()
 
                 $estudiante = Estudiante::create([
                     'colegio_id' => $this->colegio_id,
-                    'sede_id' => null,
+                    'sede_id' => $normalized['sede'] ?? null,
                     'nombre_completo' => $this->generarNombreCompleto($normalized),
                     'documento' => $normalized['numero'],
                     'tipo_documento' => $normalized['tipo_id'],
                     'fecha_nacimiento' => $this->formatearFecha($normalized['fecha_de_nacimiento']),
                     'genero' => $normalized['genero'],
                     'grupo_sanguineo' => $normalized['grupo_sanguineo'] ?? null,
-                    'eps' => null,
-                    'sisben' => null,
-                    'poblacion_vulnerable' => null,
+                    'eps' => $normalized['eps'] ?? null,
+                    'sisben' => $normalized['sisben'] ?? null,
+                    'poblacion_vulnerable' => $normalized['poblacion_vulnerable'] ?? null,
                     'discapacidad' => $this->normalizarDiscapacidad($normalized['listado_de_categoria_discapacidad']),
                     'direccion' => $normalized['direccion_de_residencia'] ?? null,
                     'telefono' => $normalized['telefono'] ?? null,
                     'correo' => $normalized['correo'] ?? null,
                 ]);
 
-                $grado = Grado::where('colegio_id', $this->colegio_id)
+                if($normalized['matricular'] != 'NO')
+                {
+                    $grado = Grado::where('colegio_id', $this->colegio_id)
                     ->where('nombre', 'like', '%' . $normalized['grado'] . '%')
                     ->first();
 
-                if (!$grado) {
-                    throw new \Exception("No se encontró el grado: {$normalized['grado']}");
-                }
+                    if (!$grado) {
+                        throw new \Exception("No se encontró el grado: {$normalized['grado']}");
+                    }
 
-                Matricula::create([
-                    'estudiante_id' => $estudiante->id,
+                    Matricula::create([
+                        'estudiante_id' => $estudiante->id,
                     'colegio_id' => $estudiante->colegio_id,
                     'sede_id' => $estudiante->sede_id,
                     'grado_id' => $grado->id,
-                    'tipo_matricula' => $normalized['tipo_matricula'] ?? 'ordinaria',
-                    'estado' => 'activo',
+                    'tipo_matricula' => $normalized['tipo_matricula'] ?? 'nueva',
+                    'estado' => 'cursando',
                     'fecha_matricula' => now(),
+                    'año_lectivo' => now()->format('Y'),
                 ]);
 
+            }
                 $importados++;
             } catch (\Exception $e) {
                 $errores[] = "Fila " . ($index + 1) . ": " . $e->getMessage();
@@ -342,6 +346,7 @@ private function generarNombreCompleto(array $data): string
     public function cargarEstudiante($id)
     {
         $this->estudianteEdicion = Estudiante::findOrFail($id);
+        dd($this->estudianteEdicion);
         $this->sede_idEdicion = $this->estudianteEdicion->sede_id;
         $this->nombre_completoEdicion = $this->estudianteEdicion->nombre_completo;
         $this->documentoEdicion = $this->estudianteEdicion->documento;
@@ -464,6 +469,13 @@ private function generarNombreCompleto(array $data): string
                     'fecha_nacimiento' => 'required|date',
                     'genero' => 'nullable|string|in:masculino,femenino,otro,prefiero_no_decir',
                 ];
+                $messages = [
+                    'nombre_completo' => 'Requiere introducir el nombre completo',
+                    'tipo_documento' => 'Requiere introducir el tipo de documento',
+                    'documento' => 'Requiere introducir el numero de documento',
+                    'fecha_nacimiento' => 'Requiere introducir la fecha de nacimiento',
+                    'genero' => 'Requiere introducir el genero',
+                ];
                 break;
 
             case 2: // Información de Contacto
@@ -471,6 +483,11 @@ private function generarNombreCompleto(array $data): string
                     'direccion' => 'nullable|string|max:255',
                     'telefono' => 'required|string|max:20',
                     'correo' => 'nullable|email|max:255',
+                ];
+                $messages = [
+                    'direccion' => 'Requiere introducir la direccion de residencia.',
+                    'telefono' => 'Requiere introducir el telefono de contacto.',
+                    'correo' => 'Requiere introducir el correo electronico.',
                 ];
                 break;
 
@@ -483,6 +500,13 @@ private function generarNombreCompleto(array $data): string
                     'discapacidad' => 'nullable|string|in:Visual,Auditiva,Física / Motora,Intelectual,Psicosocial,Múltiple,Sin Discapacidad,Ninguna',
 
                 ];
+                $messages = [
+                    'grupo_sanguineo' => 'null',
+                    'eps' => 'null',
+                    'sisben' => 'null',
+                    'poblacion_vulnerable' => 'null',
+                    'discapacidad' => 'null',
+                ];
                 break;
 
             case 4: // Información Académica
@@ -490,12 +514,16 @@ private function generarNombreCompleto(array $data): string
                     'colegio_id' => 'required|exists:colegios,id',
                     'sede_id' => 'nullable|exists:sedes_colegios,id',
                 ];
+                $messages = [
+                    'colegio_id' => 'Se requiere un colegio Id',
+                    'sede_id' => 'Se requiere una sede Id',
+                ];
                 break;
 
         }
 
 
-        $this->validate($rules);
+        $this->validate($rules,$messages);
     }
 
     // valores importantes para filtro

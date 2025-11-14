@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -67,10 +69,14 @@ public static function periodoActual($colegio_id = null)
         ->orderByDesc('fecha_inicio')
         ->first();
 
-    // return self::where('estado', 'activo')
-    //     ->when($colegio_id, fn($q) => $q->where('colegio_id', $colegio_id))
-    //     ->orderByDesc('fecha_inicio') // por si hay varios activos, devuelve el más reciente
-    //     ->first();
+
+}
+public static function periodoActivo($colegio_id = null)
+{
+    return self::where('estado', 'activo')
+            ->when($colegio_id, fn($q) => $q->where('colegio_id', $colegio_id))
+            ->orderByDesc('fecha_inicio') // por si hay varios activos, devuelve el más reciente
+            ->first();
 }
 
 public static function activarPeriodo($periodo_id)
@@ -93,5 +99,13 @@ public function colegio()
     return $this->belongsTo(Colegio::class);
 }
 
+
+    // scopes
+
+    // scope para obtener el periodo basado en la fecha y el colegio
+    #[Scope]
+    public function scopeGetPeriodsByYearsAndSchool(Builder $query, int $idColegio, int $year) {
+        $query->where('colegio_id',$idColegio)->where('ano',$year);
+    }
 
 }

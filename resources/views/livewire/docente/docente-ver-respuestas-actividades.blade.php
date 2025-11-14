@@ -30,6 +30,7 @@
         <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-700 dark:text-gray-300">
             <div>
                 <p><span class="font-semibold">Asignatura:</span> {{ $actividad->asignatura->nombre ?? '—' }}</p>
+                <p><span class="font-semibold">Grado:</span> {{ $actividad->grupo->grado->nombre ?? '—' }}</p>
                 <p><span class="font-semibold">Grupo:</span> {{ $actividad->grupo->nombre ?? '—' }}</p>
             </div>
             <div>
