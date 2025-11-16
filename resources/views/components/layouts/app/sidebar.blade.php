@@ -17,6 +17,7 @@
                     <flux:navlist.item  icon="chart-bar" :href="route('administrador-principal')" :current="request()->routeIs('administrador-principal')" >{{ __('Panel Principal') }}</flux:navlist.item>
                     <flux:navlist.item icon="user-group" :href="route('administrador-usuarios')" :current="request()->routeIs('administrador-usuarios')" wire:navigate>{{ __('Usuarios') }}</flux:navlist.item>
                     <flux:navlist.item icon="building-library" :href="route('administrador-colegios')" :current="request()->routeIs('administrador-colegios')" wire:navigate>{{ __('Colegios') }}</flux:navlist.item>
+                    <flux:navlist.item icon="information-circle" :href="route('administrador-auditoria')" :current="request()->routeIs('administrador-auditoria')" wire:navigate>{{ __('Auditoria') }}</flux:navlist.item>
                     {{-- <flux:navlist.item icon="briefcase" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Docentes') }}</flux:navlist.item>
                     <flux:navlist.item icon="user-group" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Estudiantes') }}</flux:navlist.item>
                     <flux:navlist.item icon="users" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Acudientes') }}</flux:navlist.item> --}}
@@ -53,7 +54,7 @@
                         <flux:navlist.item icon="bell" :href="route('colegio-anuncios')" :current="request()->routeIs('colegio-anuncios')" wire:navigate>{{ __('Anuncios') }}</flux:navlist.item>
                         <flux:navlist.item icon="calendar-days" :href="route('colegio-horarios')" :current="request()->routeIs('colegio-horarios')" wire:navigate>{{ __('Horarios') }}</flux:navlist.item>
                         <flux:navlist.item icon="calendar-date-range" :href="route('colegio-periodos')" :current="request()->routeIs('colegio-periodos')" wire:navigate>{{ __('Periodos') }}</flux:navlist.item>
-                        <flux:navlist.item icon="academic-cap" :href="route('colegio-historial-academico')" :current="request()->routeIs('colegio-historial-academico')" wire:navigate>{{ __('Historial Academico') }}</flux:navlist.item>
+                        <flux:navlist.item icon="identification" :href="route('colegio-historial-academico')" :current="request()->routeIs('colegio-historial-academico')" wire:navigate>{{ __('Historial Academico') }}</flux:navlist.item>
                         <flux:navlist.item icon="academic-cap" :href="route('colegio-cierre-de-notas')" :current="request()->routeIs('colegio-cierre-de-notas')" wire:navigate>{{ __('Cierre de notas') }}</flux:navlist.item>
                     </flux:navlist.group>
                 @endif

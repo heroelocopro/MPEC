@@ -88,7 +88,7 @@
                     <p><strong>Documento:{{ $estudianteSeleccionado->documento }}</strong> </p>
                     <p><strong>Correo:{{ $estudianteSeleccionado->correo }}</strong> </p>
                     <p><strong>Edad:{{ $estudianteSeleccionado->edad() }}</strong> </p>
-                    <p><strong>Grado:{{ $estudianteSeleccionado->direccion }}</strong>
+                    <p><strong>Direccion:{{ $estudianteSeleccionado->direccion }}</strong>
                     <p><strong>Grado:{{ $estudianteSeleccionado->matricula->grado->nombre }}</strong>
                     <p><strong>Asistencia:{{ $estudianteSeleccionado->asistenciasTotales }}</strong> </p>
                 </div>

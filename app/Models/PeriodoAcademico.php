@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class PeriodoAcademico extends Model
+class PeriodoAcademico extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
     protected $table = 'periodo_academicos';
     protected $fillable = [
     'colegio_id',
