@@ -124,7 +124,7 @@
                 {{-- Estudiante --}}
                 <div>
                     <label for="estudiante_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Estudiante</label>
-                    <select id="estudiante_id" wire:model.live="estudiante_id"
+                    <select multiple id="estudiante_id" wire:model.live="estudiantes_seleccionados"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         @if (count($estudiantes) > 0)
                         <option selected value="">Selecciona un estudiante</option>
@@ -145,7 +145,7 @@
             <div class="flex pt-4">
                 <div class="flex-1"></div>
                 <div class="flex space-x-3">
-                    <button type="button" wire:click="asignarEstudianteGrupo"
+                    <button type="button" wire:click="asignarEstudiantesGrupo"
                         class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800 cursor-pointer">
                         Asignar Estudiante
                     </button>

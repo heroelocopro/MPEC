@@ -14,6 +14,7 @@ class ColegioEstudiantesGrupos extends Component
     public $colegio;
     public $colegio_id;
     public $grupo_id;
+    public $estudiantes_seleccionados = [];
     public $estudiante_id;
     public $estudiantes = [];
     public $estudiantesGrupos = [];
@@ -79,11 +80,12 @@ class ColegioEstudiantesGrupos extends Component
             ->get();
     }
 
-
-
-    public function asignarEstudianteGrupo()
+    public function asignarEstudiantesGrupo()
     {
-        $this->validate();
+        foreach($this->estudiantes_seleccionados as $e)
+        {
+            $this->estudiante_id = $e;
+            $this->validate();
 
         try {
             $exists = EstudianteGrupo::where('estudiante_id', $this->estudiante_id)
@@ -121,7 +123,7 @@ class ColegioEstudiantesGrupos extends Component
 
             $this->dispatch('alerta', [
                 'title' => 'Asignación exitosa',
-                'text' => 'Estudiante asignado con éxito.',
+                'text' => 'Estudiantes asignados con éxito.',
                 'icon' => 'success',
                 'toast' => true,
                 'position' => 'top-end',
@@ -137,7 +139,68 @@ class ColegioEstudiantesGrupos extends Component
                 'icon' => 'error',
             ]);
         }
+        }
     }
+
+
+
+    // public function asignarEstudianteGrupo()
+    // {
+    //     $this->validate();
+
+    //     try {
+    //         $exists = EstudianteGrupo::where('estudiante_id', $this->estudiante_id)
+    //             ->where('grupo_id', $this->grupo_id)
+    //             ->where('colegio_id', $this->colegio_id)
+    //             ->exists();
+
+    //         if ($exists) {
+    //             $this->dispatch('alerta', [
+    //                 'title' => 'Asignación duplicada',
+    //                 'text' => 'Este estudiante ya está asignado a este grupo.',
+    //                 'icon' => 'warning',
+    //             ]);
+    //             return;
+    //         }
+    //         $yaAsignado = EstudianteGrupo::where('estudiante_id', $this->estudiante_id)
+    //             ->where('colegio_id', $this->colegio_id)
+    //             ->exists();
+
+    //         if ($yaAsignado) {
+    //             $this->dispatch('alerta', [
+    //                 'title' => 'Estudiante ya asignado',
+    //                 'text' => 'Este estudiante ya pertenece a un grupo en este colegio.',
+    //                 'icon' => 'warning',
+    //             ]);
+    //             return;
+    //         }
+
+
+    //         EstudianteGrupo::create([
+    //             'estudiante_id' => $this->estudiante_id,
+    //             'grupo_id' => $this->grupo_id,
+    //             'colegio_id' => $this->colegio_id,
+    //         ]);
+
+    //         $this->dispatch('alerta', [
+    //             'title' => 'Asignación exitosa',
+    //             'text' => 'Estudiante asignado con éxito.',
+    //             'icon' => 'success',
+    //             'toast' => true,
+    //             'position' => 'top-end',
+    //         ]);
+
+    //         $this->limpiarAsignacion();
+    //         $this->updatedGrupoId($this->grupo_id); // Actualizar listas
+
+    //     } catch (\Throwable $e) {
+    //         $this->dispatch('alerta', [
+    //             'title' => 'Error al asignar estudiante',
+    //             'text' => $e->getMessage(),
+    //             'icon' => 'error',
+    //         ]);
+    //     }
+    // }
 
     public function eliminarEstudianteGrupo($id)
     {
@@ -166,6 +229,7 @@ class ColegioEstudiantesGrupos extends Component
     {
         $this->estudiante_id = null;
         $this->modalCreacion = false;
+        $this->estudiantes_seleccionados = [];
         // No se limpia grupo_id ni grupoInfo para mantener el grupo activo
     }
 
