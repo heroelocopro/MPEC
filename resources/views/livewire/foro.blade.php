@@ -16,7 +16,7 @@
 
             @if ($usuario->usuario->role_id < 4)
             <div>
-                <flux:button variant="primary" color="sky" class="h-12 animate-slide-in-top px-6 bg-blue-600 text-white rounded-lg text-sm
+                <flux:button variant="primary" color="sky" class="h-12  px-6 bg-blue-600 text-white rounded-lg text-sm
                 hover:bg-blue-700 transition duration-300 cursor-pointer
                 dark:bg-blue-700 dark:hover:bg-blue-800" wire:click="$set('modalCrear',true)">Crear Foro</flux:button>
             </div>
@@ -63,7 +63,7 @@
             @if (isset($foros) && count($foros) > 0)
                 @foreach($foros as $foro)
                     <a href="{{ route('ver-foro',$foro->id) }}"
-                        class="block animate-fade-in-right border rounded-lg p-4 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition text-gray-800 dark:text-gray-100">
+                        class="block  border rounded-lg p-4 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition text-gray-800 dark:text-gray-100">
                         <div class="flex justify-between items-start mb-2">
                             <div>
                                 <h3 class="text-xl font-semibold">{{ $foro->titulo }}</h3>

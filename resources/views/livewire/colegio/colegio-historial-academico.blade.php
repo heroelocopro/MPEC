@@ -63,7 +63,7 @@
 
     {{-- Modal del estudiante --}}
     @if ($mostrarModal && isset($estudianteSeleccionado))
-        <div class="fixed inset-0  bg-opacity-50 flex items-center justify-center z-50 animate-fade-in-up">
+        <div class="fixed inset-0  bg-opacity-50 flex items-center justify-center z-50 ">
             <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto">
                 <div class="flex justify-between items-start mb-4">
                     <div>

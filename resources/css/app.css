@@ -2,7 +2,6 @@
 @import "../../vendor/livewire/flux/dist/flux.css";
 @import "tailwindcss";
 
-@plugin "@midudev/tailwind-animations";
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';

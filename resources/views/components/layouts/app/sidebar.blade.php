@@ -8,7 +8,7 @@
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
             <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
-                <img class="img-fluid rounded-2xl  animate-tada border-2 border-black" src="{{ asset('images/GuruEducativa2.png') }}" alt="">
+                <img class="img-fluid rounded-2xl border-2 border-black" src="{{ asset('images/GuruEducativa2.png') }}" alt="">
             </a>
             <flux:navlist variant="outline">
                 {{-- Administrador --}}

@@ -17,7 +17,7 @@
         <div>
             @if (!empty($profesor))
             <flux:modal.trigger wire:click="$set('modalCreacion', true)" name="asignar-asignatura-docente">
-                <button class="h-12 animate-slide-in-top px-6 bg-blue-600 text-white rounded-lg text-sm
+                <button class="h-12  px-6 bg-blue-600 text-white rounded-lg text-sm
                 hover:bg-blue-700 transition duration-300 cursor-pointer
                 dark:bg-blue-700 dark:hover:bg-blue-800">
                 Asignar Asignatura al Docente
@@ -51,7 +51,7 @@
 
 
 @if (isset($asignaturasProfesor) && count($asignaturasProfesor) > 0)
-    <div class="max-w-6xl  mx-auto mt-10 p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg animate-slide-in-top" >
+    <div class="max-w-6xl  mx-auto mt-10 p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg" >
         <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-sm">
             <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">Información del Docente</h3>
             <p class="text-gray-600 dark:text-gray-300"><strong>Nombre:</strong> {{ $profesor->nombre_completo }}</p>
@@ -80,7 +80,7 @@
 
 
     {{-- modal Asignacion de asignaturas al docente --}}
-        <flux:modal name="asignar-asignatura-docente" wire:model="modalCreacion" class="md:w-96 lg:w-10/12 animate-fade-in-up">
+        <flux:modal name="asignar-asignatura-docente" wire:model="modalCreacion" class="md:w-96 lg:w-10/12">
             <div class="space-y-6">
                 {{-- Titulo Modal --}}
                 <div>
@@ -117,11 +117,11 @@
                         </div>
                         <!-- Estudiante -->
                         <div>
-                            <label for="asignatura_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asignatura</label>
-                            <select id="asignatura_id" wire:model.defer="asignatura_id"
+                            <label for="asignatura_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asignaturas</label>
+                            <select multiple id="asignatura_id" wire:model.defer="asignaturas_seleccionadas"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 @if (isset($asignaturas) && count($asignaturas) > 0)
-                                <option value="">Selecciona un asignatura</option>
+                                <option value="">Selecciona una o varias asignaturas</option>
                                 @foreach ($asignaturas as $asignatura )
                                 <option value="{{ $asignatura->id }}">{{ $asignatura->nombre }}</option>
                                 @endforeach
@@ -140,8 +140,8 @@
                 <div class="flex pt-4">
                     <div class="flex-1"></div>
                     <div class="flex space-x-3">
-                            <button type="button" wire:click="asignarAsignaturaProfesor()"
-                                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800 cursor-pointer">
+                            <button type="button" wire:click="asignarAsignaturasProfesor"
+                                class="text-white  bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800 cursor-pointer">
                                 Asignar Asignatura
                             </button>
                     </div>

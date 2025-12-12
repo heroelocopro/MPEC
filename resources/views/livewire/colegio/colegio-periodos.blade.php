@@ -156,7 +156,7 @@
     {{-- modal edicion --}}
 
     @if (isset($periodoSeleccionado))
-        <flux:modal name="editar-periodo" wire:model="modalEdicion" class="md:w-96 lg:w-1/2 animate-fade-in-up" >
+        <flux:modal name="editar-periodo" wire:model="modalEdicion" class="md:w-96 lg:w-1/2 " >
             <div class="space-y-6">
                 {{-- titulo --}}
                 <div>

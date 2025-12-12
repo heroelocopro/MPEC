@@ -1,7 +1,7 @@
 <div class="relative">
     <!-- Icono de campana -->
     @if ($noLeidas > 0)
-    <button wire:click="$toggle('open')" class="relative cursor-pointer animate-heartbeat animate-iteration-count-infinite">
+    <button wire:click="$toggle('open')" class="relative cursor-pointer">
         <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002
@@ -16,7 +16,7 @@
         @endif
     </button>
     @else
-    <button wire:click="$toggle('open')" class="relative cursor-pointer animate-heartbeat">
+    <button wire:click="$toggle('open')" class="relative cursor-pointer ">
         <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002
