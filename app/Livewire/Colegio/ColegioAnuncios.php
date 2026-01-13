@@ -82,7 +82,7 @@ class ColegioAnuncios extends Component
         ]);
 
         try {
-            $ruta = $this->imagen ? $this->imagen->store('anuncios', 'public') : null;
+            $ruta = $this->imagen ? $this->imagen->store('anuncios', 's3') : null;
 
             $this->colegio->anuncios()->create([
                 'titulo' => $this->titulo,
