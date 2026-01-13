@@ -70,11 +70,8 @@
             @forelse ($anuncios as $anuncio)
             <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-md flex flex-col justify-between h-full">
                 <div>
-                    @if ($anuncio->imagen)
-                        <img
-                            src="{{ Storage::disk('s3')->url($anuncio->imagen) }}"
-                            class="w-full h-40 object-cover rounded-lg mb-3 ring-1 ring-gray-200 dark:ring-gray-700"
-                        />
+                    @if ($anuncio->imagen_url)
+                        <img src="{{ $anuncio->imagen_url }}" />
                     @endif
 
 
