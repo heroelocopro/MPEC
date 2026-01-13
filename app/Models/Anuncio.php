@@ -30,7 +30,7 @@ class Anuncio extends Model
     {
         if (!$this->imagen) return null;
 
-        return Storage::disk('s3')->temporaryUrl(
+        return Storage::temporaryUrl(
             $this->imagen,
             now()->addMinutes(30)
         );
