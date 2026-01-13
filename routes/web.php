@@ -26,6 +26,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/foro/{id}',VerForo::class)->name('ver-foro');
 });
 
+
+
+Route::get('/s3-test', function () {
+    \Illuminate\Support\Facades\Storage::disk('s3')->put(
+        'debug/test.txt',
+        'railway ok'
+    );
+
+    return 'OK';
+});
+
+
 require __DIR__.'/colegio.php';
 require __DIR__.'/administrador.php';
 require __DIR__.'/docente.php';
