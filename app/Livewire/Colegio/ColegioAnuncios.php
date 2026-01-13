@@ -28,8 +28,8 @@ class ColegioAnuncios extends Component
         try {
             $anuncio = Anuncio::findOrFail($id);
              // Borrar la imagen física si existe
-            if ($anuncio->imagen && Storage::disk('public')->exists($anuncio->imagen)) {
-                Storage::disk('public')->delete($anuncio->imagen);
+            if ($anuncio->imagen && Storage::disk('s3')->exists($anuncio->imagen)) {
+                Storage::disk('s3')->delete($anuncio->imagen);
             }
 
             // Eliminar el anuncio de la BD
