@@ -10,6 +10,7 @@ use App\Models\EstudianteGrupo;
 use App\Models\respuesta_actividad;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -56,43 +57,64 @@ class EstudianteActividades extends Component
 
 
 
-    public function guardarRespuesta()
-    {
-        $this->validate($this->rulesActivity);
-        try {
-            $respuesta = respuesta_actividad::updateOrCreate(
-                ['actividad_id' => $this->actividad_id, 'estudiante_id' => $this->estudiante->id],
-                ['contenido' => $this->contenido]
+public function guardarRespuesta()
+{
+    $this->validate($this->rulesActivity);
+
+    try {
+        $respuesta = respuesta_actividad::updateOrCreate(
+            [
+                'actividad_id' => $this->actividad_id,
+                'estudiante_id' => $this->estudiante->id
+            ],
+            [
+                'contenido' => $this->contenido
+            ]
+        );
+
+        if ($this->archivo) {
+
+            // 🔥 Eliminar archivo viejo si existe
+            if ($respuesta->archivo && Storage::disk('s3')->exists($respuesta->archivo)) {
+                Storage::disk('s3')->delete($respuesta->archivo);
+            }
+
+            // 📁 Guardar nuevo archivo
+            $path = $this->archivo->store(
+                'estudiante/actividades',
+                's3',
+                ['visibility' => 'public']
             );
 
-            if ($this->archivo) {
-                // Guardar archivo y actualizar campo
-                $path = $this->archivo->store('estudiante/actividades', 's3', ['visibility' => 'public']);
-                $respuesta->archivo = $path;
-                $respuesta->save();
+            // 💾 Actualizar BD
+            $respuesta->archivo = $path;
+            $respuesta->save();
 
-                $this->archivoGuardado = $path;
-                $this->archivo = null; // limpiar input file
-            }
-            $this->dispatch('alerta', [
-                'title' => 'Actividad subida',
-                'text' => '¡Se subio correctamente!',
-                'icon' => 'success',
-                'toast' => true,
-                'position' => 'top-end',
-            ]);
-            $this->verModalActividad = false;
-        } catch (\Throwable $th) {
-            $this->dispatch('alerta', [
-                'title' => 'Actividad Error',
-                'text' => $th->getMessage(),
-                'icon' => 'error',
-                'toast' => true,
-                'position' => 'top-end',
-            ]);
+            $this->archivoGuardado = $path;
+            $this->archivo = null;
         }
 
+        $this->dispatch('alerta', [
+            'title' => 'Actividad subida',
+            'text' => '¡Se subió correctamente!',
+            'icon' => 'success',
+            'toast' => true,
+            'position' => 'top-end',
+        ]);
+
+        $this->verModalActividad = false;
+
+    } catch (\Throwable $th) {
+        $this->dispatch('alerta', [
+            'title' => 'Actividad Error',
+            'text' => $th->getMessage(),
+            'icon' => 'error',
+            'toast' => true,
+            'position' => 'top-end',
+        ]);
     }
+}
+
 
     // abrir modal
     public $verModal = false;
