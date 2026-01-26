@@ -18,10 +18,8 @@
      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse ($anuncios as $anuncio)
             <div class="bg-gray-100 dark:bg-gray-800 rounded-lg shadow p-4">
-                @if ($anuncio->imagen)
-                    <img src="{{ asset('storage/' . $anuncio->imagen) }}"
-                         alt="Imagen del anuncio"
-                         class="w-full h-48 object-cover rounded mb-4">
+                @if ($anuncio->imagen_url)
+                        <img  alt="Imagen del anuncio" class="w-full h-48 object-cover rounded mb-4" src="{{ $anuncio->imagen_url }}" />
                 @endif
 
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">{{ $anuncio->titulo }}</h2>
