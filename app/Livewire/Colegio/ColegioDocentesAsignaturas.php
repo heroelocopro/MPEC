@@ -7,6 +7,7 @@ use App\Models\asignaturaProfesor;
 use App\Models\Colegio;
 use App\Models\Profesor;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class ColegioDocentesAsignaturas extends Component
@@ -18,6 +19,7 @@ class ColegioDocentesAsignaturas extends Component
     ];
     protected $listeners = [];
     // variables para mi desarrollo
+    public $asignaturas_seleccionadas = [];
     public $asignatura_id;
     public $profesor_id;
     public $profesor;
@@ -44,36 +46,48 @@ class ColegioDocentesAsignaturas extends Component
         }
         $this->dispatch('alerta',$data);
     }
-    public function asignarAsignaturaProfesor()
+    public function asignarAsignaturasProfesor()
     {
-        $this->validate($this->rules);
+        $errores = [];
+        foreach($this->asignaturas_seleccionadas as $a)
+        {
+            $this->asignatura_id = $a;
+            $this->validate($this->rules);
         try {
             $datos = [
                 'asignatura_id' => $this->asignatura_id,
                 'profesor_id' => $this->profesor_id,
             ];
             asignaturaProfesor::create($datos);
-
-             $data = [
-            'title' => 'Asignatura-Docente',
-            'text' => 'Asignacion exitosa!',
-            'icon' => 'success'
-            ];
             $this->limpiarAsignacion();
         } catch (\Throwable $th) {
+            array_push($errores,$a);
+            Log::error("Fallo al asignar docente",['exception' => $th->getMessage(), 'asignatura_id' => $a , 'profesor_id' => $this->profesor_id]);
+        }
+        if(count($errores) > 0)
+        {
             $data = [
             'title' => 'Error al asignar materia al docente!',
-            'text' => $th->getMessage(),
+            'text' => 'Hubieron ' . count($errores) . ' errores',
             'icon' => 'error'
             ];
         }
+        else{
+            $data = [
+            'title' => 'Asignatura-Docente',
+            'text' => 'Asignaciones exitosa!',
+            'icon' => 'success'
+            ];
+        }
         $this->dispatch('alerta',$data);
+        }
     }
 
     public function limpiarAsignacion()
     {
        $this->modalCreacion = false;
        $this->asignaturasProfesor = asignaturaProfesor::where('profesor_id',$this->profesor_id)->get();
+       $this->asignaturas_seleccionadas = [];
     }
 
     // metodos de livewire render booted mount

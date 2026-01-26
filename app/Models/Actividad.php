@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Actividad extends Model
 {
@@ -33,5 +34,15 @@ class Actividad extends Model
     public function periodo()
     {
         return $this->belongsTo(PeriodoAcademico::class);
+    }
+
+        public function getArchivoUrlAttribute()
+    {
+        if (!$this->archivo) return null;
+
+        return Storage::temporaryUrl(
+            $this->archivo,
+            now()->addMinutes(30)
+        );
     }
 }

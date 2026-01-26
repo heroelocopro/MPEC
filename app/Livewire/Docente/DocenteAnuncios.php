@@ -52,8 +52,8 @@ class DocenteAnuncios extends Component
         try {
             // Subir imagen si existe
             $imagenPath = $this->imagen
-                ? $this->imagen->store('anuncios', 'public')
-                : null;
+                ? $this->imagen->store('docente/anuncios', 's3', ['visibility' => 'public']) : null;
+                
 
             // Verificar relaciones
             if (!$this->profesor || !$this->profesor->exists) {

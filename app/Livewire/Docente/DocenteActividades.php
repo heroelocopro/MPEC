@@ -84,7 +84,7 @@ class DocenteActividades extends Component
         $rutaArchivo = null;
         if ($this->archivo) {
             // guarda el archivo en storage/app/public/docente/actividades
-            $rutaArchivo = $this->archivo->store('docente/actividades', 'public');
+            $rutaArchivo = $this->archivo->store('docente/actividades', 's3', ['visibility' => 'public']);
         }
 
         $datos = [

@@ -67,7 +67,7 @@ class EstudianteActividades extends Component
 
             if ($this->archivo) {
                 // Guardar archivo y actualizar campo
-                $path = $this->archivo->store('respuestas_actividades','public');
+                $path = $this->archivo->store('estudiante/actividades', 's3', ['visibility' => 'public']);
                 $respuesta->archivo = $path;
                 $respuesta->save();
 

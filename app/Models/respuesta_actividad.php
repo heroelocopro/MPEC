@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class respuesta_actividad extends Model
 {
@@ -22,6 +23,16 @@ class respuesta_actividad extends Model
     {
         return $this->hasOne(nota::class, 'notable_id', 'actividad_id')
             ->where('estudiante_id', $this->estudiante_id);
+    }
+
+    public function getArchivoUrlAttribute()
+    {
+        if (!$this->archivo) return null;
+
+        return Storage::temporaryUrl(
+            $this->archivo,
+            now()->addMinutes(30)
+        );
     }
 
 }
