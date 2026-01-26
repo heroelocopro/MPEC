@@ -162,7 +162,7 @@
                     @if ($actividadModal->archivo)
                         <div>
                             <p class="text-sm font-semibold text-gray-700 dark:text-white">Archivo Adjunto:</p>
-                            <a href="{{ asset('storage/' . $actividadModal->archivo) }}" target="_blank" class="inline-block mt-1 text-blue-700 hover:underline dark:text-blue-400 font-medium">
+                            <a href="{{  $actividadModal->archivo_url }}" target="_blank" class="inline-block mt-1 text-blue-700 hover:underline dark:text-blue-400 font-medium">
                                 Descargar archivo 📎
                             </a>
                         </div>
