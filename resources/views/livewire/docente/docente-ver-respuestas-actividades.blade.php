@@ -46,7 +46,7 @@
 
         @if ($actividad->archivo)
             <div class="mt-4">
-                <a href="{{ asset('storage/' . $actividad->archivo) }}" target="_blank"
+                <a href="{{ $actividad->archivo_url }}" target="_blank"
                     class="text-blue-600 dark:text-blue-300 underline text-sm hover:opacity-80 transition">
                     Ver archivo adjunto
                 </a>
