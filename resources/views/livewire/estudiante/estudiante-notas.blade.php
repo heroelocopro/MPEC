@@ -11,7 +11,7 @@
         {{-- Migas de pan --}}
         <div class="w-full md:w-auto">
             <flux:breadcrumbs>
-                <flux:breadcrumbs.item href="#">Panel Principal</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item href="{{ route('estudiante-inicio') }} ">Panel Principal</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item href="{{ route('estudiante-notas') }}">Mis Notas</flux:breadcrumbs.item>
                 @isset($colegio)
                 <flux:breadcrumbs.item>{{ $colegio->nombre }}</flux:breadcrumbs.item>

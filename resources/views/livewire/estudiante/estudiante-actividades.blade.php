@@ -63,10 +63,10 @@
                     ¡Aún no hay actividades para esta materia!
                 </p>
             @elseif (is_iterable($actividades))
-                <ul class="space-y-5 max-h-72 overflow-y-auto pr-2">
+                <ul class="space-y-5 max-h-72 overflow-y-hidden pr-2">
                     @foreach ($actividades as $actividad)
                         @if (isset($actividad->id, $actividad->titulo, $actividad->fecha_entrega))
-                            <li class="bg-blue-50 dark:bg-blue-800 border border-blue-200 dark:border-blue-700 rounded-xl p-4 shadow hover:scale-[1.03] transform transition-transform duration-200 cursor-pointer">
+                            <li class="bg-blue-50 dark:bg-blue-800 border border-blue-200 dark:border-blue-700 rounded-xl p-4 shadow hover:scale-[1.03] transform transition-transform duration-200 ">
                                 <div class="flex justify-between items-start">
                                     <div>
                                         <h4 class="font-semibold text-blue-800 dark:text-blue-200 text-lg leading-snug">
@@ -81,12 +81,12 @@
                                     </div>
                                     <div class="ml-3 shrink-0 space-y-2">
                                         <flux:modal.trigger wire:click="cargarSubirActividad({{ $actividad->id }})" name="subir-actividad">
-                                            <flux:button class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm font-medium transition">
+                                            <flux:button class="bg-blue-600 cursor-pointer  hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm font-medium transition">
                                                 subir actividad
                                             </flux:button>
                                         </flux:modal.trigger>
                                         <flux:modal.trigger wire:click="cargarActividad({{ $actividad->id }})" name="ver-actividad">
-                                            <flux:button class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm font-medium transition">
+                                            <flux:button class="bg-blue-600 cursor-pointer  hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm font-medium transition">
                                                 Ver
                                             </flux:button>
                                         </flux:modal.trigger>
@@ -104,43 +104,57 @@
         </div>
     @endforeach
 @else
+
     <p class="text-gray-500 dark:text-gray-400 italic">No se encontraron actividades por asignatura.</p>
 @endif
 
     </div>
 
-    {{-- Modal para ver la actividad --}}
-    <flux:modal wire:model.live="verModal" name="ver-actividad" class="lg:w-full max-w-2xl rounded-xl shadow-xl bg-white dark:bg-blue-900 p-6">
-        <div class="space-y-6">
-            {{-- Encabezado --}}
-            <div>
-                <flux:heading size="lg" class="text-blue-900 dark:text-blue-300 font-extrabold">Detalle de la Actividad</flux:heading>
-                <flux:text class="mt-2 text-gray-700 dark:text-gray-300">
-                    Aquí puedes ver la información completa de la actividad seleccionada.
-                </flux:text>
-            </div>
+{{-- Modal para ver la actividad --}}
+<flux:modal
+    wire:model.live="verModal"
+    name="ver-actividad"
+    class="lg:w-full max-w-2xl rounded-xl shadow-xl bg-white dark:bg-blue-900 p-6"
+>
+    <div class="space-y-6">
 
-            {{-- Cargando --}}
-            @if ($cargandoActividad)
-                <div class="text-center text-blue-500 dark:text-blue-300 py-10">
-                    <svg class="animate-spin h-8 w-8 mx-auto mb-3 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
-                        <path class="opacity-75" fill="currentColor"
-                              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
-                    </svg>
-                    Cargando información de la actividad...
-                </div>
-            @elseif (!empty($actividadModal))
-                {{-- Contenido --}}
+        {{-- Encabezado --}}
+        <div>
+            <flux:heading size="lg" class="text-blue-900 dark:text-blue-300 font-extrabold">
+                Detalle de la Actividad
+            </flux:heading>
+            <flux:text class="mt-2 text-gray-700 dark:text-gray-300">
+                Aquí puedes ver la información completa de la actividad seleccionada.
+            </flux:text>
+        </div>
+
+        {{-- SKELETON (loader real) --}}
+        <div wire:loading wire:target="cargarActividad">
+            <flux:skeleton.group animate="shimmer">
+                <flux:skeleton.line class="mb-3 w-1/3" />
+                <flux:skeleton.line class="mb-2" />
+                <flux:skeleton.line class="mb-2" />
+                <flux:skeleton.line class="w-3/4" />
+                <flux:skeleton.line class="mt-4 w-1/2" />
+            </flux:skeleton.group>
+        </div>
+
+        {{-- CONTENIDO (solo cuando NO está cargando) --}}
+        <div wire:loading.remove wire:target="cargarActividad">
+
+            @if (!empty($actividadModal))
                 <div class="bg-blue-50 dark:bg-blue-800 border border-blue-300 dark:border-blue-700 rounded-xl p-6 space-y-5">
+
                     <div>
                         <p class="text-sm font-semibold text-gray-700 dark:text-white">Título:</p>
-                        <p class="text-lg text-blue-900 dark:text-blue-100 font-semibold">{{ $actividadModal->titulo }}</p>
+                        <p class="text-lg text-blue-900 dark:text-blue-100 font-semibold">
+                            {{ $actividadModal->titulo }}
+                        </p>
                     </div>
 
                     <div>
                         <p class="text-sm font-semibold text-gray-700 dark:text-white">Descripción:</p>
-                        <p class="text-base text-blue-900 dark:text-blue-100  leading-relaxed">
+                        <p class="text-base text-blue-900 dark:text-blue-100 leading-relaxed">
                             {{ $actividadModal->descripcion }}
                         </p>
                     </div>
@@ -155,31 +169,48 @@
 
                         <div>
                             <p class="text-sm font-semibold text-gray-700 dark:text-white">Asignatura:</p>
-                            <p class="text-base text-blue-900 dark:text-blue-100 font-medium">{{ $actividadModal->asignatura->nombre ?? 'N/A' }}</p>
+                            <p class="text-base text-blue-900 dark:text-blue-100 font-medium">
+                                {{ $actividadModal->asignatura->nombre ?? 'N/A' }}
+                            </p>
                         </div>
                     </div>
 
                     @if ($actividadModal->archivo)
                         <div>
                             <p class="text-sm font-semibold text-gray-700 dark:text-white">Archivo Adjunto:</p>
-                            <a href="{{  $actividadModal->archivo_url }}" target="_blank" class="inline-block mt-1 text-blue-700 hover:underline dark:text-blue-400 font-medium">
+                            <a
+                                href="{{ $actividadModal->archivo_url }}"
+                                target="_blank"
+                                class="inline-block mt-1 text-blue-700 hover:underline dark:text-blue-400 font-medium"
+                            >
                                 Descargar archivo 📎
                             </a>
                         </div>
                     @endif
+
                 </div>
             @else
-                <p class="text-gray-600 dark:text-gray-400 text-center italic">No se ha seleccionado ninguna actividad.</p>
+                <p class="text-gray-600 dark:text-gray-400 text-center italic">
+                    No se ha seleccionado ninguna actividad.
+                </p>
             @endif
 
-            {{-- Botón cerrar --}}
-            <div class="flex justify-end">
-                <flux:button variant="primary" wire:click="$set('verModal', false)" class="px-6 cursor-pointer py-2">
-                    Cerrar
-                </flux:button>
-            </div>
         </div>
-    </flux:modal>
+
+        {{-- Botón cerrar --}}
+        <div class="flex justify-end">
+            <flux:button
+                variant="primary"
+                wire:click="$set('verModal', false)"
+                class="px-6 py-2 cursor-pointer"
+            >
+                Cerrar
+            </flux:button>
+        </div>
+
+    </div>
+</flux:modal>
+
 
     <flux:modal wire:model.live="verModalActividad" name="subir-actividad" class="lg:w-full max-w-md rounded-xl shadow-xl bg-white dark:bg-blue-900 p-6">
         <div class="space-y-6">
@@ -203,6 +234,7 @@
                     Cargando datos...
                 </div>
             @else
+
                 {{-- Formulario --}}
                 <form wire:submit.prevent="guardarRespuesta" enctype="multipart/form-data" class="space-y-6">
                     {{-- Contenido --}}
@@ -221,8 +253,12 @@
                         @if ($archivo)
                             <p class="mt-1 text-sm text-green-600 dark:text-green-400">Archivo listo para subir: {{ $archivo->getClientOriginalName() }}</p>
                         @elseif (!empty($archivoGuardado))
-                            <p class="mt-1 text-sm text-blue-700 dark:text-blue-400">Archivo actual: {{ basename($archivoGuardado) }}</p>
+                            <p class="mt-1 text-sm text-blue-700 dark:text-blue-400">Archivo actual: {{ basename($archivoGuardado->archivo_url ?? 'NA') }}</p>
+                            @if ($archivoGuardado->archivo_url)
+                                
+                            
                             <a target="_blank" href="{{ $archivoGuardado->archivo_url }}">descargar</a>
+                            @endif
                         @endif
                     </div>
 
@@ -251,7 +287,7 @@
 
 
         {{-- js --}}
-@push('js')
+@script
 <script>
     Livewire.on('alerta', (data) => {
         data = data[0];
@@ -264,6 +300,6 @@
         });
     });
 </script>
-@endpush
+@endscript
 
 </div>

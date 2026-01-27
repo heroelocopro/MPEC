@@ -110,112 +110,112 @@
 
     </div> {{-- Cierra contenido principal --}}
 
-{{-- Modal Crear Foro --}}
-@if ($modalCrear)
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
-    <div class="w-full max-w-2xl rounded-xl bg-white dark:bg-gray-900 shadow-xl p-6">
-        {{-- Encabezado --}}
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Crear Nuevo Foro</h2>
-            <button wire:click="$set('modalCrear', false)" class="text-gray-500 hover:text-red-600 text-xl">&times;</button>
+    {{-- Modal Crear Foro --}}
+    @if ($modalCrear)
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
+        <div class="w-full max-w-2xl rounded-xl bg-white dark:bg-gray-900 shadow-xl p-6">
+            {{-- Encabezado --}}
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Crear Nuevo Foro</h2>
+                <button wire:click="$set('modalCrear', false)" class="text-gray-500 hover:text-red-600 text-xl">&times;</button>
+            </div>
+
+            <form wire:submit.prevent="crearForo" class="space-y-4">
+                {{-- Título --}}
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300">Título</label>
+                    <input type="text" wire:model.defer="titulo"
+                        class="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                        required>
+                    @error('titulo') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+                </div>
+
+                {{-- Contenido --}}
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300">Contenido</label>
+                    <textarea wire:model.defer="contenido" rows="5"
+                        class="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                        required></textarea>
+                    @error('contenido') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+                </div>
+
+                {{-- Tipo --}}
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300">Tipo de Foro</label>
+                    <select wire:model.defer="tipo"
+                        class="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                        required>
+                        <option value="">Selecciona un tipo</option>
+                        <option value="Global">Global</option>
+                        <option value="Grado">Grado</option>
+                        <option value="Grupo">Grupo</option>
+                    </select>
+                    @error('tipo') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+                </div>
+
+                {{-- Grado y Grupo --}}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Grado (opcional)</label>
+                        <select wire:model.live="grado_id"
+                            class="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                            <option value="">Selecciona grado</option>
+                            @foreach ($grados as $grado)
+                                <option value="{{ $grado->id }}">{{ $grado->nombre }}</option>
+                            @endforeach
+                        </select>
+                        @error('grado_id') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Grupo (opcional)</label>
+                        <select wire:model.defer="grupo_id"
+                            class="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                            <option value="">Selecciona grupo</option>
+                            @if (isset($grupos) && count($grupos) > 0)
+                            {{-- @foreach gruposgrados->where('id', $grado_id)->first()?->grupos ?? [] as $grupo) --}}
+                            @foreach ($grupos as $grupo)
+                            <option value="{{ $grupo->id }}">{{ $grupo->nombre }}</option>
+                            @endforeach
+                            @else
+                            <option value="">No hay Grupos.</option>
+                            @endif
+                        </select>
+                        @error('grupo_id') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+
+                {{-- Botones --}}
+                <div class="flex justify-end gap-4 pt-4">
+                    <button type="button" wire:click="$set('modalCrear', false)"
+                        class="cursor-pointer px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                        class="cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        Crear Foro
+                    </button>
+                </div>
+            </form>
         </div>
-
-        <form wire:submit.prevent="crearForo" class="space-y-4">
-            {{-- Título --}}
-            <div>
-                <label class="block text-gray-700 dark:text-gray-300">Título</label>
-                <input type="text" wire:model.defer="titulo"
-                    class="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                    required>
-                @error('titulo') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
-            </div>
-
-            {{-- Contenido --}}
-            <div>
-                <label class="block text-gray-700 dark:text-gray-300">Contenido</label>
-                <textarea wire:model.defer="contenido" rows="5"
-                    class="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                    required></textarea>
-                @error('contenido') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
-            </div>
-
-            {{-- Tipo --}}
-            <div>
-                <label class="block text-gray-700 dark:text-gray-300">Tipo de Foro</label>
-                <select wire:model.defer="tipo"
-                    class="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                    required>
-                    <option value="">Selecciona un tipo</option>
-                    <option value="Global">Global</option>
-                    <option value="Grado">Grado</option>
-                    <option value="Grupo">Grupo</option>
-                </select>
-                @error('tipo') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
-            </div>
-
-            {{-- Grado y Grupo --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-gray-700 dark:text-gray-300">Grado (opcional)</label>
-                    <select wire:model.live="grado_id"
-                        class="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                        <option value="">Selecciona grado</option>
-                        @foreach ($grados as $grado)
-                            <option value="{{ $grado->id }}">{{ $grado->nombre }}</option>
-                        @endforeach
-                    </select>
-                    @error('grado_id') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 dark:text-gray-300">Grupo (opcional)</label>
-                    <select wire:model.defer="grupo_id"
-                        class="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                        <option value="">Selecciona grupo</option>
-                        @if (isset($grupos) && count($grupos) > 0)
-                        {{-- @foreach gruposgrados->where('id', $grado_id)->first()?->grupos ?? [] as $grupo) --}}
-                        @foreach ($grupos as $grupo)
-                        <option value="{{ $grupo->id }}">{{ $grupo->nombre }}</option>
-                        @endforeach
-                        @else
-                        <option value="">No hay Grupos.</option>
-                        @endif
-                    </select>
-                    @error('grupo_id') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
-                </div>
-            </div>
-
-            {{-- Botones --}}
-            <div class="flex justify-end gap-4 pt-4">
-                <button type="button" wire:click="$set('modalCrear', false)"
-                    class="cursor-pointer px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600">
-                    Cancelar
-                </button>
-                <button type="submit"
-                    class="cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    Crear Foro
-                </button>
-            </div>
-        </form>
     </div>
-</div>
-@endif
+    @endif
 
- @push('js')
-    <script>
-        Livewire.on('alerta', (data) => {
-            data = data[0];
-            Swal.fire({
-                title: data['title'],
-                text: data['text'],
-                icon: data['icon'],
-                toast: data['toast'],
-                position: data['position'],
-                background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#ffffff',
-                color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#000000',
+    @push('js')
+        <script>
+            Livewire.on('alerta', (data) => {
+                data = data[0];
+                Swal.fire({
+                    title: data['title'],
+                    text: data['text'],
+                    icon: data['icon'],
+                    toast: data['toast'],
+                    position: data['position'],
+                    background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#ffffff',
+                    color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#000000',
+                });
             });
-        });
-    </script>
-    @endpush
+        </script>
+        @endpush
 
 </div> {{-- Cierra todo el contenedor --}}

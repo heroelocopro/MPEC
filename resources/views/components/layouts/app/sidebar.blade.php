@@ -232,29 +232,6 @@
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
         {{-- scripts de otros lados --}}
 
-
-<script>
-    Livewire.on('alerta', (data) => {
-        data = data[0];
-        Swal.fire({
-            title: data['title'],
-            text: data['text'],
-            icon: data['icon'],
-            toast: data['toast'],
-            position: data['position'],
-        });
-    });
-    Livewire.on('alerta2', (data) => {
-        data = data[0];
-        Swal.fire({
-            title: data['title'],
-            text: data['text'],
-            icon: data['icon'],
-            toast: data['toast'],
-            position: data['position'],
-        });
-    });
-</script>
 @stack('js')
     </body>
 </html>

@@ -152,7 +152,7 @@
 
     @push('js')
 <script>
-    Livewire.on('alerta', (data) => {
+    $Livewire.on('alerta', (data) => {
         data = data[0];
         Swal.fire({
             title: data['title'],

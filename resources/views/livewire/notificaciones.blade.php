@@ -36,7 +36,7 @@
     @if($open)
     <!-- Panel de notificaciones -->
     <div class="absolute z-50 mt-2 right-0 bg-white shadow-xl rounded-md w-80">
-        <div class="p-3 font-bold border-b">Notificaciones</div>
+        <div class="p-3 font-bold border-b dark:text-black ">Notificaciones</div>
 
         @forelse ($notificaciones as $noti)
             <div class="px-4 py-2 hover:bg-gray-100 flex justify-between items-center">
