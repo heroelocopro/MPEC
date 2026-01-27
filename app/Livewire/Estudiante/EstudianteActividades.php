@@ -43,7 +43,7 @@ class EstudianteActividades extends Component
 
         if ($respuesta) {
             $this->contenido = $respuesta->contenido;
-            $this->archivoGuardado = $respuesta->archivo;
+            $this->archivoGuardado = $respuesta;
         } else {
             $this->contenido = '';
             $this->archivoGuardado = null;
