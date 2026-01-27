@@ -222,7 +222,7 @@
                             <p class="mt-1 text-sm text-green-600 dark:text-green-400">Archivo listo para subir: {{ $archivo->getClientOriginalName() }}</p>
                         @elseif (!empty($archivoGuardado))
                             <p class="mt-1 text-sm text-blue-700 dark:text-blue-400">Archivo actual: {{ basename($archivoGuardado) }}</p>
-                            <a target="_blank" href="{{ asset('storage/'.$archivoGuardado) }}">descargar</a>
+                            <a target="_blank" href="{{ $archivoGuardado->archivo_url }}">descargar</a>
                         @endif
                     </div>
 

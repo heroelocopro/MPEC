@@ -19,7 +19,7 @@ class EstudianteAnuncios extends Component
     public $grupo;
     public function cargarAnuncios()
     {
-        $this->anuncios = Anuncio::where('colegio_id',$this->colegio->id)->get() ?? (object) [];
+        $this->anuncios = Anuncio::where('colegio_id',$this->colegio->id)->latest()->get() ?? (object) [];
     }
     public function mount()
     {
