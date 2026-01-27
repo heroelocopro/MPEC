@@ -620,6 +620,7 @@
         </flux:modal>
 
 {{-- script para escuchar alertas --}}
+@script
 <script>
         Livewire.on('confirmarEliminarProfesor', (id) => {
             Swal.fire({
@@ -637,7 +638,7 @@
             });
         });
 </script>
-
+@endscript
 {{-- js --}}
     @push('js')
 
