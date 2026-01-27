@@ -77,7 +77,7 @@
                         {{-- Archivo entregado --}}
                         @if ($respuesta->archivo)
                             <div class="mb-2">
-                                <a href="{{ asset('storage/' . $respuesta->archivo) }}" target="_blank"
+                                <a href="{{  $respuesta->archivo_url }}" target="_blank"
                                     class="text-xs text-blue-600 dark:text-blue-300 underline hover:opacity-80">
                                     Ver archivo
                                 </a>
