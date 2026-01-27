@@ -4,6 +4,14 @@
         <livewire:notificaciones />
     </div>
 
+    <flux:skeleton.group animate="shimmer">
+                <flux:skeleton.line class="mb-3 w-1/3" />
+                <flux:skeleton.line class="mb-2" />
+                <flux:skeleton.line class="mb-2" />
+                <flux:skeleton.line class="w-3/4" />
+                <flux:skeleton.line class="mt-4 w-1/2" />
+            </flux:skeleton.group>
+
     <div class="flex flex-col gap-6 p-4">
         {{-- Encabezado --}}
         <div>
