@@ -90,7 +90,7 @@ public function guardarRespuesta()
             $respuesta->archivo = $path;
             $respuesta->save();
 
-            $this->archivoGuardado = $path;
+            $this->archivoGuardado = $respuesta->archivo;
             $this->archivo = null;
         }
 
