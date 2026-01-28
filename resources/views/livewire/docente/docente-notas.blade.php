@@ -143,6 +143,8 @@
                 </div>
             </div>
 
+
+
             <!-- Grades table -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div class="overflow-x-auto">
@@ -177,7 +179,7 @@
                                     @foreach ($actividades as $actividad)
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <input type="number" min="0" max="5" step="0.01"
-                                            wire:model.live.debounce.100ms="notas.actividad.{{ $g->estudiante->id }}.{{ $actividad->id }}"
+                                            wire:model.live.debounce.100ms="notas.actividad.est_{{ $g->estudiante->id }}.act_{{ $actividad->id }}"
                                             wire:key="nota-actividad-{{ $g->estudiante->id }}-{{ $actividad->id }}"
                                             class="w-20 text-black px-2 py-1 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-center bg-white dark:bg-gray-700 dark:text-gray-100" />
                                     </td>
@@ -186,7 +188,7 @@
                                     @foreach ($examenes as $examen)
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <input type="number" min="0" max="5" step="0.01"
-                                            wire:model.live.debounce.100ms="notas.examen.{{ $g->estudiante->id }}.{{ $examen->id }}"
+                                            wire:model.live.debounce.100ms="notas.examen.est_{{ $g->estudiante->id }}.eva_{{ $examen->id }}"
                                             wire:key="nota-examen-{{ $g->estudiante->id }}-{{ $examen->id }}"
                                             class="w-20 text-black px-2 py-1 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-center bg-white dark:bg-gray-700 dark:text-gray-100" />
                                     </td>
@@ -194,8 +196,9 @@
 
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">
                                         @php
-                                            $notasActividad = $notas['actividad'][$g->estudiante->id] ?? [];
-                                            $notasExamen = $notas['examen'][$g->estudiante->id] ?? [];
+                                            $estId = 'est_'.$g->estudiante->id;
+                                            $notasActividad = $notas['actividad'][$estId] ?? [];
+                                            $notasExamen = $notas['examen'][$estId] ?? [];
 
                                             $todasLasNotas = collect(array_merge($notasActividad, $notasExamen))
                                                 ->map(function ($nota) {
@@ -225,7 +228,7 @@
                 </div>
 
                 <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex justify-end">
-                    <button wire:click="guardarNotas" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-700 dark:hover:bg-blue-800">
+                    <button wire:click="guardarNotas" class="inline-flex cursor-pointer items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-700 dark:hover:bg-blue-800">
                         <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
                         </svg>

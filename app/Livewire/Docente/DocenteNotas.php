@@ -79,18 +79,6 @@ class DocenteNotas extends Component
 
 
 
-     public function updatedNotasActividad($value, $path)
-    {
-        [$estudianteId, $actividadId] = explode('.', $path);
-
-        $this->guardarNota('actividad', $estudianteId, $actividadId, $value);
-    }
-
-    public function updatedNotasExamen($value, $path)
-    {
-        [$estudianteId, $examenId] = explode('.', $path);
-        $this->guardarNota('examen', $estudianteId, $examenId, $value);
-    }
 
 
 
@@ -98,13 +86,17 @@ class DocenteNotas extends Component
 
 protected function guardarNota($tipo, $estudianteId, $notableId, $valor)
 {
+    $estudianteId = (int) str_replace('est_','',$estudianteId);
+    
     // Validar tipo permitido
     $notableClass = match ($tipo) {
         'actividad' => \App\Models\Actividad::class,
         'examen' => \App\Models\Examen::class,
         default => null,
     };
+    
 
+    
 
 
     if (!$notableClass) {
@@ -117,6 +109,14 @@ protected function guardarNota($tipo, $estudianteId, $notableId, $valor)
         ]);
         return;
     }
+        if($tipo === 'actividad')
+        {
+            $notableId = (int) str_replace('act_','',$notableId);
+        } else{
+            $notableId = (int) str_replace('eva_','',$notableId);
+        }
+
+
     // obtenemos periodo actual
     $periodo = PeriodoAcademico::periodoActual($this->colegio->id);
     try {
@@ -184,7 +184,16 @@ public function cargarNotas()
 
     foreach ($notasDB as $nota) {
         $tipo = strtolower(class_basename($nota->notable_type)); // 'actividad' o 'examen'
-        $this->notas[$tipo][$nota->estudiante_id][$nota->notable_id] = $nota->valor;
+        $estId = 'est_'.$nota->estudiante_id;
+        if($tipo === 'actividad')
+            {
+                $tipoId =  'act_'.$nota->notable_id;
+                
+            }else {
+                $tipoId = 'eva_'.$nota->notable_id;
+            }
+        
+        $this->notas[$tipo][$estId][$tipoId] = $nota->valor;
     }
 }
 
