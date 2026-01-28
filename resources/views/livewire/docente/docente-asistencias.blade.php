@@ -57,7 +57,7 @@
                         @endif
                     </select>
                 </div>
-
+                <br>
                 {{-- GRUPO --}}
                 <div>
                     <label for="grupo_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
