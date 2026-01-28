@@ -227,7 +227,7 @@
     Livewire.on('confirmarCambioPeriodo',(id) => {
         Swal.fire({
                 title: "Estas Seguro?",
-                text: "Quieres activar este periodo?",
+                text: "Quieres cambiar este periodo?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",

@@ -129,9 +129,12 @@ class ColegioPeriodos extends Component
     {
         try {
              PeriodoAcademico::activarPeriodo($id);
+             $periodo = PeriodoAcademico::find($id);
+             $texto1 =  $periodo->EsActivo ? 'activar' : 'desactivar';
+             $texto2 = $periodo->EsActivo ? 'activado' : 'desactivado';
              $this->dispatch('alerta', [
-                'title' => 'Exito al Activar periodo',
-                'text' => 'se ha activado con exito!',
+                'title' => ' Exito al ' . $texto1 . ' el periodo ',
+                'text' => 'se ha ' . $texto2 . ' con exito!',
                 'icon' => 'success',
                 'toast' => true,
                 'position' => 'top-end',
