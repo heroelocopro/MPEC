@@ -54,55 +54,7 @@ class ColegioController extends Controller
         ));
 
     }
-    public function mostrarDocentes()
-    {
-        return view('colegio.docentes.index');
-    }
-    public function mostrarEstudiantes()
-    {
-        return view('colegio.estudiantes.index');
-    }
-    public function mostrarMatriculas()
-    {
-        return view('colegio.matriculas.index');
-    }
-    public function mostrarGrupos()
-    {
-        return view('colegio.grupos.index');
-    }
-    public function mostrarGrados()
-    {
-        return view('colegio.grados.index');
-    }
-    public function mostrarAsignaturas()
-    {
-        return view('colegio.asignaturas.index');
-    }
-    public function mostrarEstudiantesGrupos()
-    {
-        return view('colegio.estudiantes-grupos.index');
-    }
-    public function mostrarDocentesAsignaturas()
-    {
-         return view('colegio.docentes-asignaturas.index');
-    }
-    public function mostrarHorarios()
-    {
-        return view('colegio.horarios.index');
-    }
-    public function mostrarAsignaturasGrados()
-    {
-        return view('colegio.asignaturas-grados.index');
-    }
-    public function mostrarPeriodos()
-    {
-        return view('colegio.periodos.index');
-    }
-
-    public function mostrarAnuncios()
-    {
-        return view('colegio.anuncios.index');
-    }
+    
     public function descargarNotas($periodo,$estudiante)
     {
         $estudiante = Estudiante::with('colegio')->where('id',$estudiante)->first();

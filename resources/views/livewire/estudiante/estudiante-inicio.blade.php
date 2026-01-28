@@ -1,5 +1,5 @@
-<x-layouts.app :title="__('Inicio | Estudiante')">
-    {{-- Notificaciones fijas --}}
+<div>
+     {{-- Notificaciones fijas --}}
     <div class="fixed top-4 right-4 z-50">
         <livewire:notificaciones />
     </div>
@@ -60,4 +60,4 @@
             @endif
         </div>
     </div>
-</x-layouts.app>
+</div>

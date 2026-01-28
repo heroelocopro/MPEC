@@ -85,67 +85,54 @@
                 <p><strong>Grupo:</strong> <span class="text-blue-600 dark:text-blue-400">{{ optional($grupo)->nombre ?? 'Sin seleccionar' }}</span></p>
             </div>
         </div>
-
         {{-- PLANILLA DE ASISTENCIA EN CARDS --}}
-        @if (isset($estudiantes) && count($estudiantes) > 0)
-            <div class="bg-white dark:bg-gray-900 shadow rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-                <h3 class="text-lg font-semibold mb-6 text-gray-800 dark:text-white text-center">Lista de estudiantes ({{ count($estudiantes) }})</h3>
+@if(count($estudiantes))
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 dark:bg-gray-800 ">
+@foreach($estudiantes as $estudiante)
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    @foreach ($estudiantes as $index => $estudiante)
-                        <div
-                            class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 shadow-sm flex flex-col justify-between
-                            border border-gray-300 dark:border-gray-700"
-                        >
-                            <div>
-                                <p class="font-semibold text-gray-700 dark:text-white mb-2">
-                                    {{ $index + 1 }}. {{ $estudiante->nombre_completo }}
-                                </p>
+@php
+    $estados = [
+        'presente' => 'green',
+        'ausente' => 'red',
+        'tarde' => 'yellow',
+        'justificado' => 'blue'
+    ];
+    $key = 'est_'.$estudiante->id;
+    $estadoSeleccionado = $asistencias[$key]['estado'] ?? '';
+@endphp
 
-                                <div class="flex flex-wrap gap-2 mb-3">
-                                    @php
-                                        $estados = ['presente' => 'green', 'ausente' => 'red', 'tarde' => 'yellow', 'justificado' => 'blue'];
-                                        $estadoSeleccionado = $asistencias[$estudiante->id]['estado'] ?? '';
-                                    @endphp
-                                    @foreach ($estados as $estado => $color)
-                                        <button type="button"
-                                            wire:click="$set('asistencias.{{ $estudiante->id }}.estado', '{{ $estado }}')"
-                                            class="text-xs cursor-pointer px-3 py-1 rounded-full font-semibold border transition
-                                                {{ $estadoSeleccionado === $estado
-                                                    ? 'bg-' . $color . '-600 text-white border-' . $color . '-600'
-                                                    : 'border-' . $color . '-500 text-' . $color . '-600 hover:bg-' . $color . '-100 dark:hover:bg-' . $color . '-700/20' }}
-                                                dark:{{ $estadoSeleccionado === $estado
-                                                    ? 'bg-' . $color . '-500 text-gray-900 border-' . $color . '-500'
-                                                    : 'text-' . $color . '-400 hover:bg-' . $color . '-700/30' }}">
-                                            {{ ucfirst($estado) }}
-                                        </button>
-                                    @endforeach
-                                </div>
-                            </div>
+<div class="border p-4 rounded-lg">
+    <p class="font-semibold mb-2">{{ $estudiante->nombre_completo }}</p>
 
-                            <input type="text"
-                                wire:model.live.debounce.300ms="asistencias.{{ $estudiante->id }}.justificacion"
-                                placeholder="Justificación (opcional)"
-                                class="w-full rounded-md border border-gray-300 bg-white text-gray-900 px-3 py-2 text-sm
-                                       shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500
-                                       dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                            />
-                        </div>
-                    @endforeach
-                </div>
+    <div class="flex flex-wrap gap-2 mb-3">
+        @foreach($estados as $estado => $color)
+        <button type="button"
+            wire:click="$set('asistencias.est_{{ $estudiante->id }}.estado', '{{ $estado }}')"
+            class="px-3 py-1 text-xs rounded-full border cursor-pointer
+                {{ $estadoSeleccionado === $estado
+                    ? 'bg-'.$color.'-600 text-white'
+                    : 'border-'.$color.'-500 text-'.$color.'-600' }}">
+            {{ ucfirst($estado) }}
+        </button>
+        @endforeach
+    </div>
 
-                <div class="mt-8 text-center">
-                    <button wire:click="guardarAsistencias"
-                        class="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md shadow transition">
-                        💾 Guardar Asistencia
-                    </button>
-                </div>
-            </div>
-        @elseif($grupo_id)
-            <div class="text-center text-gray-600 dark:text-gray-300 mt-6">
-                No hay estudiantes asignados a este grupo.
-            </div>
-        @endif
+    <input type="text"
+        wire:model.live.debounce.300ms="asistencias.est_{{ $estudiante->id }}.justificacion"
+        class="w-full border rounded p-2 text-sm cursor-pointer"
+        placeholder="Justificación (opcional)">
+</div>
+
+@endforeach
+</div>
+
+<div class="mt-6 text-center">
+    <button wire:click="guardarAsistencias"
+        class="bg-blue-600 cursor-pointer text-white px-6 py-2 rounded">
+        Guardar Asistencia
+    </button>
+</div>
+@endif
     </div>
 
     {{-- js --}}

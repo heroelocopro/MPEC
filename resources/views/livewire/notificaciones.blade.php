@@ -35,7 +35,7 @@
 
     @if($open)
     <!-- Panel de notificaciones -->
-    <div class="absolute z-50 mt-2 right-0 bg-white shadow-xl rounded-md w-80">
+    <div class="absolute z-50 mt-2 right-0 dark:bg-gray-900 dark:text-white bg-white shadow-xl rounded-md w-80">
         <div class="p-3 font-bold border-b">Notificaciones</div>
 
         @forelse ($notificaciones as $noti)

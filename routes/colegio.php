@@ -1,51 +1,64 @@
 <?php
 
 use App\Http\Controllers\ColegioController;
+use App\Livewire\Colegio\ColegioAnuncios;
+use App\Livewire\Colegio\ColegioAsignaturas;
+use App\Livewire\Colegio\ColegioAsignaturasGrados;
 use App\Livewire\Colegio\ColegioAsistencias;
+use App\Livewire\Colegio\ColegioCerrarNotas;
+use App\Livewire\Colegio\ColegioDocentes;
+use App\Livewire\Colegio\ColegioDocentesAsignaturas;
+use App\Livewire\Colegio\ColegioEstudiantes;
+use App\Livewire\Colegio\ColegioEstudiantesGrupos;
+use App\Livewire\Colegio\ColegioGrados;
 use App\Livewire\Colegio\ColegioGrupo;
+use App\Livewire\Colegio\ColegioGrupos;
 use App\Livewire\Colegio\ColegioHistorialAcademico;
+use App\Livewire\Colegio\ColegioHorarios;
 use App\Livewire\Colegio\ColegioInicio;
+use App\Livewire\Colegio\ColegioMatriculas;
 use App\Livewire\Colegio\ColegioNotas;
+use App\Livewire\Colegio\ColegioPeriodos;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'role:colegio'])->prefix('colegio')->group(function () {
-    Route::get('/inicio', ColegioInicio::class )->name('colegio-inicio');
+    Route::livewire('/inicio', ColegioInicio::class )->name('colegio-inicio');
 
-    Route::get('/docentes',[ColegioController::class,'mostrarDocentes'])->name('colegio-docentes');
+    Route::livewire('/docentes',ColegioDocentes::class)->name('colegio-docentes');
 
-    Route::get('/estudiantes',[ColegioController::class,'mostrarEstudiantes'])->name('colegio-estudiantes');
+    Route::livewire('/estudiantes',ColegioEstudiantes::class)->name('colegio-estudiantes');
 
-    Route::get('/asignaturas',[ColegioController::class,'mostrarAsignaturas'])->name('colegio-asignaturas');
+    Route::livewire('/asignaturas',ColegioAsignaturas::class)->name('colegio-asignaturas');
 
-    Route::get('/grados',[ColegioController::class,'mostrarGrados'])->name('colegio-grados');
+    Route::livewire('/grados',ColegioGrados::class)->name('colegio-grados');
 
-    Route::get('/grupos',[ColegioController::class,'mostrarGrupos'])->name('colegio-grupos');
+    Route::livewire('/grupos',ColegioGrupos::class)->name('colegio-grupos');
 
-    Route::get('/grupo/{id}',ColegioGrupo::class)->name('colegio-grupo');
+    Route::livewire('/grupo/{id}',ColegioGrupo::class)->name('colegio-grupo');
 
-    Route::get('/matriculas',[ColegioController::class,'mostrarMatriculas'])->name('colegio-matriculas');
+    Route::livewire('/matriculas',ColegioMatriculas::class)->name('colegio-matriculas');
 
-    Route::get('/estudiantes-grupos',[ColegioController::class,'mostrarEstudiantesGrupos'])->name('colegio-estudiantes-grupos');
+    Route::livewire('/estudiantes-grupos',ColegioEstudiantesGrupos::class)->name('colegio-estudiantes-grupos');
 
-    Route::get('/docentes-asignaturas',[ColegioController::class,'mostrarDocentesAsignaturas'])->name('colegio-docentes-asignaturas');
+    Route::livewire('/docentes-asignaturas',ColegioDocentesAsignaturas::class)->name('colegio-docentes-asignaturas');
 
-    Route::get('/asignaturas-grados',[ColegioController::class,'mostrarAsignaturasGrados'])->name('colegio-asignaturas-grados');
+    Route::livewire('/asignaturas-grados',ColegioAsignaturasGrados::class)->name('colegio-asignaturas-grados');
 
-    Route::get('/horarios',[ColegioController::class,'mostrarHorarios'])->name('colegio-horarios');
+    Route::livewire('/horarios',ColegioHorarios::class)->name('colegio-horarios');
 
-    Route::get('/periodos',[ColegioController::class,'mostrarPeriodos'])->name('colegio-periodos');
+    Route::livewire('/periodos',ColegioPeriodos::class)->name('colegio-periodos');
 
-    Route::get('/asignaturas',[ColegioController::class,'mostrarAsignaturas'])->name('colegio-asignaturas');
+    // Route::get('/asignaturas',ColegioAsignaturas::class)->name('colegio-asignaturas');
 
-    Route::get('/anuncios',[ColegioController::class,'mostrarAnuncios'])->name('colegio-anuncios');
+    Route::livewire('/anuncios',ColegioAnuncios::class)->name('colegio-anuncios');
 
-    Route::get('/asistencias',ColegioAsistencias::class)->name('colegio-asistencias');
+    Route::livewire('/asistencias',ColegioAsistencias::class)->name('colegio-asistencias');
 
-    Route::get('/notas',ColegioNotas::class)->name('colegio-notas');
+    Route::livewire('/notas',ColegioNotas::class)->name('colegio-notas');
 
-    Route::get('/historial-academico',ColegioHistorialAcademico::class)->name('colegio-historial-academico');
+    Route::livewire('/historial-academico',ColegioHistorialAcademico::class)->name('colegio-historial-academico');
 
-    Route::get('/Cierre-de-notas',[ColegioController::class,'showCerrarNotas'])->name('colegio-cierre-de-notas');
+    Route::livewire('/Cierre-de-notas',ColegioCerrarNotas::class)->name('colegio-cierre-de-notas');
 
     Route::post('/cerrar-notas-periodo',[ColegioController::class,'cerrarNotas'])->name('colegio-cerrar-notas');
 

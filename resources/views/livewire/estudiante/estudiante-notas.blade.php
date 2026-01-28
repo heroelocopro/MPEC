@@ -6,7 +6,7 @@
 
     {{-- Parte Superior adaptativa --}}
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4  rounded-xl
-                bg-white dark:bg-gray-900  transition-colors">
+                  transition-colors">
 
         {{-- Migas de pan --}}
         <div class="w-full md:w-auto">

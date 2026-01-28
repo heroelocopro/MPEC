@@ -32,7 +32,7 @@ class EstudianteNotas extends Component
         $this->grado = $this->matricula->grado ?? null;
         $this->grupo = EstudianteGrupo::where('estudiante_id', $this->estudiante->id)->first()->grupo ?? null;
 
-        $this->periodos = PeriodoAcademico::where('colegio_id', $this->colegio->id ?? null)->orderBy('fecha_inicio', 'asc')->get() ?? null;
+        $this->periodos = PeriodoAcademico::where('colegio_id', $this->colegio->id ?? null)->orderBy('fecha_inicio', 'asc')->where('ano',now()->format('Y'))->get() ?? null;
         $this->periodoSeleccionadoObj = PeriodoAcademico::periodoActual($this->colegio->id ?? null) ?? null;
         $this->periodoSeleccionado = PeriodoAcademico::periodoActual($this->colegio->id ?? null)->id ?? null;
         if($this->grado != null && $this->grupo != null)

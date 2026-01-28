@@ -1,5 +1,5 @@
-<x-layouts.app :title="env('APP_NAME')">
-    <div class="flex flex-col items-center justify-center min-h-[60vh] gap-6">
+<div>
+        <div class="flex flex-col items-center justify-center min-h-[60vh] gap-6">
 
         <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Cierre de Notas del Periodo</h1>
 
@@ -50,4 +50,4 @@
             return confirm('⚠️ ¿Seguro que deseas cerrar las notas del periodo? Esta acción no se puede deshacer.');
         }
     </script>
-</x-layouts.app>
+</div>
