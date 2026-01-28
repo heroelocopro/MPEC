@@ -2,18 +2,17 @@
 
 namespace App\Livewire\Docente;
 
+use App\Models\asignatura;
+use App\Models\AsignaturaGrado;
+use App\Models\asignaturaProfesor;
+use App\Models\Asistencia;
+use App\Models\EstudianteGrupo;
+use App\Models\Grupo;
+use App\Models\Profesor;
 use Livewire\Component;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use App\Models\{
-    Asignatura,
-    AsignaturaGrado,
-    AsignaturaProfesor,
-    Asistencia,
-    EstudianteGrupo,
-    Grupo,
-    Profesor
-};
+
 
 class DocenteAsistencias extends Component
 {
@@ -42,7 +41,7 @@ class DocenteAsistencias extends Component
         $this->colegio = $this->profesor->colegio ?? (object)['id' => null];
 
         if ($this->profesor->id ?? false) {
-            $aps = AsignaturaProfesor::where('profesor_id', $this->profesor->id)->get();
+            $aps = asignaturaProfesor::where('profesor_id', $this->profesor->id)->get();
             foreach ($aps as $ap) {
                 if ($ap->asignatura) {
                     $this->asignaturas[] = $ap->asignatura;
@@ -148,7 +147,7 @@ class DocenteAsistencias extends Component
     ==========================*/
     public function updatedAsignaturaId($value)
     {
-        $this->asignatura = Asignatura::find($value);
+        $this->asignatura = asignatura::find($value);
         $this->grados = [];
         $this->grupos = [];
         $this->grupo = null;
