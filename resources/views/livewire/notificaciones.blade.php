@@ -35,11 +35,11 @@
 
     @if($open)
     <!-- Panel de notificaciones -->
-    <div class="absolute z-50 mt-2 right-0 dark:bg-gray-900 dark:text-white bg-white shadow-xl rounded-md w-80">
+    <div class="absolute z-50 mt-2 right-0 dark:bg-gray-900 dark:text-white bg-white text-black shadow-xl rounded-md w-80">
         <div class="p-3 font-bold border-b">Notificaciones</div>
 
         @forelse ($notificaciones as $noti)
-            <div class="px-4 py-2 hover:bg-gray-100 flex justify-between items-center">
+            <div class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex justify-between items-center">
                 <a  href="{{ $noti->data['url'] ?? '#' }}"
                     class="text-sm text-blue-600 hover:underline block">
                      {{ $noti->data['titulo'] ?? 'Tienes una nueva notificación.' }}
@@ -56,7 +56,7 @@
         @endforelse
 
         @if($noLeidas > 0)
-            <button wire:click="marcarTodasComoLeidas" class="w-full text-center py-2 bg-gray-100 hover:bg-gray-200 text-sm">
+            <button wire:click="marcarTodasComoLeidas" class="w-full cursor-pointer dark:hover:bg-gray-700 text-center py-2 dark:bg-gray-900 dark:text-white bg-gray-200 text-black hover:bg-gray-400 text-sm">
                 Marcar todas como leídas
             </button>
         @endif
