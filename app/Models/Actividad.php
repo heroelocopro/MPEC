@@ -40,7 +40,7 @@ class Actividad extends Model
     {
         if (!$this->archivo) return null;
 
-        return Storage::temporaryUrl(
+        return Storage::disk('s3')->temporaryUrl(
             $this->archivo,
             now()->addMinutes(30)
         );
