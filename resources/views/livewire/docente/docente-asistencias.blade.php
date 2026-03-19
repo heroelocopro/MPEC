@@ -20,7 +20,7 @@
 
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 my-8 space-y-8">
         {{-- TÍTULO Y SELECCIÓN --}}
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 space-y-6">
+        <div class="bg-gray-200 dark:bg-gray-800 shadow rounded-lg p-6 space-y-6">
             <h2 class="text-2xl font-bold text-gray-800 dark:text-white text-center">
                 Registro de Asistencia
             </h2>
@@ -32,7 +32,7 @@
                         Asignatura
                     </label>
                     <select wire:model.live="asignatura_id" id="asignatura_id"
-                        class="mt-1 block w-full rounded-md border border-gray-300 bg-white text-gray-900
+                        class="mt-1 block w-full rounded-md border cursor-pointer border-gray-300 bg-white text-gray-900
                                shadow-sm focus:border-blue-500 focus:ring-blue-500
                                dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500">
                         <option value="">-- Selecciona una asignatura --</option>
@@ -53,7 +53,7 @@
                         Grupo
                     </label>
                     <select wire:model.live="grupo_id" id="grupo_id"
-                        class="mt-1 block w-full rounded-md border border-gray-300 bg-white text-gray-900
+                        class="mt-1 block w-full rounded-md border cursor-pointer border-gray-300 bg-white text-gray-900
                                shadow-sm focus:border-blue-500 focus:ring-blue-500
                                dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500">
                         <option value="">-- Selecciona un grupo --</option>
@@ -76,7 +76,7 @@
         </div>
         {{-- PLANILLA DE ASISTENCIA EN CARDS --}}
 @if(count($estudiantes))
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 dark:bg-gray-800 bg-gray-200 ">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 dark:bg-gray-800 bg-gray-200 rounded-xl ">
 @foreach($estudiantes as $estudiante)
 
 @php
@@ -108,7 +108,7 @@
 
     <input type="text"
         wire:model.live.debounce.300ms="asistencias.est_{{ $estudiante->id }}.justificacion"
-        class="w-full border rounded p-2 text-sm cursor-pointer"
+        class="w-full border rounded p-2 text-sm  text-black "
         placeholder="Justificación (opcional)">
 </div>
 

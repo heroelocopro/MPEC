@@ -58,7 +58,7 @@
             @endforelse
         </div>
         <div class="space-y-6 mt-5">
-            {{ $estudiantes->links('vendor.pagination.tailwind') }}
+            {{ $estudiantes->links() }}
         </div>
 
     {{-- Modal del estudiante --}}
