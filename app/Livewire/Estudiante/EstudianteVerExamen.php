@@ -88,29 +88,53 @@ class EstudianteVerExamen extends Component
     }
 
 
-    public function enviarRespuestas()
-    {
-        $this->validate([
-            'respuestas' => 'required|array|min:' . count($this->preguntas),
-        ]);
 
-        foreach ($this->respuestas as $preguntaId => $opcionId) {
-            Respuesta_Examen::create([
-                'estudiante_id' => $this->estudiante->id,
-                'pregunta_id' => $preguntaId,
-                'respuesta' => $opcionId,
-            ]);
-        }
-        $this->cargarPuntaje();
-        $this->dispatch('alerta', [
-            'title' => 'Examen Finalizado',
-            'text' => '¡Se finalizo correctamente!',
-            'icon' => 'success',
-            'toast' => true,
-            'position' => 'top-end',
-        ]);
-        return redirect()->route('estudiante-inicio');
+    public function enviarRespuestas()
+{
+    $this->resetErrorBag();
+
+    // Validación base
+    if (empty($this->respuestas)) {
+        $this->addError('respuestas', 'Debes responder el examen.');
+        return;
     }
+
+    // Validación real: recorrer preguntas
+    foreach ($this->preguntas as $pregunta) {
+
+        $respuesta = $this->respuestas[$pregunta->id] ?? null;
+
+        if (is_null($respuesta) || trim($respuesta) === '') {
+            $this->addError('respuestas.' . $pregunta->id, 'Debes responder esta pregunta.');
+        }
+    }
+
+    // Si hay errores → detener
+    if ($this->getErrorBag()->isNotEmpty()) {
+        return;
+    }
+
+    // Guardar respuestas
+    foreach ($this->respuestas as $preguntaId => $respuesta) {
+        Respuesta_Examen::create([
+            'estudiante_id' => $this->estudiante->id,
+            'pregunta_id' => $preguntaId,
+            'respuesta' => trim($respuesta),
+        ]);
+    }
+
+    $this->cargarPuntaje();
+
+    $this->dispatch('alerta', [
+        'title' => 'Examen Finalizado',
+        'text' => '¡Se finalizó correctamente!',
+        'icon' => 'success',
+        'toast' => true,
+        'position' => 'top-end',
+    ]);
+
+    return redirect()->route('estudiante-inicio');
+}
 
     public function mount($id)
     {
@@ -123,6 +147,15 @@ class EstudianteVerExamen extends Component
         $this->examen = Examen::findOrFail($id) ?? null;
         $this->asignatura = $this->examen->asignatura ?? null;
         $this->preguntas = $this->examen->preguntas ?? null;
+
+        // inicializamos las respuestas y validamos.
+
+        if($this->preguntas != null){
+            $this->respuestas =[];
+            foreach($this->preguntas as $i => $p){
+                $this->respuestas[$p->id] = null;
+            }
+        }
 
         // Convertir tiempo límite a segundos
         $tiempoParts = explode(':', $this->examen->tiempo_limite);

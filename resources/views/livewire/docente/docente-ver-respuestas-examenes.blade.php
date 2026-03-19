@@ -57,6 +57,47 @@
             </div>
         </div>
 
+        {{-- preguntas del examen --}}
+
+    <div class="bg-gray-100 dark:bg-gray-900 p-8 rounded-3xl">
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">Preguntas del examen</h2>
+
+        <div class="space-y-6">
+            @foreach($preguntas as $index => $pregunta)
+                <div class="relative bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border-l-8 border-gradient-to-b from-blue-400 to-purple-500 ">
+                    
+                    <!-- Número de pregunta en un círculo -->
+                    <div class="absolute -top-5 left-5 w-12 h-12 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold shadow-md">
+                        {{ $index + 1 }}
+                    </div>
+
+                    <!-- Círculo de puntos -->
+                    <div class="absolute -top-5 right-5 w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold shadow-md">
+                        {{ $pregunta->puntos }}
+                    </div>
+
+                    <!-- Pregunta -->
+                    <p class="text-gray-900 dark:text-gray-100 font-semibold mb-4 text-lg">{{ $pregunta->pregunta }}</p>
+
+                    <!-- Opciones enumeradas y separadas -->
+                    <div class="space-y-2 mb-4">
+                        @foreach ($pregunta->opciones as $optIndex => $o)
+                            <div class="flex items-center bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-lg shadow-sm hover:bg-gray-100 dark:hover:bg-gray-600 transition">
+                                <span class="mr-3 font-bold text-gray-600 dark:text-gray-300">{{ chr(65 + $optIndex) }}.</span>
+                                <span class="text-gray-800 dark:text-gray-200">{{ $o }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- Respuesta correcta -->
+                    <div class="bg-green-100 dark:bg-green-700 text-green-800 dark:text-green-200 text-center px-4 py-2 rounded-full font-medium">
+                        Respuesta correcta: {{ $pregunta->respuesta_correcta }}
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
         {{-- Respuestas de estudiantes --}}
         <div class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
             <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Respuestas de los Estudiantes</h2>

@@ -783,25 +783,25 @@
           <h3 class="text-xl font-semibold text-blue-700 dark:text-blue-300">
             Credenciales de Prueba
           </h3>
-          Proximamente
-          <!-- <ul class="text-gray-800 dark:text-gray-200 space-y-2">
+          
+          <ul class="text-gray-800 dark:text-gray-200 space-y-2">
             <li>
               <strong>Administrador:</strong> admin@gmail.com / contraseña:
               admin
             </li>
             <li>
-              <strong>Colegio:</strong> iemep546@plateform-educative.com /
+              <strong>Colegio:</strong> {{ $colegio }} /
               contraseña: 123456789
             </li>
             <li>
-              <strong>Docente:</strong> docente@gmail.com / contraseña:
+              <strong>Docente:</strong> {{ $profesor }}  / contraseña:
               123456789
             </li>
             <li>
-              <strong>Estudiante:</strong> estudiante@gmail.com / contraseña:
+              <strong>Estudiante:</strong> {{ $estudiante }} / contraseña:
               12345678
             </li>
-          </ul> -->
+          </ul> 
         </div>
       </div>
     </section>

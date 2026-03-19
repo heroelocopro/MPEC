@@ -107,11 +107,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     }
 }; ?>
 <div class=" bg-[#0E1848] rounded-4xl   dark:bg-[#121212] px-4">
-    <div class="text-center">
-        <flux:button :href="route('home')" variant="primary" color="sky" class="w-1/2 cursor-pointer mx-auto text-center py-2 px-4 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition" type="submit" :loading="true" >
-                    Volver
-    </flux:button>
-    </div>
+    
     <div class="w-full  max-w-md bg-[#0E1848] dark:bg-[#1A1A1A] rounded-xl shadow-lg p-8">
         {{-- <h1 class="text-3xl lg:text-4xl font-bold mb-4 text-center text-wrap">
            <span class="text-[#8F1718] dark:text-yellow-400 text-wrap">{{ env("APP_NAME") }}</span>
@@ -145,6 +141,11 @@ new #[Layout('components.layouts.auth')] class extends Component {
                     Ingresar
                 </flux:button>
             </div>
+            <div class="text-center">
+        <flux:button :href="route('home')" variant="primary" color="sky" class="w-1/2 cursor-pointer mx-auto text-center py-2 px-4 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition" type="submit" :loading="true" >
+                    Volver
+    </flux:button>
+    </div>
         </form>
         <p class="mt-6 text-xs text-center text-gray-400">
             Corporalma &copy; {{ now()->year }}. Todos los derechos reservados.

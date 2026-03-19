@@ -5,9 +5,16 @@ use App\Livewire\Foro;
 use App\Livewire\VerForo;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use App\models\Profesor;
+use App\models\Estudiante;
+use App\models\Colegio;
+
 
 Route::get('/', function () {
-    return view('inicio');
+    $profesor = Profesor::where('colegio_id',1)->with('usuario')->first()->usuario->email;
+    $colegio = Colegio::where('id',1)->with('usuario')->first()->usuario->email;
+    $estudiante = Estudiante::where('colegio_id',1)->with('usuario')->first()->usuario->email;
+    return view('inicio', compact('profesor','colegio','estudiante'));
 })->name('home');
 
 // Route::view('dashboard', 'dashboard')
@@ -36,6 +43,12 @@ Route::get('/s3-test', function () {
 
     return 'OK';
 });
+
+
+Route::fallback(function()  {
+    return view('https.404');
+    }
+);
 
 
 require __DIR__.'/colegio.php';

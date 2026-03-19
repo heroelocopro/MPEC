@@ -124,6 +124,20 @@ class DocenteEvaluaciones extends Component
             'periodo_id'       => $periodo->id,
         ]);
 
+        $counter = 0;
+        foreach($this->questions as $q){
+            if($q['points'] == 1){
+                $counter++;
+            }
+        }
+        if( $counter == count($this->questions)){
+                foreach($this->questions as &$q){
+                    $q['points'] = $this->puntaje_total / $counter;
+                }
+                unset($q);   
+            }
+        
+
         // Crear las preguntas asociadas
         foreach ($this->questions as $questionData) {
             $opciones = [];
@@ -151,6 +165,7 @@ class DocenteEvaluaciones extends Component
                     break;
             }
 
+
             Pregunta_Examen::create([
                 'examen_id'          => $exam->id,
                 'pregunta'           => $questionData['text'],
@@ -171,7 +186,6 @@ class DocenteEvaluaciones extends Component
         }
 
         // Redirigir con mensaje
-        session()->flash('success', 'Examen creado correctamente.');
 
          $this->dispatch('alerta', [
             'title' => 'Evaluacion creada con exito',
@@ -234,6 +248,7 @@ class DocenteEvaluaciones extends Component
         $this->profesor_id = $this->profesor->id;
         $this->colegio = $this->profesor->colegio ?? (object)['id' => null];
         $this->subjects = $this->profesor->asignaturas ?? [];
+
 
         // configuración de notas
         $configNota = configNota::where('colegio_id', $this->colegio->id)->first();

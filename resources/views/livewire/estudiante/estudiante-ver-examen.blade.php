@@ -40,27 +40,63 @@
             </div>
 
             <!-- Preguntas -->
-            <div class="space-y-6">
-                @foreach ($preguntas as $index => $pregunta)
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow border border-gray-200 dark:border-gray-700">
-                        <h2 class="font-semibold text-lg text-blue-700 dark:text-blue-300">Pregunta {{ $index + 1 }}:</h2>
-                        <p class="mt-2 text-gray-700 dark:text-gray-300">{{ $pregunta->pregunta }}</p>
+            <!-- Preguntas -->
+<div class="space-y-6">
+    @foreach ($preguntas as $index => $pregunta)
 
-                        <div class="mt-4 space-y-2">
-                            @foreach ($pregunta->opciones as $opcion)
-                                <label class="flex items-center space-x-2">
-                                    <input type="radio" wire:model="respuestas.{{ $pregunta->id }}" value="{{ $opcion }}"
-                                        class="text-blue-600 focus:ring-blue-500">
-                                    <span class="text-gray-800 dark:text-gray-200">{{ $opcion }}</span>
-                                </label>
-                            @endforeach
-                        </div>
-                        @error("respuestas.{$pregunta->id}")
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
-                    </div>
+        @php
+            $tieneError = $errors->has('respuestas.' . $pregunta->id);
+        @endphp
+
+        <div class="p-6 rounded-xl shadow border transition
+            {{ $tieneError 
+                ? 'border-red-500 bg-red-50 dark:bg-red-900/20' 
+                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800' }}">
+
+            <!-- Título -->
+            <h2 class="font-semibold text-lg text-blue-700 dark:text-blue-300">
+                Pregunta {{ $index + 1 }}
+            </h2>
+
+            <!-- Texto -->
+            <p class="mt-2 text-gray-700 dark:text-gray-300">
+                {{ $pregunta->pregunta }}
+            </p>
+
+            <!-- Opciones -->
+            <div class="mt-4 space-y-2">
+                @foreach ($pregunta->opciones as $opcion)
+
+                    <label class="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition
+                        hover:bg-blue-50 dark:hover:bg-gray-700">
+
+                        <input 
+                            type="radio"
+                            wire:model="respuestas.{{ $pregunta->id }}"
+                            value="{{ $opcion }}"
+                            class="text-blue-600 focus:ring-blue-500">
+
+                        <span class="text-gray-800 dark:text-gray-200">
+                            {{ $opcion }}
+                        </span>
+                    </label>
+
                 @endforeach
             </div>
+
+            <!-- Error -->
+            @error("respuestas.".$pregunta->id)
+                <p class="text-red-500 text-sm mt-2">⚠️ {{ $message }}</p>
+            @enderror
+
+        </div>
+    @endforeach
+</div>
+
+            @foreach ($respuestas as $r )
+                {{ $r }}
+            @endforeach
+
 
             <!-- Botón de envío -->
             <div class="text-center mt-8">

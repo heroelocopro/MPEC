@@ -54,7 +54,7 @@ class DocenteVerExamenes extends Component
 
         $this->examenes = Examen::where('grupo_id', $grupo_id)
             ->where('asignatura_id', $this->asignatura_id)
-            ->where('periodo_id',PeriodoAcademico::periodoActual($this->colegio->id)->id)
+            ->where('periodo_id',PeriodoAcademico::periodoActual($this->colegio->id)->id ?? 0)
             ->orderBy('created_at', 'desc')
             ->get();
     }

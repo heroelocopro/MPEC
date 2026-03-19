@@ -6,6 +6,7 @@ use App\Models\AsignaturaGrado;
 use App\Models\Estudiante;
 use App\Models\EstudianteGrupo;
 use App\Models\Examen;
+use App\Models\PeriodoAcademico;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -38,9 +39,10 @@ class EstudianteExamenes extends Component
         foreach ($this->asignaturas as $index => $asignatura) {
             // Filtrar examenes por grupo_id y ordenarlas por fecha de entrega
             $examenesFiltrados = $asignatura->examenes
-            ->filter(function ($actividad) use ($grupoFiltrado) {
-                return $actividad->grupo_id === $grupoFiltrado &&
-                    Carbon::now()->lt(Carbon::parse($actividad->fecha_vencimiento));
+            ->filter(function ($examen) use ($grupoFiltrado) {
+                $periodoActual = PeriodoAcademico::periodoActual(); // Obtenemos el periodo vigente
+                return $examen->grupo_id === $grupoFiltrado  && $examen->periodo->id == $periodoActual->id &&
+                    Carbon::now()->lt(Carbon::parse($examen->fecha_vencimiento));
             })
             ->sortBy('fecha_vencimiento')
             ->values();

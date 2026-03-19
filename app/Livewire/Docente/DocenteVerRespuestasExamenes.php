@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Docente;
 
-use App\Models\asignaturaProfesor;
 use App\Models\Examen;
 use App\Models\PeriodoAcademico;
 use App\Models\Profesor;
