@@ -5,9 +5,9 @@ use App\Livewire\Foro;
 use App\Livewire\VerForo;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
-use App\models\Profesor;
-use App\models\Estudiante;
-use App\models\Colegio;
+use App\Models\Profesor;
+use App\Models\Estudiante;
+use App\Models\Colegio;
 
 
 Route::get('/', function () {
