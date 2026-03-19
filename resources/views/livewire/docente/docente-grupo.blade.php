@@ -114,7 +114,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $index + 1 }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $estudiante->nombre_completo }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                            {{ count($estudiante->asistencias) }} / {{ $diasTotales }}
+                            {{ count($estudiante->asistencias) }} 
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                             {{ number_format($estudiante->promedio($grupo->id), 2) }}

@@ -106,9 +106,9 @@ new #[Layout('components.layouts.auth')] class extends Component {
         return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
     }
 }; ?>
-<div class=" bg-[#0E1848] rounded-4xl   dark:bg-[#121212] px-4">
+<div class=" bg-gray-200 rounded-4xl   dark:bg-[#121212] px-4">
     
-    <div class="w-full  max-w-md bg-[#0E1848] dark:bg-[#1A1A1A] rounded-xl shadow-lg p-8">
+    <div class="w-full  max-w-md bg-gray-200 dark:bg-[#1A1A1A] rounded-xl shadow-lg p-8">
         {{-- <h1 class="text-3xl lg:text-4xl font-bold mb-4 text-center text-wrap">
            <span class="text-[#8F1718] dark:text-yellow-400 text-wrap">{{ env("APP_NAME") }}</span>
         </h1> --}}

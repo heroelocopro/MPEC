@@ -15,18 +15,7 @@
                 <flux:breadcrumbs.item>{{ $colegio->nombre ?? 'Sin Colegio' }}</flux:breadcrumbs.item>
             </flux:breadcrumbs>
         </div>
-        {{-- Botón Crear Grupo --}}
-        {{--
-        <div>
-            <flux:modal.trigger wire:click="$set('modalCreacion', true)" name="crear-horario">
-                <button class="h-12 px-6 bg-blue-600 text-white rounded-lg text-sm
-                hover:bg-blue-700 transition duration-300 cursor-pointer
-                dark:bg-blue-700 dark:hover:bg-blue-800">
-                Crear Horario
-                </button>
-            </flux:modal.trigger>
-        </div>
-        --}}
+
     </div>
 
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 my-8 space-y-8">
@@ -36,7 +25,7 @@
                 Registro de Asistencia
             </h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {{-- ASIGNATURA --}}
                 <div>
                     <label for="asignatura_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -87,7 +76,7 @@
         </div>
         {{-- PLANILLA DE ASISTENCIA EN CARDS --}}
 @if(count($estudiantes))
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 dark:bg-gray-800 ">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 dark:bg-gray-800 bg-gray-200 ">
 @foreach($estudiantes as $estudiante)
 
 @php
