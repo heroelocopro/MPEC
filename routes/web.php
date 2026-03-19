@@ -45,6 +45,16 @@ Route::get('/s3-test', function () {
 });
 
 
+Route::get('/check-env', function () {
+    return [
+        'key' => env('AWS_ACCESS_KEY_ID'),
+        'secret' => env('AWS_SECRET_ACCESS_KEY'),
+        'bucket' => env('AWS_BUCKET'),
+        'endpoint' => env('AWS_ENDPOINT'),
+    ];
+});
+
+
 Route::fallback(function()  {
     return view('https.404');
     }
