@@ -13,12 +13,14 @@ class Notificaciones extends Component
         $notificacion = Auth::user()->notifications()->find($id);
         if ($notificacion) {
             $notificacion->markAsRead();
+            $this->open = false;
         }
     }
 
     public function marcarTodasComoLeidas()
     {
         Auth::user()->unreadNotifications->markAsRead();
+        $this->open = false;
     }
 
     public function render()
