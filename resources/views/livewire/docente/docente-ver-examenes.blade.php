@@ -66,14 +66,14 @@
 
             @if($examenes && count($examenes) > 0)
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    @foreach($examenes as $examen)
+                    @foreach($examenes as $e)
                         <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow">
-                            <h3 class="font-bold text-gray-900 dark:text-white">{{ $examen->titulo }}</h3>
+                            <h3 class="font-bold text-gray-900 dark:text-white">{{ $e->titulo }}</h3>
                             <p class="text-sm text-gray-600 dark:text-gray-300">
-                                {{ $examen->asignatura->nombre }} - Grupo: {{ $examen->grupo->nombre }}
+                                {{ $e->asignatura->nombre }} - Grupo: {{ $e->grupo->nombre }}
                             </p>
                             <br>
-                            <a wire:click="mostrarExamen({{ $examen->id }})"
+                            <a wire:click="mostrarExamen({{ $e->id }})"
                                 class="inline-block px-4 cursor-pointer py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow-md transition-colors">
                                  Ver Examen
                              </a>
