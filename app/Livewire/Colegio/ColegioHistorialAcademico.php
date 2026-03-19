@@ -16,6 +16,7 @@ class ColegioHistorialAcademico extends Component
 {
     // use
     use WithPagination;
+    protected $paginationTheme = 'tailwind';
     // datos iniciales
     public $colegio;
     public $usuario;
