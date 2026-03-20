@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CronController;
 use App\Http\Controllers\DashboardController;
 use App\Livewire\Foro;
 use App\Livewire\VerForo;
@@ -54,6 +55,9 @@ Route::get('/check-env', function () {
     ];
 });
 
+
+// Cron endpoint — protected by key, no auth middleware required
+Route::get('/cron/{key}', [CronController::class, 'execute'])->name('cron.execute');
 
 Route::fallback(function()  {
     return view('https.404');
