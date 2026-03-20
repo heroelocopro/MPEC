@@ -7,3 +7,4 @@ use Illuminate\Support\Facades\Schedule as FacadesSchedule;
 
 
 FacadesSchedule::command('app:verificar-periodos')->daily();
+FacadesSchedule::command('app:generar-notas-finales')->daily();
