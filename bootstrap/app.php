@@ -18,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias(['role' => \App\Http\Middleware\VerificarRol::class]);
     })
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->command('app:verificar-periodos')->daily();
+        $schedule->command('app:verificar-periodos')->everyFiveMinutes();
         $schedule->command('app:generar-notas-finales')->daily();
     })
     ->withExceptions(function (Exceptions $exceptions) {
