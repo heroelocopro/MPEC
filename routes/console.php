@@ -6,4 +6,4 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule as FacadesSchedule;
 
 
-FacadesSchedule::command('app:verificar-periodos')->everyTenSeconds();
+FacadesSchedule::command('app:verificar-periodos')->daily();
