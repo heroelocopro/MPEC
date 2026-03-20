@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withSchedule(function (Schedule $schedule) {
         $schedule->command('app:verificar-periodos')->daily();
+        $schedule->command('app:generar-notas-finales')->daily();
     })
     ->withExceptions(function (Exceptions $exceptions) {
             // Manejar error de conexión MySQL
