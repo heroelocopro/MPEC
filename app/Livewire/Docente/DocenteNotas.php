@@ -160,15 +160,21 @@ public function cargarNotas()
 {
     // Obtener el periodo activo actual del colegio
     $periodo = PeriodoAcademico::periodoActual($this->colegio->id);
-
     // Si no hay periodo activo, no cargar nada
     if (!$periodo) {
         $this->notas = [
             'actividad' => [],
             'examen' => [],
         ];
-        exit;
-        return; // salir sin hacer consultas
+        $this->dispatch('alerta', [
+            'title' => 'Error',
+            'text' => 'no hay periodo activo',
+            'icon' => 'error',
+            'toast' => true,
+            'position' => 'top-end',
+        ]);
+        return;
+         // salir sin hacer consultas
     }
 
 
