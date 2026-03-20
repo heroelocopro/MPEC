@@ -180,7 +180,7 @@
                                                             class="px-3 cursor-pointer py-1 text-sm bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg">
                                                         Editar
                                                     </button>
-                                                    <button wire:click="eliminarActividad({{ $actividad->id }})"
+                                                    <button wire:click="$dispatch('confirmarEliminarActividad', {id:  {{ $actividad->id }}})"
                                                             class="px-3 cursor-pointer py-1 text-sm bg-red-600 hover:bg-red-700 text-white rounded-lg">
                                                         Eliminar
                                                     </button>
@@ -204,6 +204,21 @@
     {{-- js --}}
     @push('js')
     <script>
+        Livewire.on('confirmarEliminarActividad', (id) => {
+        Swal.fire({
+            title: "Estas Seguro?",
+            text: "Esto no se puede deshacer!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, Eliminalo"
+            }).then((result) => {
+            if (result.isConfirmed) {
+                Livewire.dispatch('eliminarActividad', id);
+            }
+        });
+    });
         Livewire.on('alerta', (data) => {
             data = data[0];
             Swal.fire({

@@ -17,6 +17,7 @@ use Livewire\WithFileUploads;
 class DocenteActividades extends Component
 {
     use WithFileUploads;
+    protected $listeners = ['eliminarActividad' => 'eliminarActividad'];
 
     // ---------- propiedades públicas (inicializadas de forma segura) ----------
     public $asignaturas = [];      // array de objetos asignatura
@@ -42,6 +43,62 @@ class DocenteActividades extends Component
     public $gruposFiltro = [];    // array con grupos únicos extraídos de actividades
 
     // -------------------------------------------------------------------------
+
+    public function eliminarActividad($id)
+    {
+        if (!$id) {
+            $this->dispatch('alerta', [
+                'title' => 'Error',
+                'text'  => 'No se encontró un id válido.',
+                'icon'  => 'error',
+                'toast' => true,
+                'position' => 'top-end',
+            ]);
+            return;
+        }
+
+        $actividad = Actividad::find($id);
+
+        if (!$actividad) {
+            $this->dispatch('alerta', [
+                'title' => 'Error',
+                'text'  => 'La actividad no existe.',
+                'icon'  => 'error',
+                'toast' => true,
+                'position' => 'top-end',
+            ]);
+            return;
+        }
+
+        try {
+            // Elimina el archivo si existe
+            $c = 0;
+            if ($actividad->archivo) {
+                Storage::disk('s3')->delete($actividad->archivo);
+                $c++;
+            }
+
+            // Finalmente elimina la actividad
+            $actividad->delete();
+
+            $this->dispatch('alerta', [
+                'title' => 'Eliminado',
+                'text'  => $c > 0 ? 'La actividad y su archivo fueron eliminados correctamente.' : 'la actividad fue eliminada correctamente.',
+                'icon'  => 'success',
+                'toast' => true,
+                'position' => 'top-end',
+            ]);
+        } catch (\Throwable $th) {
+
+            $this->dispatch('alerta', [
+                'title' => 'Error',
+                'text'  => 'Algo salió mal al eliminar.',
+                'icon'  => 'error',
+                'toast' => true,
+                'position' => 'top-end',
+            ]);
+        }
+    }
 
     public function verRespuestas($actividad_id)
     {
