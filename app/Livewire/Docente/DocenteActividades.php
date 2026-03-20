@@ -265,7 +265,7 @@ class DocenteActividades extends Component
     public function cargarActividades()
     {
         // solo si profesor_id es válido
-        $periodoActivoId = PeriodoAcademico::periodoActivo($this->colegio->id)->id;
+        $periodoActivoId = PeriodoAcademico::periodoActivo($this->colegio->id)->id ?? 0;
         if (!empty($this->profesor_id)) {
             $this->actividades = Actividad::where('profesor_id', $this->profesor_id)
                 ->where('periodo_id',$periodoActivoId)
