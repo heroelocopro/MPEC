@@ -214,11 +214,11 @@ public function cargarNotas()
             $this->grupo = EstudianteGrupo::where('grupo_id',$value)->get();
             $this->actividades = Actividad::where('grupo_id',$value)
                                             ->where('asignatura_id',$this->asignatura->id)
-                                            ->where('periodo_id',PeriodoAcademico::periodoActual($this->colegio->id)->id ?? null)
+                                            ->where('periodo_id',PeriodoAcademico::periodoActual($this->colegio->id)->id ?? 0)
                                             ->get();
             $this->examenes = Examen::where('grupo_id',$value)
                                     ->where('asignatura_id',$this->asignatura->id)
-                                    ->where('periodo_id',PeriodoAcademico::periodoActual($this->colegio->id)->id ?? null)
+                                    ->where('periodo_id',PeriodoAcademico::periodoActual($this->colegio->id)->id ?? 0)
                                     ->get();
             $this->totalNotas = count($this->examenes) + count($this->actividades);
             $this->cargarNotas();
