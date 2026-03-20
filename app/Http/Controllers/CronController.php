@@ -38,11 +38,15 @@ class CronController extends Controller
         $results = [];
 
         // Verify and update academic periods (activate/deactivate based on dates)
-        Artisan::call('app:verificar-periodos');
+        dispatch(function () {
+            Artisan::call('app:verificar-periodos');
+            Artisan::call('app:generar-notas-finales');
+        });
+        // Artisan::call('app:verificar-periodos');
         $results['verificar_periodos'] = trim(Artisan::output());
 
         // Generate final grades for groups whose period ends tomorrow
-        Artisan::call('app:generar-notas-finales');
+        // Artisan::call('app:generar-notas-finales');
         $results['generar_notas_finales'] = trim(Artisan::output());
 
         Log::info('CronController: scheduled tasks completed.', ['results' => $results]);
