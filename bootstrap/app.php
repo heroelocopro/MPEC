@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias(['role' => \App\Http\Middleware\VerificarRol::class]);
+        $middleware->use([
+        \App\Http\Middleware\TrustProxies::class,
+    ]);
     })
     ->withSchedule(function (Schedule $schedule) {
         $schedule->command('app:verificar-periodos')->everyFiveMinutes();
