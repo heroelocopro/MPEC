@@ -81,6 +81,8 @@ class DocenteActividades extends Component
             // Finalmente elimina la actividad
             $actividad->delete();
 
+            $this->cargarActividades();
+
             $this->dispatch('alerta', [
                 'title' => 'Eliminado',
                 'text'  => $c > 0 ? 'La actividad y su archivo fueron eliminados correctamente.' : 'la actividad fue eliminada correctamente.',
@@ -117,8 +119,17 @@ class DocenteActividades extends Component
             'fecha_entrega' => 'required|date|after_or_equal:today',
             'archivo'       => 'nullable|file|mimes:pdf,doc,docx,odt|max:10240',
         ];
+        $messages = [
+            'asignatura_id.required' => 'La asignatura es necesaria',
+            'grupo_id.required' => 'Es necesario seleccionar un grupo',
+            'titulo.required' => 'Sin un titulo no se puede continuar',
+            'descripcion.required' => 'Una descripcion es necesaria',
+            'fecha_entrega.required' => 'La fecha de entrega es necesaria',
+            'fecha_entrega.after_or_equal' => 'La fecha de entrega debe ser mayor o igual al dia de hoy',
+            'archivo.mimes' => 'El archivo debe ser uno de estos pdf,doc,docx,odt'
+        ];
 
-        $this->validate($rules);
+        $this->validate($rules,$messages);
 
         // obtener periodo actual de forma segura
         $periodo = null;
@@ -143,6 +154,7 @@ class DocenteActividades extends Component
             // guarda el archivo en storage/app/public/docente/actividades
             $rutaArchivo = $this->archivo->store('docente/actividades', 's3');
         }
+        
 
         $datos = [
             'profesor_id'   => $this->profesor_id,
@@ -265,7 +277,20 @@ class DocenteActividades extends Component
     public function cargarActividades()
     {
         // solo si profesor_id es válido
-        $periodoActivoId = PeriodoAcademico::periodoActivo($this->colegio->id)->id ?? 0;
+        $periodoActivo = PeriodoAcademico::periodoActivo($this->colegio->id);
+
+        if (!$periodoActivo) {
+            $this->dispatch('alerta', [
+                'title' => 'Informacion',
+                'text' => 'no hay periodo activo',
+                'icon' => 'info',
+                'toast' => true,
+                'position' => 'top-end',
+            ]);
+            return;
+        }
+
+        $periodoActivoId = $periodoActivo->id;
         if (!empty($this->profesor_id)) {
             $this->actividades = Actividad::where('profesor_id', $this->profesor_id)
                 ->where('periodo_id',$periodoActivoId)
