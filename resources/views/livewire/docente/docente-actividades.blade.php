@@ -50,6 +50,9 @@
                         <option value="{{ $a->id }}">{{ $a->nombre }}</option>
                     @endforeach
                 </select>
+                @error('asignatura_id')
+                    <h3 class="text-red-500">{{ $message }}</h3>
+                @enderror
             </div>
 
             {{-- Selección de Grupo --}}
@@ -75,6 +78,9 @@
                     <input type="text" wire:model.live="titulo"
                            class="w-full rounded-lg shadow-sm border border-gray-300 dark:border-gray-600
                                   bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 focus:ring focus:ring-blue-500" />
+                                  @error('titulo')
+                    <h3 class="text-red-500">{{ $message }}</h3>
+                @enderror
                 </div>
 
                 <div>
@@ -92,13 +98,19 @@
                     <textarea wire:model.live="descripcion" rows="4"
                               class="w-full rounded-lg shadow-sm border border-gray-300 dark:border-gray-600
                                      bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 focus:ring focus:ring-blue-500"></textarea>
+                                     @error('descripcion')
+                    <h3 class="text-red-500">{{ $message }}</h3>
+                @enderror
                 </div>
 
                 <div class="col-span-1 md:col-span-2">
                     <label class="block mb-1 text-gray-700 dark:text-gray-300 font-medium">Archivo</label>
-                    <input type="file" wire:model.live="archivo"
+                    <input type="file" wire:model="archivo"
                            class="w-full rounded-lg border border-gray-300 dark:border-gray-600
                                   bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 shadow-sm" />
+                                  @error('archivo')
+                    <h3 class="text-red-500">{{ $message }}</h3>
+                @enderror
                 </div>
             </div>
 
@@ -142,6 +154,7 @@
 
                                 <div class="grid gap-6 md:grid-cols-2">
                                     @foreach ($actividadesDelGrupo as $actividad)
+                                    {{ $actividad }}
                                         <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700 relative">
                                             <h4 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">
                                                 {{ $actividad->titulo }}
