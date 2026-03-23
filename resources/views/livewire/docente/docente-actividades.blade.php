@@ -154,7 +154,6 @@
 
                                 <div class="grid gap-6 md:grid-cols-2">
                                     @foreach ($actividadesDelGrupo as $actividad)
-                                    {{ $actividad }}
                                         <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700 relative">
                                             <h4 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">
                                                 {{ $actividad->titulo }}
