@@ -161,7 +161,7 @@
                                                 class="text-blue-600 dark:text-blue-300 underline text-sm hover:opacity-80 transition">
                                                     Ver archivo adjunto
                                                 </a>
-                                            @endif
+                                            @endif 
 
                                             {{-- Botones --}}
                                             <div class="mt-4 flex justify-between items-center">
