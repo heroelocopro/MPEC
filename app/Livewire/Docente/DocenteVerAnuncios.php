@@ -117,8 +117,8 @@ class DocenteVerAnuncios extends Component
         try {
             $anuncio = Anuncio::findOrFail($id);
 
-            if ($anuncio->imagen && Storage::disk('public')->exists($anuncio->imagen)) {
-                Storage::disk('public')->delete($anuncio->imagen);
+            if ($anuncio->imagen) {
+                Storage::disk('s3')->delete($anuncio->imagen);
             }
 
             $anuncio->delete();

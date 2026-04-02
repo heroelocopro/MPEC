@@ -122,6 +122,7 @@ class ColegioAnuncios extends Component
         // datos basicos del estudiante
         $this->colegio = Colegio::where('user_id',Auth::user()->id)->first();
         // cargar metodos
+        $this->cargarAnuncios();
 
     }
     public function render()

@@ -63,7 +63,7 @@
 
             {{-- Botón --}}
             <div class="flex justify-end">
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition duration-200">
+                <button type="submit" class="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition duration-200">
                     Guardar Anuncio
                 </button>
             </div>
