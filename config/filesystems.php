@@ -59,12 +59,8 @@ return [
             'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
             'bucket' => env('AWS_BUCKET'),
             'endpoint' => env('AWS_ENDPOINT'),
-            'use_path_style_endpoint' => false, // Importante para TiDB
+            'use_path_style_endpoint' => true, // Importante para TiDB
             'throw' => true,
-            'visibility' => 'private',
-            // TiDB Cloud specific
-            'url' => env('AWS_URL'),
-            'bucket_endpoint' => false,
         ],
 
 
