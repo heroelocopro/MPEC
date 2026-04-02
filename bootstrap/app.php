@@ -16,9 +16,13 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias(['role' => \App\Http\Middleware\VerificarRol::class]);
+        $middleware->use([
+        \App\Http\Middleware\TrustProxies::class,
+    ]);
     })
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->command('app:verificar-periodos')->daily();
+        $schedule->command('app:verificar-periodos')->everyFiveMinutes();
+        $schedule->command('app:generar-notas-finales')->daily();
     })
     ->withExceptions(function (Exceptions $exceptions) {
             // Manejar error de conexión MySQL

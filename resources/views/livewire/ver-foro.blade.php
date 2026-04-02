@@ -67,7 +67,14 @@
                     <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                         <div class="flex justify-between items-center mb-1">
                             <span class="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                               {{ $comentario->autor->nombre ?? $comentario->autor->nombre_completo . ' ' . $comentario->autor->matricula->grado->nombre ?? 'Usuario' }}
+                               {{ $comentario->autor->nombre 
+                                    ?? (
+                                        $comentario->autor->nombre_completo 
+                                        . ' ' 
+                                        . ($comentario->autor->matricula->grado->nombre ?? '')
+                                    ) 
+                                    ?: 'Usuario' 
+                                }}
                             </span>
                             <span class="text-xs text-gray-500 dark:text-gray-400 ">
                                 {{ $comentario->created_at->diffForHumans() }}

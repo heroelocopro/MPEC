@@ -160,15 +160,21 @@ public function cargarNotas()
 {
     // Obtener el periodo activo actual del colegio
     $periodo = PeriodoAcademico::periodoActual($this->colegio->id);
-
     // Si no hay periodo activo, no cargar nada
     if (!$periodo) {
         $this->notas = [
             'actividad' => [],
             'examen' => [],
         ];
-        exit;
-        return; // salir sin hacer consultas
+        $this->dispatch('alerta', [
+            'title' => 'Error',
+            'text' => 'no hay periodo activo',
+            'icon' => 'error',
+            'toast' => true,
+            'position' => 'top-end',
+        ]);
+        return;
+         // salir sin hacer consultas
     }
 
 
@@ -214,11 +220,11 @@ public function cargarNotas()
             $this->grupo = EstudianteGrupo::where('grupo_id',$value)->get();
             $this->actividades = Actividad::where('grupo_id',$value)
                                             ->where('asignatura_id',$this->asignatura->id)
-                                            ->where('periodo_id',PeriodoAcademico::periodoActual($this->colegio->id)->id ?? null)
+                                            ->where('periodo_id',PeriodoAcademico::periodoActual($this->colegio->id)->id ?? 0)
                                             ->get();
             $this->examenes = Examen::where('grupo_id',$value)
                                     ->where('asignatura_id',$this->asignatura->id)
-                                    ->where('periodo_id',PeriodoAcademico::periodoActual($this->colegio->id)->id ?? null)
+                                    ->where('periodo_id',PeriodoAcademico::periodoActual($this->colegio->id)->id ?? 0)
                                     ->get();
             $this->totalNotas = count($this->examenes) + count($this->actividades);
             $this->cargarNotas();

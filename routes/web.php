@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CronController;
 use App\Http\Controllers\DashboardController;
 use App\Livewire\Foro;
 use App\Livewire\VerForo;
@@ -8,7 +9,7 @@ use Livewire\Volt\Volt;
 use App\Models\Profesor;
 use App\Models\Estudiante;
 use App\Models\Colegio;
-
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/', function () {
     $profesor = Profesor::where('colegio_id',1)->with('usuario')->first()->usuario->email;
@@ -44,15 +45,11 @@ Route::get('/s3-test', function () {
     return 'OK';
 });
 
+// Cron endpoint — protected by key, no auth middleware required
+Route::get('/cron/{key}', [CronController::class, 'execute'])->name('cron.execute');
 
-Route::get('/check-env', function () {
-    return [
-        'key' => env('AWS_ACCESS_KEY_ID'),
-        'secret' => env('AWS_SECRET_ACCESS_KEY'),
-        'bucket' => env('AWS_BUCKET'),
-        'endpoint' => env('AWS_ENDPOINT'),
-    ];
-});
+
+
 
 
 Route::fallback(function()  {

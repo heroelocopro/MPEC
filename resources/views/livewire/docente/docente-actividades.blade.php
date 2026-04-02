@@ -50,6 +50,9 @@
                         <option value="{{ $a->id }}">{{ $a->nombre }}</option>
                     @endforeach
                 </select>
+                @error('asignatura_id')
+                    <h3 class="text-red-500">{{ $message }}</h3>
+                @enderror
             </div>
 
             {{-- Selección de Grupo --}}
@@ -75,6 +78,9 @@
                     <input type="text" wire:model.live="titulo"
                            class="w-full rounded-lg shadow-sm border border-gray-300 dark:border-gray-600
                                   bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 focus:ring focus:ring-blue-500" />
+                                  @error('titulo')
+                    <h3 class="text-red-500">{{ $message }}</h3>
+                @enderror
                 </div>
 
                 <div>
@@ -92,13 +98,19 @@
                     <textarea wire:model.live="descripcion" rows="4"
                               class="w-full rounded-lg shadow-sm border border-gray-300 dark:border-gray-600
                                      bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 focus:ring focus:ring-blue-500"></textarea>
+                                     @error('descripcion')
+                    <h3 class="text-red-500">{{ $message }}</h3>
+                @enderror
                 </div>
 
                 <div class="col-span-1 md:col-span-2">
                     <label class="block mb-1 text-gray-700 dark:text-gray-300 font-medium">Archivo</label>
-                    <input type="file" wire:model.live="archivo"
+                    <input type="file" wire:model="archivo"
                            class="w-full rounded-lg border border-gray-300 dark:border-gray-600
                                   bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 shadow-sm" />
+                                  @error('archivo')
+                    <h3 class="text-red-500">{{ $message }}</h3>
+                @enderror
                 </div>
             </div>
 
@@ -180,7 +192,7 @@
                                                             class="px-3 cursor-pointer py-1 text-sm bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg">
                                                         Editar
                                                     </button>
-                                                    <button wire:click="eliminarActividad({{ $actividad->id }})"
+                                                    <button wire:click="$dispatch('confirmarEliminarActividad', {id:  {{ $actividad->id }}})"
                                                             class="px-3 cursor-pointer py-1 text-sm bg-red-600 hover:bg-red-700 text-white rounded-lg">
                                                         Eliminar
                                                     </button>
@@ -204,6 +216,21 @@
     {{-- js --}}
     @push('js')
     <script>
+        Livewire.on('confirmarEliminarActividad', (id) => {
+        Swal.fire({
+            title: "Estas Seguro?",
+            text: "Esto no se puede deshacer!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, Eliminalo"
+            }).then((result) => {
+            if (result.isConfirmed) {
+                Livewire.dispatch('eliminarActividad', id);
+            }
+        });
+    });
         Livewire.on('alerta', (data) => {
             data = data[0];
             Swal.fire({
