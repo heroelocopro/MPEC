@@ -770,7 +770,7 @@
         <!-- Botón de acceso -->
         <a
           href="{{ route("login") }}"
-          target="_blank"
+          
           class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-full text-lg shadow transition"
         >
           Ir a la Plataforma
